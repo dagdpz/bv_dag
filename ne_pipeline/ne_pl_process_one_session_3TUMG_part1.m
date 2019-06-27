@@ -1,4 +1,5 @@
 function ne_pl_process_one_session_3TUMG_part1(session_path, dicom_folder, series_order, anat, subj,session_settings_id,proc_steps_array,varargin)
+% ne_pl_process_one_session_3TUMG_part1('Y:\MRI\Human\fMRI-reach-decision\Pilot\IVSK\20190620','dicom',[10 13 16 19 22],6,'IVSK','Human_reach-decision',{'create_fmr'});
 % ne_pl_process_one_session_3TUMG_part1('F:\MRI\Curius\20140204','ani_0708',[7 8 9 12 13],10,'CU','Curius_microstim_20131129-now',{'all'});
 % ne_pl_process_one_session_3TUMG_part1('F:\MRI\Curius\20140204','ani_0708',[7 8 9 12 13],10,'CU','Curius_microstim_20131129-now',{'all'},'MCparams','MCzparams');
 % ne_pl_process_one_session_3TUMG_part1('F:\MRI\Curius\20140204','ani_0708',[7 8 9 12 13],10,'CU','Curius_microstim_20131129-now',{'create_prt'});

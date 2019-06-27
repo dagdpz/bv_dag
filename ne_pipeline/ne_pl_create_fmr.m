@@ -23,7 +23,8 @@ flags.xyres = [settings.fmr_create.ResolutionX,settings.fmr_create.ResolutionY];
 
 switch settings.Species
     case 'human'
-        n = neuroelf; fmr = n.createfmr(imafiles, flags); % original NE - problems with positioning ("BV -> FMR properties -> POS Info)
+        % n = neuroelf; fmr = n.createfmr(imafiles, flags); % original NE - problems with positioning ("BV -> FMR properties -> POS Info)
+	fmr = ne_createfmr(imafiles, flags, settings.Species); % modified IK
     case 'monkey'
        fmr = ne_createfmr(imafiles, flags, settings.Species); % modified IK
 end

@@ -75,11 +75,11 @@
 %         .srbin     reference bin (ref slice in slice-time correction: 1)
 %         .tshift    Temporally shift convoluted regressor (in ms, 0)
 %         .type      HRF or FIR model ({'hrf'}, 'fir')
-%  
+%
 %  Output fields:
-%  
+%
 %        sdm         SDM object (design matrix)
-%  
+%
 %  Note: parametrical weights in Cond(c).Weights will be *ADDED* to the
 %        parameters after the evaluation of .param!
 
@@ -167,10 +167,55 @@
 %        .xconfound just as motpars, but without restriction on number
 
 switch session_settings_id
+	
+	
+	case 'Human_reach-decision'
+		
+		settings.Species = 'human';
+		
+		% settings for create fmr
+		settings.fmr_create.NrOfSkippedVolumes = 0;
+		settings.fmr_create.TR			= 900;
+		settings.fmr_create.InterSliceTime 	= 20; % TR/n_slices, here 45 slices
+		settings.fmr_create.ResolutionX	= 70; % series info Mosaic rows
+		settings.fmr_create.ResolutionY	= 70;
+		settings.fmr_create.InplaneResolutionX	= 3; % voxel size
+		settings.fmr_create.InplaneResolutionY	= 3;
+		settings.fmr_create.SliceThickness	= 3;
+		settings.fmr_create.SliceGap		= 1; % is this a yes (1) or no (0) information?????
+		settings.fmr_create.VoxelResolutionVerified = 1;
+		settings.fmr_create.GapThickness	= 0.3; % Slicespacing - SliceThickness
+		settings.fmr_create.TimeResolutionVerified = 1;
+		settings.fmr_create.SliceAcquisitionOrder = 1; % 1 = asc, 5 - aint2 (xff function)
+		settings.fmr_create.SliceAcquisitionOrderVerified = 1;
+		
+		% settings for slice-timing correction of fmr
+		settings.fmr_slicetiming.order = 'asc';
+		
+		% settings for motion correction of fmr
+		settings.fmr_realign.totarget = 1; % use the volume number 1 as a reference volume for the alignment
+		settings.fmr_realign.rtplot = 1; % plot real time motion correction
+		
+		% settings for spatial and temporal filtering of fmr
+		settings.fmr_filter.spat = false;
+		settings.fmr_filter.temp = true;
+		settings.fmr_filter.tempsc = 3; % sin/cos motion correction (very low frequencies: lower than 0.005 Hz)
+		
+		% settings for converting behavioral files to BV *.prt
+		settings.prt.beh2prt_function_handle = @mat2prt_reach_decision_pilot;
+		settings.model = '';
+		
+		% settings for converting prt to sdm
+		settings.sdm.nvol = 800; % total number of volumes - skiped volumes
+		settings.sdm.prtr = settings.fmr_create.TR;
+		settings.sdm.hpttp = 5; %default for human
+		settings.sdm.hnttp = 15; %default for human
+		settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
+		
 	case 'Curius_microstim_20130814-20131009'
 		
-        settings.Species = 'monkey'; % either 'human' or 'monkey'
-        
+		settings.Species = 'monkey'; % either 'human' or 'monkey'
+		
 		% settings for create fmr
 		settings.fmr_create.NrOfSkippedVolumes = 4;
 		settings.fmr_create.TR			= 2000;
@@ -201,350 +246,350 @@ switch session_settings_id
 		
 		% settings for converting behavioral files to BV *.prt
 		% settings.prt.beh2prt_function_handle = ;
-			
+		
 		% settings for converting prt to sdm
 		settings.sdm.nvol = 300;
 		settings.sdm.prtr = settings.fmr_create.TR;
 		settings.sdm.hpttp = 3;
 		settings.sdm.hnttp = 10;
 		settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
-        
-        % settings for multi-study GLM computation
-        settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
-        settings.mdm.zTransformation = 1; % apply z-transformation to volume time courses
-        settings.mdm.PSCTransformation = 0; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
-        settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
-        settings.mdm.mask = 'D:\MRI\Curius\mask.msk';
 		
-    case 'Curius_microstim_20131129-now'
-        
-        settings.Species = 'monkey'; % either 'human' or 'monkey'
-        
-        % settings for create fmr        
-        settings.fmr_create.NrOfSkippedVolumes = 4;
-        settings.fmr_create.TR			= 2000;
-        settings.fmr_create.InterSliceTime 	= 66.7; % TR/n_slices, here 30 slices
-        settings.fmr_create.ResolutionX	= 80;  % series info Mosaic rows
-        settings.fmr_create.ResolutionY	= 80;
-        settings.fmr_create.InplaneResolutionX	= 1.2;
-        settings.fmr_create.InplaneResolutionY	= 1.2;
-        settings.fmr_create.SliceThickness	= 1.2;
-        settings.fmr_create.SliceGap		= 0;
-        settings.fmr_create.VoxelResolutionVerified = 1;
-        settings.fmr_create.GapThickness	= 0;
-        settings.fmr_create.TimeResolutionVerified = 1;
-        settings.fmr_create.SliceAcquisitionOrder = 5;
-        settings.fmr_create.SliceAcquisitionOrderVerified = 1;
-        
-        % settings for slice-timing correction of fmr
-        settings.fmr_slicetiming.order = 'aint2';
-        
-        % settings for motion correction of fmr
-        settings.fmr_realign.totarget = 1;
-        settings.fmr_realign.rtplot = 1;
-        
-        % settings for spatial and temporal filtering of fmr
-        settings.fmr_filter.spat = false;
-        settings.fmr_filter.temp = true;
-        settings.fmr_filter.tempsc = 3;
-        
-        % settings for QA
+		% settings for multi-study GLM computation
+		settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
+		settings.mdm.zTransformation = 1; % apply z-transformation to volume time courses
+		settings.mdm.PSCTransformation = 0; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
+		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
+		settings.mdm.mask = 'D:\MRI\Curius\mask.msk';
+		
+	case 'Curius_microstim_20131129-now'
+		
+		settings.Species = 'monkey'; % either 'human' or 'monkey'
+		
+		% settings for create fmr
+		settings.fmr_create.NrOfSkippedVolumes = 4;
+		settings.fmr_create.TR			= 2000;
+		settings.fmr_create.InterSliceTime 	= 66.7; % TR/n_slices, here 30 slices
+		settings.fmr_create.ResolutionX	= 80;  % series info Mosaic rows
+		settings.fmr_create.ResolutionY	= 80;
+		settings.fmr_create.InplaneResolutionX	= 1.2;
+		settings.fmr_create.InplaneResolutionY	= 1.2;
+		settings.fmr_create.SliceThickness	= 1.2;
+		settings.fmr_create.SliceGap		= 0;
+		settings.fmr_create.VoxelResolutionVerified = 1;
+		settings.fmr_create.GapThickness	= 0;
+		settings.fmr_create.TimeResolutionVerified = 1;
+		settings.fmr_create.SliceAcquisitionOrder = 5;
+		settings.fmr_create.SliceAcquisitionOrderVerified = 1;
+		
+		% settings for slice-timing correction of fmr
+		settings.fmr_slicetiming.order = 'aint2';
+		
+		% settings for motion correction of fmr
+		settings.fmr_realign.totarget = 1;
+		settings.fmr_realign.rtplot = 1;
+		
+		% settings for spatial and temporal filtering of fmr
+		settings.fmr_filter.spat = false;
+		settings.fmr_filter.temp = true;
+		settings.fmr_filter.tempsc = 3;
+		
+		% settings for QA
 		settings.fmr_quality.outlier_detection_method = 'ne_fmriquality_TC_Quality2_method'; % NeuroElf 'ne_fmriquality_method' | 'ne_fmriquality_TC_Quality2_method' | 'ne_framewise_disp' | 'ne_fmriquality_TC_custom_method'
-            % settings for method 'ne_fmriquality_TC_Quality2_method'
-                settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold = []; % absolute outlier detection threshold for ne_fmriquality_TC_Quality2_method
-                settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nsd = []; % number of standard deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
-                settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nMAD = [];%2.5; % number of median absolute deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
-                                                                                      % see Leys et al. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. Journal of Experimental Social Psychology, 49(4), 764–766.
-                settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_prct = 1.5; % number of interquartile ranges added/subtracted to/from 75%/25% percentile of target signal to define upper and lower threshold
-                                                                                      % see http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSLMotionOutliers 
-                settings.fmr_quality.ne_fmriquality_TC_Quality2_n_smooth = 5; % n volumes for smoothing quality timecourse
-                settings.fmr_quality.reject_volumes_before_after_outlier = [0 0]; % volumes to exclude before and after outlier volumes
-            % settings for NeuroElf method 'ne_fmriquality_method' 
-                %settings.fmr_quality.outlier_detection_threshold = 1; % outlier detection threshold for ne_method (nr of criteria, default: 3) 
-                %settings.fmr_quality.n_sd = [6 5 5 5 4]; % number of SD for each criterion (default: [6 5 5 5 4]), see ne_fmriquality and http://neuroelf.net/wiki/doku.php?id=fmriquality
-            % settings for method 'ne_framewise_disp'
-                %settings.fmr_quality.reject_volumes_before_after_outlier = [1 1];
-                %settings.fmr_quality.fd_cutoff;
-                %settings.fmr_quality.fd_radius;             
-            % settings for custom QA method
-                %settings.fmr_quality.ne_fmriquality_TC_custom_method_function_handle = @lll;                  
+		% settings for method 'ne_fmriquality_TC_Quality2_method'
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold = []; % absolute outlier detection threshold for ne_fmriquality_TC_Quality2_method
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nsd = []; % number of standard deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nMAD = [];%2.5; % number of median absolute deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
+		% see Leys et al. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. Journal of Experimental Social Psychology, 49(4), 764–766.
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_prct = 1.5; % number of interquartile ranges added/subtracted to/from 75%/25% percentile of target signal to define upper and lower threshold
+		% see http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSLMotionOutliers
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_n_smooth = 5; % n volumes for smoothing quality timecourse
+		settings.fmr_quality.reject_volumes_before_after_outlier = [0 0]; % volumes to exclude before and after outlier volumes
+		% settings for NeuroElf method 'ne_fmriquality_method'
+		%settings.fmr_quality.outlier_detection_threshold = 1; % outlier detection threshold for ne_method (nr of criteria, default: 3)
+		%settings.fmr_quality.n_sd = [6 5 5 5 4]; % number of SD for each criterion (default: [6 5 5 5 4]), see ne_fmriquality and http://neuroelf.net/wiki/doku.php?id=fmriquality
+		% settings for method 'ne_framewise_disp'
+		%settings.fmr_quality.reject_volumes_before_after_outlier = [1 1];
+		%settings.fmr_quality.fd_cutoff;
+		%settings.fmr_quality.fd_radius;
+		% settings for custom QA method
+		%settings.fmr_quality.ne_fmriquality_TC_custom_method_function_handle = @lll;
 		settings.fmr_quality.avg_exclude_before_after_outlier = [100 100]; % ms, time to exclude from avg before / after outlier
-        
-        % settings for converting behavioral files to BV *.prt
-        settings.prt.beh2prt_function_handle = @mat2prt_fixmemstim;%@mat2prt_fixmemstim; %mat2prt_ind; % @mat2prt_es_analysis
-        settings.model = ''; % name of the model; if left empty (''), name of settings.prt.beh2prt_function_handle will be used
-        
-        % settings for converting prt to sdm
-        settings.sdm.nvol = 450;
-        settings.sdm.prtr = settings.fmr_create.TR;
-        settings.sdm.hpttp = 3;
-        settings.sdm.hnttp = 10;
-        settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
-        
-        % PPI settings
-%         settings.sdm.ppicond = [];
-%         % settings.sdm.ppicond = {'fixation','fixation microstim', 'memory right','memory right microstim', 'memory left', 'memory left microstim'};
-%         settings.sdm.ppivoi = 'D:\MRI\Curius\combined\microstim_20140409-20140528_5_3_100uA\microstim_20140122-20140226_5_3_250uA_nobaseline_TAL_SfN2014.voi';
-%         settings.sdm.ppivoiidx = 1;
-        
-        % VTC settings, VTC creation does not work for monkey data
-        % settings.vtc_create.res		= 2;		% resolution 1 / 2 / 3
+		
+		% settings for converting behavioral files to BV *.prt
+		settings.prt.beh2prt_function_handle = @mat2prt_fixmemstim;%@mat2prt_fixmemstim; %mat2prt_ind; % @mat2prt_es_analysis
+		settings.model = ''; % name of the model; if left empty (''), name of settings.prt.beh2prt_function_handle will be used
+		
+		% settings for converting prt to sdm
+		settings.sdm.nvol = 450;
+		settings.sdm.prtr = settings.fmr_create.TR;
+		settings.sdm.hpttp = 3;
+		settings.sdm.hnttp = 10;
+		settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
+		
+		% PPI settings
+		%         settings.sdm.ppicond = [];
+		%         % settings.sdm.ppicond = {'fixation','fixation microstim', 'memory right','memory right microstim', 'memory left', 'memory left microstim'};
+		%         settings.sdm.ppivoi = 'D:\MRI\Curius\combined\microstim_20140409-20140528_5_3_100uA\microstim_20140122-20140226_5_3_250uA_nobaseline_TAL_SfN2014.voi';
+		%         settings.sdm.ppivoiidx = 1;
+		
+		% VTC settings, VTC creation does not work for monkey data
+		% settings.vtc_create.res		= 2;		% resolution 1 / 2 / 3
 		% settings.vtc_create.meth	= 'linear';	% interpolation: 'cubic', 'lanczos3', {'linear'}, 'nearest'
 		% settings.vtc_create.space	= 'acpc';	% 'native' (monkeys) | 'acpc' | 'tal'
 		% settings.vtc_create.bbox	= [70 55 70; 190 225 166];		% [xstart ystart zstart; xend yend zend]; % 2x3 bounding box (optional, default: small TAL box)
-		% settings.vtc_create.dt		= 2;		% datatype override (default: uint16, FV 2)       
-        settings.vtc_filter.spkern	= [3 3 3];
-        
-        % settings for multi-study GLM computation
-        settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
-        settings.mdm.zTransformation = 0; % apply z-transformation to volume time courses
-        settings.mdm.PSCTransformation = 1; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
-        settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
-        settings.mdm.mask = 'D:\MRI\Curius\mask.msk';
-        
-    case 'Curius_microstim_restingstate_20140304-now'
-        
-        settings.Species = 'monkey'; % either 'human' or 'monkey'
-        
-        % settings for create fmr
-        settings.fmr_create.NrOfSkippedVolumes = 4;
-        settings.fmr_create.TR			= 2000;
-        settings.fmr_create.InterSliceTime 	= 66.7; % TR/n_slices, here 30 slices
-        settings.fmr_create.ResolutionX	= 80;  % series info Mosaic rows
-        settings.fmr_create.ResolutionY	= 80;
-        settings.fmr_create.InplaneResolutionX	= 1.2;
-        settings.fmr_create.InplaneResolutionY	= 1.2;
-        settings.fmr_create.SliceThickness	= 1.2;
-        settings.fmr_create.SliceGap		= 0;
-        settings.fmr_create.VoxelResolutionVerified = 1;
-        settings.fmr_create.GapThickness	= 0;
-        settings.fmr_create.TimeResolutionVerified = 1;
-        settings.fmr_create.SliceAcquisitionOrder = 5;
-        settings.fmr_create.SliceAcquisitionOrderVerified = 1;
-        
-        % settings for slice-timing correction of fmr
-        settings.fmr_slicetiming.order = 'aint2';
-        
-        % settings for motion correction of fmr
-        settings.fmr_realign.totarget = 1;
-        settings.fmr_realign.rtplot = 1;
-        
-        % settings for spatial and temporal filtering of fmr
-        settings.fmr_filter.spat = false;
-        settings.fmr_filter.temp = true;
-        settings.fmr_filter.tempsc = 3;
-        
-        % settings for converting behavioral files to BV *.prt
-        settings.prt.beh2prt_function_handle = @mat2prt_fixstim_rest; %@mat2prt_fixstim_rest; %@mat2prt_fixstim_noabort_rest; % old_prt: @mat2prt_fix_stim;
-        settings.model = '';
-        
-        % settings for converting prt to sdm
-        settings.sdm.nvol = 450;
-        settings.sdm.prtr = settings.fmr_create.TR;
-        settings.sdm.hpttp = 3;
-        settings.sdm.hnttp = 10;
-        settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
-        
-        % VTC settings, VTC creation does not work for monkey data
-        settings.vtc_filter.spkern	= [3 3 3];
-        
-        % settings for multi-study GLM computation
-        settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
-        settings.mdm.zTransformation = 1; % apply z-transformation to volume time courses
-        settings.mdm.PSCTransformation = 0; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
-        settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
-        settings.mdm.mask = 'D:\MRI\Curius\mask.msk';
-        
-    case 'Curius_fixmemory_baseline_20131129-now'
-        
-        settings.Species = 'monkey'; % either 'human' or 'monkey'
-        
-        % settings for create fmr
-        settings.fmr_create.NrOfSkippedVolumes = 4;
-        settings.fmr_create.TR			= 2000;
-        settings.fmr_create.InterSliceTime 	= 66.7; % TR/n_slices, here 30 slices
-        settings.fmr_create.ResolutionX	= 80;  % series info Mosaic rows
-        settings.fmr_create.ResolutionY	= 80;
-        settings.fmr_create.InplaneResolutionX	= 1.2;
-        settings.fmr_create.InplaneResolutionY	= 1.2;
-        settings.fmr_create.SliceThickness	= 1.2;
-        settings.fmr_create.SliceGap		= 0;
-        settings.fmr_create.VoxelResolutionVerified = 1;
-        settings.fmr_create.GapThickness	= 0;
-        settings.fmr_create.TimeResolutionVerified = 1;
-        settings.fmr_create.SliceAcquisitionOrder = 5;
-        settings.fmr_create.SliceAcquisitionOrderVerified = 1;
-        
-        % settings for slice-timing correction of fmr
-        settings.fmr_slicetiming.order = 'aint2';
-        
-        % settings for motion correction of fmr
-        settings.fmr_realign.totarget = 1;
-        settings.fmr_realign.rtplot = 1;
-        
-        % settings for spatial and temporal filtering of fmr
-        settings.fmr_filter.spat = false;
-        settings.fmr_filter.temp = true;
-        settings.fmr_filter.tempsc = 3; % cycles; "a cycle means that one sine wave (from 0 to 360 degrees or 0 to 2PI) is spread across the number of time points of the fMRI data,
-                                        % a cycle of 2 means that two sine waves fall within the extent of the data" (http://www.brainvoyager.com/bvqx/doc/UsersGuide/Preprocessing/TemporalHighPassFiltering.html)
-        
-        % settings for converting behavioral files to BV *.prt
-        settings.prt.beh2prt_function_handle = @mat2prt_fixmem;
-        
-        % settings for converting prt to sdm
-        settings.sdm.nvol = 450;
-        settings.sdm.prtr = settings.fmr_create.TR;
-        settings.sdm.hpttp = 3;
-        settings.sdm.hnttp = 10;
-        settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation) 
-        
-        % settings for multi-study GLM computation
-        settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
-        settings.mdm.zTransformation = 1; % apply z-transformation to volume time courses
-        settings.mdm.PSCTransformation = 0; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
-        settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
-        settings.mdm.mask = 'D:\MRI\Curius\mask.msk';
-        
-%% Bacchus        
-    case 'Bacchus_fixmemory_baseline_20161111-now' 
-        
-        settings.Species = 'monkey'; % either 'human' or 'monkey'
-        
-        % settings for create fmr
-        settings.fmr_create.NrOfSkippedVolumes = 4;
-        settings.fmr_create.TR			= 2000;
-        settings.fmr_create.InterSliceTime 	= 61.8; % TR/n_slices, here 32 slices, here taken from SeriesInfo Slice duration
-        settings.fmr_create.ResolutionX	= 80;  % series info Mosaic rows
-        settings.fmr_create.ResolutionY	= 80;
-        settings.fmr_create.InplaneResolutionX	= 1.2;
-        settings.fmr_create.InplaneResolutionY	= 1.2;
-        settings.fmr_create.SliceThickness	= 1.2;
-        settings.fmr_create.SliceGap		= 0;
-        settings.fmr_create.VoxelResolutionVerified = 1;
-        settings.fmr_create.GapThickness	= 0;
-        settings.fmr_create.TimeResolutionVerified = 1;
-        settings.fmr_create.SliceAcquisitionOrder = 5;
-        settings.fmr_create.SliceAcquisitionOrderVerified = 1;
-        
-        % settings for slice-timing correction of fmr
-        settings.fmr_slicetiming.order = 'aint2';
-        
-        % settings for motion correction of fmr
-        settings.fmr_realign.totarget = 1;
-        settings.fmr_realign.rtplot = 1;
-        
-        % settings for spatial and temporal filtering of fmr
-        settings.fmr_filter.spat = false;
-        settings.fmr_filter.temp = true;
-        settings.fmr_filter.tempsc = 3; % cycles; "a cycle means that one sine wave (from 0 to 360 degrees or 0 to 2PI) is spread across the number of time points of the fMRI data,
-                                        % a cycle of 2 means that two sine waves fall within the extent of the data" (http://www.brainvoyager.com/bvqx/doc/UsersGuide/Preprocessing/TemporalHighPassFiltering.html)
-        
-        % settings for converting behavioral files to BV *.prt
-        settings.prt.beh2prt_function_handle = @BA_mat2prt_fixmem;
-        settings.model = '';
-        
-        % settings for converting prt to sdm
-        settings.sdm.nvol = 450;
-        settings.sdm.prtr = settings.fmr_create.TR;
-        settings.sdm.hpttp = 3;
-        settings.sdm.hnttp = 10;
-        settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation) 
-        
-        % VTC settings, VTC creation does not work for monkey data
-        settings.vtc_filter.spkern	= [3 3 3];
-        
-        % settings for multi-study GLM computation
-        settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
-        settings.mdm.zTransformation = 1; % apply z-transformation to volume time courses
-        settings.mdm.PSCTransformation = 0; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
-        settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
-        settings.mdm.mask = 'D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk'; %'D:\MRI\Bacchus\BA_brain_mask.msk'; % D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk';
-        
-    case 'Bacchus_microstim_20170201-now'
-        
-        settings.Species = 'monkey'; % either 'human' or 'monkey'
-        
-        % settings for create fmr
-        settings.fmr_create.NrOfSkippedVolumes = 4;
-        settings.fmr_create.TR			= 2000;
-        settings.fmr_create.InterSliceTime 	= 61.8; % TR/n_slices, here 32 slices
-        settings.fmr_create.ResolutionX	= 80;  % series info Mosaic rows
-        settings.fmr_create.ResolutionY	= 80;
-        settings.fmr_create.InplaneResolutionX	= 1.2;
-        settings.fmr_create.InplaneResolutionY	= 1.2;
-        settings.fmr_create.SliceThickness	= 1.2;
-        settings.fmr_create.SliceGap		= 0;
-        settings.fmr_create.VoxelResolutionVerified = 1;
-        settings.fmr_create.GapThickness	= 0;
-        settings.fmr_create.TimeResolutionVerified = 1;
-        settings.fmr_create.SliceAcquisitionOrder = 5;
-        settings.fmr_create.SliceAcquisitionOrderVerified = 1;
-        
-        % settings for slice-timing correction of fmr
-        settings.fmr_slicetiming.order = 'aint2';
-        
-        % settings for motion correction of fmr
-        settings.fmr_realign.totarget = 1;
-        settings.fmr_realign.rtplot = 1;
-        
-        % settings for spatial and temporal filtering of fmr
-        settings.fmr_filter.spat = false;
-        settings.fmr_filter.temp = true;
-        settings.fmr_filter.tempsc = 3; % cycles; "a cycle means that one sine wave (from 0 to 360 degrees or 0 to 2PI) is spread across the number of time points of the fMRI data,
-                                        % a cycle of 2 means that two sine waves fall within the extent of the data" (http://www.brainvoyager.com/bvqx/doc/UsersGuide/Preprocessing/TemporalHighPassFiltering.html)
-        
-        % settings for QA
+		% settings.vtc_create.dt		= 2;		% datatype override (default: uint16, FV 2)
+		settings.vtc_filter.spkern	= [3 3 3];
+		
+		% settings for multi-study GLM computation
+		settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
+		settings.mdm.zTransformation = 0; % apply z-transformation to volume time courses
+		settings.mdm.PSCTransformation = 1; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
+		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
+		settings.mdm.mask = 'D:\MRI\Curius\mask.msk';
+		
+	case 'Curius_microstim_restingstate_20140304-now'
+		
+		settings.Species = 'monkey'; % either 'human' or 'monkey'
+		
+		% settings for create fmr
+		settings.fmr_create.NrOfSkippedVolumes = 4;
+		settings.fmr_create.TR			= 2000;
+		settings.fmr_create.InterSliceTime 	= 66.7; % TR/n_slices, here 30 slices
+		settings.fmr_create.ResolutionX	= 80;  % series info Mosaic rows
+		settings.fmr_create.ResolutionY	= 80;
+		settings.fmr_create.InplaneResolutionX	= 1.2;
+		settings.fmr_create.InplaneResolutionY	= 1.2;
+		settings.fmr_create.SliceThickness	= 1.2;
+		settings.fmr_create.SliceGap		= 0;
+		settings.fmr_create.VoxelResolutionVerified = 1;
+		settings.fmr_create.GapThickness	= 0;
+		settings.fmr_create.TimeResolutionVerified = 1;
+		settings.fmr_create.SliceAcquisitionOrder = 5;
+		settings.fmr_create.SliceAcquisitionOrderVerified = 1;
+		
+		% settings for slice-timing correction of fmr
+		settings.fmr_slicetiming.order = 'aint2';
+		
+		% settings for motion correction of fmr
+		settings.fmr_realign.totarget = 1;
+		settings.fmr_realign.rtplot = 1;
+		
+		% settings for spatial and temporal filtering of fmr
+		settings.fmr_filter.spat = false;
+		settings.fmr_filter.temp = true;
+		settings.fmr_filter.tempsc = 3;
+		
+		% settings for converting behavioral files to BV *.prt
+		settings.prt.beh2prt_function_handle = @mat2prt_fixstim_rest; %@mat2prt_fixstim_rest; %@mat2prt_fixstim_noabort_rest; % old_prt: @mat2prt_fix_stim;
+		settings.model = '';
+		
+		% settings for converting prt to sdm
+		settings.sdm.nvol = 450;
+		settings.sdm.prtr = settings.fmr_create.TR;
+		settings.sdm.hpttp = 3;
+		settings.sdm.hnttp = 10;
+		settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
+		
+		% VTC settings, VTC creation does not work for monkey data
+		settings.vtc_filter.spkern	= [3 3 3];
+		
+		% settings for multi-study GLM computation
+		settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
+		settings.mdm.zTransformation = 1; % apply z-transformation to volume time courses
+		settings.mdm.PSCTransformation = 0; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
+		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
+		settings.mdm.mask = 'D:\MRI\Curius\mask.msk';
+		
+	case 'Curius_fixmemory_baseline_20131129-now'
+		
+		settings.Species = 'monkey'; % either 'human' or 'monkey'
+		
+		% settings for create fmr
+		settings.fmr_create.NrOfSkippedVolumes = 4;
+		settings.fmr_create.TR			= 2000;
+		settings.fmr_create.InterSliceTime 	= 66.7; % TR/n_slices, here 30 slices
+		settings.fmr_create.ResolutionX	= 80;  % series info Mosaic rows
+		settings.fmr_create.ResolutionY	= 80;
+		settings.fmr_create.InplaneResolutionX	= 1.2;
+		settings.fmr_create.InplaneResolutionY	= 1.2;
+		settings.fmr_create.SliceThickness	= 1.2;
+		settings.fmr_create.SliceGap		= 0;
+		settings.fmr_create.VoxelResolutionVerified = 1;
+		settings.fmr_create.GapThickness	= 0;
+		settings.fmr_create.TimeResolutionVerified = 1;
+		settings.fmr_create.SliceAcquisitionOrder = 5;
+		settings.fmr_create.SliceAcquisitionOrderVerified = 1;
+		
+		% settings for slice-timing correction of fmr
+		settings.fmr_slicetiming.order = 'aint2';
+		
+		% settings for motion correction of fmr
+		settings.fmr_realign.totarget = 1;
+		settings.fmr_realign.rtplot = 1;
+		
+		% settings for spatial and temporal filtering of fmr
+		settings.fmr_filter.spat = false;
+		settings.fmr_filter.temp = true;
+		settings.fmr_filter.tempsc = 3; % cycles; "a cycle means that one sine wave (from 0 to 360 degrees or 0 to 2PI) is spread across the number of time points of the fMRI data,
+		% a cycle of 2 means that two sine waves fall within the extent of the data" (http://www.brainvoyager.com/bvqx/doc/UsersGuide/Preprocessing/TemporalHighPassFiltering.html)
+		
+		% settings for converting behavioral files to BV *.prt
+		settings.prt.beh2prt_function_handle = @mat2prt_fixmem;
+		
+		% settings for converting prt to sdm
+		settings.sdm.nvol = 450;
+		settings.sdm.prtr = settings.fmr_create.TR;
+		settings.sdm.hpttp = 3;
+		settings.sdm.hnttp = 10;
+		settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
+		
+		% settings for multi-study GLM computation
+		settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
+		settings.mdm.zTransformation = 1; % apply z-transformation to volume time courses
+		settings.mdm.PSCTransformation = 0; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
+		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
+		settings.mdm.mask = 'D:\MRI\Curius\mask.msk';
+		
+		%% Bacchus
+	case 'Bacchus_fixmemory_baseline_20161111-now'
+		
+		settings.Species = 'monkey'; % either 'human' or 'monkey'
+		
+		% settings for create fmr
+		settings.fmr_create.NrOfSkippedVolumes = 4;
+		settings.fmr_create.TR			= 2000;
+		settings.fmr_create.InterSliceTime 	= 61.8; % TR/n_slices, here 32 slices, here taken from SeriesInfo Slice duration
+		settings.fmr_create.ResolutionX	= 80;  % series info Mosaic rows
+		settings.fmr_create.ResolutionY	= 80;
+		settings.fmr_create.InplaneResolutionX	= 1.2;
+		settings.fmr_create.InplaneResolutionY	= 1.2;
+		settings.fmr_create.SliceThickness	= 1.2;
+		settings.fmr_create.SliceGap		= 0;
+		settings.fmr_create.VoxelResolutionVerified = 1;
+		settings.fmr_create.GapThickness	= 0;
+		settings.fmr_create.TimeResolutionVerified = 1;
+		settings.fmr_create.SliceAcquisitionOrder = 5;
+		settings.fmr_create.SliceAcquisitionOrderVerified = 1;
+		
+		% settings for slice-timing correction of fmr
+		settings.fmr_slicetiming.order = 'aint2';
+		
+		% settings for motion correction of fmr
+		settings.fmr_realign.totarget = 1;
+		settings.fmr_realign.rtplot = 1;
+		
+		% settings for spatial and temporal filtering of fmr
+		settings.fmr_filter.spat = false;
+		settings.fmr_filter.temp = true;
+		settings.fmr_filter.tempsc = 3; % cycles; "a cycle means that one sine wave (from 0 to 360 degrees or 0 to 2PI) is spread across the number of time points of the fMRI data,
+		% a cycle of 2 means that two sine waves fall within the extent of the data" (http://www.brainvoyager.com/bvqx/doc/UsersGuide/Preprocessing/TemporalHighPassFiltering.html)
+		
+		% settings for converting behavioral files to BV *.prt
+		settings.prt.beh2prt_function_handle = @BA_mat2prt_fixmem;
+		settings.model = '';
+		
+		% settings for converting prt to sdm
+		settings.sdm.nvol = 450;
+		settings.sdm.prtr = settings.fmr_create.TR;
+		settings.sdm.hpttp = 3;
+		settings.sdm.hnttp = 10;
+		settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
+		
+		% VTC settings, VTC creation does not work for monkey data
+		settings.vtc_filter.spkern	= [3 3 3];
+		
+		% settings for multi-study GLM computation
+		settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
+		settings.mdm.zTransformation = 1; % apply z-transformation to volume time courses
+		settings.mdm.PSCTransformation = 0; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
+		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
+		settings.mdm.mask = 'D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk'; %'D:\MRI\Bacchus\BA_brain_mask.msk'; % D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk';
+		
+	case 'Bacchus_microstim_20170201-now'
+		
+		settings.Species = 'monkey'; % either 'human' or 'monkey'
+		
+		% settings for create fmr
+		settings.fmr_create.NrOfSkippedVolumes = 4;
+		settings.fmr_create.TR			= 2000;
+		settings.fmr_create.InterSliceTime 	= 61.8; % TR/n_slices, here 32 slices
+		settings.fmr_create.ResolutionX	= 80;  % series info Mosaic rows
+		settings.fmr_create.ResolutionY	= 80;
+		settings.fmr_create.InplaneResolutionX	= 1.2;
+		settings.fmr_create.InplaneResolutionY	= 1.2;
+		settings.fmr_create.SliceThickness	= 1.2;
+		settings.fmr_create.SliceGap		= 0;
+		settings.fmr_create.VoxelResolutionVerified = 1;
+		settings.fmr_create.GapThickness	= 0;
+		settings.fmr_create.TimeResolutionVerified = 1;
+		settings.fmr_create.SliceAcquisitionOrder = 5;
+		settings.fmr_create.SliceAcquisitionOrderVerified = 1;
+		
+		% settings for slice-timing correction of fmr
+		settings.fmr_slicetiming.order = 'aint2';
+		
+		% settings for motion correction of fmr
+		settings.fmr_realign.totarget = 1;
+		settings.fmr_realign.rtplot = 1;
+		
+		% settings for spatial and temporal filtering of fmr
+		settings.fmr_filter.spat = false;
+		settings.fmr_filter.temp = true;
+		settings.fmr_filter.tempsc = 3; % cycles; "a cycle means that one sine wave (from 0 to 360 degrees or 0 to 2PI) is spread across the number of time points of the fMRI data,
+		% a cycle of 2 means that two sine waves fall within the extent of the data" (http://www.brainvoyager.com/bvqx/doc/UsersGuide/Preprocessing/TemporalHighPassFiltering.html)
+		
+		% settings for QA
 		settings.fmr_quality.outlier_detection_method = 'ne_fmriquality_TC_Quality2_method'; % NeuroElf 'ne_fmriquality_method' | 'ne_fmriquality_TC_Quality2_method' | 'ne_framewise_disp' | 'ne_fmriquality_TC_custom_method'
-            % settings for method 'ne_fmriquality_TC_Quality2_method'
-                settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold = []; % absolute outlier detection threshold for ne_fmriquality_TC_Quality2_method
-                settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nsd = []; % number of standard deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
-                settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nMAD = [];%2.5; % number of median absolute deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
-                                                                                      % see Leys et al. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. Journal of Experimental Social Psychology, 49(4), 764–766.
-                settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_prct = 1.5; % number of interquartile ranges added/subtracted to/from 75%/25% percentile of target signal to define upper and lower threshold
-                                                                                      % see http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSLMotionOutliers 
-                settings.fmr_quality.ne_fmriquality_TC_Quality2_n_smooth = 5; % n volumes for smoothing quality timecourse
-                settings.fmr_quality.reject_volumes_before_after_outlier = [0 0]; % volumes to exclude before and after outlier volumes
-            % settings for NeuroElf method 'ne_fmriquality_method' 
-                %settings.fmr_quality.outlier_detection_threshold = 1; % outlier detection threshold for ne_method (nr of criteria, default: 3) 
-                %settings.fmr_quality.n_sd = [6 5 5 5 4]; % number of SD for each criterion (default: [6 5 5 5 4]), see ne_fmriquality and http://neuroelf.net/wiki/doku.php?id=fmriquality
-            % settings for method 'ne_framewise_disp'
-                %settings.fmr_quality.reject_volumes_before_after_outlier = [1 1];
-                %settings.fmr_quality.fd_cutoff;
-                %settings.fmr_quality.fd_radius;             
-            % settings for custom QA method
-                %settings.fmr_quality.ne_fmriquality_TC_custom_method_function_handle = @lll;                  
+		% settings for method 'ne_fmriquality_TC_Quality2_method'
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold = []; % absolute outlier detection threshold for ne_fmriquality_TC_Quality2_method
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nsd = []; % number of standard deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nMAD = [];%2.5; % number of median absolute deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
+		% see Leys et al. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. Journal of Experimental Social Psychology, 49(4), 764–766.
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_prct = 1.5; % number of interquartile ranges added/subtracted to/from 75%/25% percentile of target signal to define upper and lower threshold
+		% see http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSLMotionOutliers
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_n_smooth = 5; % n volumes for smoothing quality timecourse
+		settings.fmr_quality.reject_volumes_before_after_outlier = [0 0]; % volumes to exclude before and after outlier volumes
+		% settings for NeuroElf method 'ne_fmriquality_method'
+		%settings.fmr_quality.outlier_detection_threshold = 1; % outlier detection threshold for ne_method (nr of criteria, default: 3)
+		%settings.fmr_quality.n_sd = [6 5 5 5 4]; % number of SD for each criterion (default: [6 5 5 5 4]), see ne_fmriquality and http://neuroelf.net/wiki/doku.php?id=fmriquality
+		% settings for method 'ne_framewise_disp'
+		%settings.fmr_quality.reject_volumes_before_after_outlier = [1 1];
+		%settings.fmr_quality.fd_cutoff;
+		%settings.fmr_quality.fd_radius;
+		% settings for custom QA method
+		%settings.fmr_quality.ne_fmriquality_TC_custom_method_function_handle = @lll;
 		settings.fmr_quality.avg_exclude_before_after_outlier = [100 100]; % ms, time to exclude from avg before / after outlier
-        
-        % settings for converting behavioral files to BV *.prt
-        settings.prt.beh2prt_function_handle = @BA_mat2prt_fixmemstim;%@mat2prt_fixmemstim; %mat2prt_ind; % @mat2prt_es_analysis
-        settings.model = ''; % name of the model; if left empty (''), name of settings.prt.beh2prt_function_handle will be used
-        
-        % settings for converting prt to sdm
-        settings.sdm.nvol = 450;
-        settings.sdm.prtr = settings.fmr_create.TR;
-        settings.sdm.hpttp = 3;
-        settings.sdm.hnttp = 10;
-        settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
-        
-        % PPI settings
-%         settings.sdm.ppicond = [];
-%         % settings.sdm.ppicond = {'fixation','fixation microstim', 'memory right','memory right microstim', 'memory left', 'memory left microstim'};
-%         settings.sdm.ppivoi = 'D:\MRI\Curius\combined\microstim_20140409-20140528_5_3_100uA\microstim_20140122-20140226_5_3_250uA_nobaseline_TAL_SfN2014.voi';
-%         settings.sdm.ppivoiidx = 1;
-        
-        % VTC settings, VTC creation does not work for monkey data
-        % settings.vtc_create.res		= 2;		% resolution 1 / 2 / 3
+		
+		% settings for converting behavioral files to BV *.prt
+		settings.prt.beh2prt_function_handle = @BA_mat2prt_fixmemstim;%@mat2prt_fixmemstim; %mat2prt_ind; % @mat2prt_es_analysis
+		settings.model = ''; % name of the model; if left empty (''), name of settings.prt.beh2prt_function_handle will be used
+		
+		% settings for converting prt to sdm
+		settings.sdm.nvol = 450;
+		settings.sdm.prtr = settings.fmr_create.TR;
+		settings.sdm.hpttp = 3;
+		settings.sdm.hnttp = 10;
+		settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
+		
+		% PPI settings
+		%         settings.sdm.ppicond = [];
+		%         % settings.sdm.ppicond = {'fixation','fixation microstim', 'memory right','memory right microstim', 'memory left', 'memory left microstim'};
+		%         settings.sdm.ppivoi = 'D:\MRI\Curius\combined\microstim_20140409-20140528_5_3_100uA\microstim_20140122-20140226_5_3_250uA_nobaseline_TAL_SfN2014.voi';
+		%         settings.sdm.ppivoiidx = 1;
+		
+		% VTC settings, VTC creation does not work for monkey data
+		% settings.vtc_create.res		= 2;		% resolution 1 / 2 / 3
 		% settings.vtc_create.meth	= 'linear';	% interpolation: 'cubic', 'lanczos3', {'linear'}, 'nearest'
 		% settings.vtc_create.space	= 'acpc';	% 'native' (monkeys) | 'acpc' | 'tal'
 		% settings.vtc_create.bbox	= [70 55 70; 190 225 166];		% [xstart ystart zstart; xend yend zend]; % 2x3 bounding box (optional, default: small TAL box)
-		% settings.vtc_create.dt		= 2;		% datatype override (default: uint16, FV 2)       
-        settings.vtc_filter.spkern	= [3 3 3];
-        
-        % settings for multi-study GLM computation
-        settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
-        settings.mdm.zTransformation = 0; % apply z-transformation to volume time courses
-        settings.mdm.PSCTransformation = 1; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
-        settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
-        settings.mdm.mask = 'D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk';
-        
+		% settings.vtc_create.dt		= 2;		% datatype override (default: uint16, FV 2)
+		settings.vtc_filter.spkern	= [3 3 3];
+		
+		% settings for multi-study GLM computation
+		settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
+		settings.mdm.zTransformation = 0; % apply z-transformation to volume time courses
+		settings.mdm.PSCTransformation = 1; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
+		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
+		settings.mdm.mask = 'D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk';
+		
 end
