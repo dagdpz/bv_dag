@@ -28,7 +28,7 @@ function fmr = ne_createfmr(imafiles, flags, species)
 
 % Copyright (c) 2010, 2011, Jochen Weber
 % All rights reserved.
-% 
+%
 % Redistribution and use in source and binary forms, with or without
 % modification, are permitted provided that the following conditions are met:
 %     * Redistributions of source code must retain the above copyright
@@ -39,7 +39,7 @@ function fmr = ne_createfmr(imafiles, flags, species)
 %     * Neither the name of Columbia University nor the
 %       names of its contributors may be used to endorse or promote products
 %       derived from this software without specific prior written permission.
-% 
+%
 % THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 % ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 % WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -53,12 +53,12 @@ function fmr = ne_createfmr(imafiles, flags, species)
 
 % argument check
 if nargin < 1 || ...
-   (~ischar(imafiles) && ...
-    ~iscell(imafiles))
+        (~ischar(imafiles) && ...
+        ~iscell(imafiles))
     error( ...
         'neuroelf:BadArguments', ...
         'Bad or missing argument.' ...
-    );
+        );
 end
 if ischar(imafiles)
     imafiles = cellstr(imafiles);
@@ -67,54 +67,54 @@ if numel(imafiles{1}) < 5
     error( ...
         'neuroelf:BadArguments', ...
         'Bad or missing argument.' ...
-    );
+        );
 end
 if nargin < 2 || ...
-    numel(flags) ~= 1 || ...
-   ~isstruct(flags)
+        numel(flags) ~= 1 || ...
+        ~isstruct(flags)
     flags = struct;
 end
 if ~isfield(flags, 'fileorder') || ...
-   ~ischar(flags.fileorder) || ...
-    isempty(flags.fileorder) || ...
-    lower(flags.fileorder(1)) ~= 't'
+        ~ischar(flags.fileorder) || ...
+        isempty(flags.fileorder) || ...
+        lower(flags.fileorder(1)) ~= 't'
     forderz = true;
 else
     forderz = false;
 end
 if ~isfield(flags, 'flip') || ...
-    isempty(flags.flip) || ...
-   ~ischar(flags.flip)
+        isempty(flags.flip) || ...
+        ~ischar(flags.flip)
     flip = '';
 else
     flip = lower(flags.flip(:)');
 end
 if ~isfield(flags, 'mosaic') || ...
-   ~islogical(flags.mosaic) || ...
-    numel(flags.mosaic) ~= 1
+        ~islogical(flags.mosaic) || ...
+        numel(flags.mosaic) ~= 1
     flags.mosaic = false;
 end
 if ~isfield(flags, 'mosdimord') || ...
-   ~isa(flags.mosdimord, 'double') || ...
-    numel(flags.mosdimord) ~= 2 || ...
-   (~all(flags.mosdimord(:) == [1; 2]) && ...
-    ~all(flags.mosdimord(:) == [2; 1]))
+        ~isa(flags.mosdimord, 'double') || ...
+        numel(flags.mosdimord) ~= 2 || ...
+        (~all(flags.mosdimord(:) == [1; 2]) && ...
+        ~all(flags.mosdimord(:) == [2; 1]))
     flags.mosdimord = [1, 2];
 else
     flags.mosdimord = flags.mosdimord(:)';
 end
 if ~isfield(flags, 'nslices') || ...
-   ~isa(flags.nslices, 'double') || ...
-    numel(flags.nslices) ~= 1 || ...
-    isinf(flags.nslices) || ...
-    isnan(flags.nslices) || ...
-    flags.nslices < 2
+        ~isa(flags.nslices, 'double') || ...
+        numel(flags.nslices) ~= 1 || ...
+        isinf(flags.nslices) || ...
+        isnan(flags.nslices) || ...
+        flags.nslices < 2
     flags.nslices = [];
 end
 if ~isfield(flags, 'xyres') || ...
-   ~isa(flags.xyres, 'double') || ...
-    numel(flags.xyres) ~= 2 || ...
-    any(isinf(flags.xyres) | isnan(flags.xyres) | flags.xyres < 16 | flags.xyres > 512)
+        ~isa(flags.xyres, 'double') || ...
+        numel(flags.xyres) ~= 2 || ...
+        any(isinf(flags.xyres) | isnan(flags.xyres) | flags.xyres < 16 | flags.xyres > 512)
     flags.xyres = [64, 64];
 else
     flags.xyres = round(flags.xyres(:))';
@@ -123,12 +123,12 @@ end
 % make sure files exist
 for sc = 1:numel(imafiles)
     if ~ischar(imafiles{sc}) || ...
-        exist(imafiles{sc}(:)', 'file') ~= 2
+            exist(imafiles{sc}(:)', 'file') ~= 2
         error( ...
             'neuroelf:FileNotFound', ...
             'File for slice %d not found.', ...
             sc ...
-        );
+            );
     end
     imafiles{sc} = imafiles{sc}(:)';
 end
@@ -187,7 +187,7 @@ if numel(imafiles) == 1
                     'neuroelf:FileNotFound', ...
                     'Required Analyze file not found: %s.', ...
                     afile ...
-                );
+                    );
             end
             
             % get coordinate frame
@@ -208,17 +208,17 @@ if numel(imafiles) == 1
                 iop(4, :) = -cross(iop(1, :), iop(2, :));
                 sl1c = aframe.Slice1Center;
                 slnc = aframe.SliceNCenter;
-
+                
             catch ne_eo;
                 clearxffobjects(cll);
                 error( ...
                     'neuroelf:ErrorReadingFile', ...
                     'Error reading specified Analyze file: %s.', ...
                     ne_eo.message ...
-                );
+                    );
             end
             
-        % PAR/REC
+            % PAR/REC
         case {'.par', '.rec'}
             try
                 
@@ -240,14 +240,14 @@ if numel(imafiles) == 1
                         0,  cos(rotV(1) * pi / 180), -sin(rotV(1) * pi / 180); ...
                         0,  sin(rotV(1) * pi / 180),  cos(rotV(1) * pi / 180)];
                     rotY = [ ...
-                         cos(rotV(2) * pi / 180), 0,  sin(rotV(2) * pi / 180); ...
+                        cos(rotV(2) * pi / 180), 0,  sin(rotV(2) * pi / 180); ...
                         0, 1, 0;  ...
                         -sin(rotV(2) * pi / 180), 0,  cos(rotV(2) * pi / 180)]; ...
-                    rotZ = [ ...
-                         cos(rotV(3) * pi / 180), -sin(rotV(3) * pi / 180), 0; ...
-                         sin(rotV(3) * pi / 180),  cos(rotV(3) * pi / 180), 0; ...
-                         0, 0, 1]; ...
-                    iop = (rotX * rotY * rotZ)';
+                        rotZ = [ ...
+                        cos(rotV(3) * pi / 180), -sin(rotV(3) * pi / 180), 0; ...
+                        sin(rotV(3) * pi / 180),  cos(rotV(3) * pi / 180), 0; ...
+                        0, 0, 1]; ...
+                        iop = (rotX * rotY * rotZ)';
                     iop(4, :) = -cross(iop(1, :), iop(2, :));
                     iop = iop ./ repmat(sqrt(sum(iop .* iop, 2)), [1, 3]);
                 catch ne_eo;
@@ -286,7 +286,7 @@ if numel(imafiles) == 1
                 
                 % initialize array size
                 vdt(DimX, DimY, DimZ, DimT) = vdt(1);
-
+                
                 % get data access struct
                 for tc = 1:DimT
                     slio = p.RECData.Dyn(tc).Slice;
@@ -299,15 +299,15 @@ if numel(imafiles) == 1
                     'neuroelf:ErrorReadingFile', ...
                     'Error reading specified PAR/REC file: %s.', ...
                     ne_eo.message ...
-                );
+                    );
             end
             
-        % unsupported
+            % unsupported
         otherwise
             error( ...
                 'neuroelf:BadArgument', ...
                 'Single file of this type not supported.' ...
-            );
+                );
     end
 else
     
@@ -335,7 +335,7 @@ else
                     'neuroelf:FileNotFound', ...
                     'Required Analyze file not found: %s.', ...
                     afile ...
-                );
+                    );
             end
             
             % get coordinate frame
@@ -357,14 +357,14 @@ else
                 iop(4, :) = -cross(iop(1, :), iop(2, :));
                 sl1c = aframe.Slice1Center;
                 slnc = aframe.SliceNCenter;
-
+                
             catch ne_eo;
                 clearxffobjects(cll);
                 error( ...
                     'neuroelf:ErrorReadingFile', ...
                     'Error reading specified Analyze file: %s.', ...
                     ne_eo.message ...
-                );
+                    );
             end
             
             % load further analyze files into vdt
@@ -386,7 +386,7 @@ else
                             'neuroelf:FileNotFound', ...
                             'Required Analyze file not found: %s.', ...
                             afile ...
-                        );
+                            );
                     end
                     cll{2} = xff(afile);
                     vdr = resolve(cll{2}.VoxelData);
@@ -394,7 +394,7 @@ else
                         error( ...
                             'neuroelf:SizeMismatch', ...
                             'Size of Analyze series image mismatch.' ...
-                        );
+                            );
                     end
                     vdt(:, :, :, ic) = vdr;
                     cll{2}.ClearObject;
@@ -406,13 +406,13 @@ else
             end
             
             
-        % DICOM / IMA
+            % DICOM / IMA
         case {'.dcm', '.ima'}
             try
                 
                 % assume number of files is number of time points
                 if isempty(flags.nslices) || ...
-                    flags.mosaic
+                        flags.mosaic
                     DimT = numel(imafiles);
                     DimZ = 1;
                 else
@@ -428,8 +428,8 @@ else
                 
                 % check files
                 if ~isxff(im1, 'dcm') || ...
-                   ~isxff(iml, 'dcm') || ...
-                    im1.DataLittleEndian ~= iml.DataLittleEndian
+                        ~isxff(iml, 'dcm') || ...
+                        im1.DataLittleEndian ~= iml.DataLittleEndian
                     error('BAD_FILES');
                 end
                 
@@ -438,7 +438,7 @@ else
                 DimX = im1.Value('Columns');
                 DimY = im1.Value('Rows');
                 if ischar(DimX) || ...
-                    ischar(DimY)
+                        ischar(DimY)
                     error('BAD_VALUES');
                 end
                 
@@ -446,21 +446,21 @@ else
                 DimS = DimX * DimY;
                 IInt = im1.PixelData;
                 if (~isa(IInt, 'uint16') && ...
-                    ~isa(IInt, 'uint8')) || ...
-                    numel(IInt) ~= DimS
+                        ~isa(IInt, 'uint8')) || ...
+                        numel(IInt) ~= DimS
                     error('WRONG_DIM_OR_TYPE');
                 end
                 
                 % patch for mosaic
                 mosxy = [1, 1];
                 if (DimX > flags.xyres(1) && ...
-                    DimY > flags.xyres(2)) || ...
-                    flags.mosaic
+                        DimY > flags.xyres(2)) || ...
+                        flags.mosaic
                     flags.mosaic = true;
                     mosxy = [DimX, DimY] ./ flags.xyres;
                     if all(mod(mosxy, 1) == 0) && ...
-                        mosxy(1) == mosxy(2) && ...
-                        DimZ <= prod(mosxy)
+                            mosxy(1) == mosxy(2) && ...
+                            DimZ <= prod(mosxy)
                         if DimZ > 1
                             DimT = DimT * DimZ;
                         else
@@ -485,9 +485,9 @@ else
                     end
                     pxs = im1.Value('PixelSpacing');
                     pxz = im1.Value('SliceThickness');
-		    
-
-		    
+                    
+                    
+                    
                 catch ne_eo;
                     neuroelf_lasterr(ne_eo);
                     iop = [0, 1, 0; 0, 0, -1];
@@ -499,9 +499,9 @@ else
                 % compute BrainVoyager QX settings
                 sl1c = ipp + pxs(1) * (DimX / 2) * iop(1, :) + pxs(2) * (DimY / 2) * iop(2, :);
                 slnc = ipl + pxs(1) * (DimX / 2) * iop(1, :) + pxs(2) * (DimY / 2) * iop(2, :);
-
-		
-		% identify scanner setup through dicom naming % LG (IK: need to check with new Prisma at UMG)
+                
+                
+                % identify scanner setup through dicom naming % LG (IK: need to check with new Prisma at UMG)
                 div_idx = strfind(imafiles{1},'-');
                 if numel(div_idx) == 2
                     setupIdent = 'UMG';
@@ -509,12 +509,12 @@ else
                     setupIdent = 'DPZ';
                 else disp('ERROR: unknown dicom naming')
                     return
-		end
-		setupIdent = 'DPZ';
-		% IK 
-		[Slice1CenterX,Slice1CenterY,Slice1CenterZ,SliceNCenterX,SliceNCenterY,SliceNCenterZ] = ...
-			get_sSliceArray_asSlice_sPosition(im1,setupIdent);
-		
+                end
+                setupIdent = 'DPZ'; % Now both UMG and DPZ are Siemens Prisma, so no difference?
+                % IK
+                [Slice1CenterX,Slice1CenterY,Slice1CenterZ,SliceNCenterX,SliceNCenterY,SliceNCenterZ] = ...
+                    get_sSliceArray_asSlice_sPosition(im1,setupIdent);
+                
                 spbs = sqrt(sum((slnc - sl1c) .^ 2)) / (DimZ - 1);
                 gaps = pxz - spbs;
                 if abs(gaps) < 0.005
@@ -533,7 +533,7 @@ else
                     dtls = 0;
                     dcmdatao = 8;
                 end
-
+                
                 % iterate over time points, slices
                 for tc = 1:DimT
                     if all(mosxy == 1)
@@ -560,8 +560,8 @@ else
                             end
                             dtll = fread(fid, [1, 1], 'uint32=>double');
                             if ~all(dtag == [32736, 16]) || ...
-                                dtls ~= 0 || ...
-                                dtll ~= (2 * DimS)
+                                    dtls ~= 0 || ...
+                                    dtll ~= (2 * DimS)
                                 error('BAD_TAG_OR_LENGTH');
                             end
                             fcnt = fread(fid, [1, Inf], '*uint16');
@@ -589,8 +589,8 @@ else
                         end
                         dtll = fread(fid, [1, 1], 'uint32=>double');
                         if ~all(dtag == [32736, 16]) || ...
-                            dtls ~= 0 || ...
-                            dtll ~= (2 * DimS)
+                                dtls ~= 0 || ...
+                                dtll ~= (2 * DimS)
                             error('BAD_TAG_OR_LENGTH');
                         end
                         fcnt = fread(fid, [1, Inf], '*uint16');
@@ -604,7 +604,7 @@ else
                         fclose(fid);
                     end
                 end
-
+                
             catch ne_eo;
                 clearxffobjects(cll);
                 if fid > 0
@@ -614,15 +614,15 @@ else
                     'neuroelf:xffError', ...
                     'Error creating FMR from DICOM files: %s.', ...
                     ne_eo.message ...
-                );
+                    );
             end
             
-        % unsupported
+            % unsupported
         otherwise
             error( ...
                 'neuroelf:BadArgument', ...
                 'Single file of this type not supported.' ...
-            );
+                );
     end
 end
 
@@ -636,7 +636,7 @@ if abs(iopr) < 0.75
     error( ...
         'neuroelf:InternalError', ...
         'Error getting image orientation.' ...
-    );
+        );
 end
 if iopr < 0
     cnvt = 0;
@@ -652,7 +652,7 @@ if isempty(mndim)
     error( ...
         'neuroelf:DataTooLarge', ...
         'Data too large to fit into square matrix.' ...
-    );
+        );
 end
 acdim = psdim(mndim(1));
 
@@ -677,14 +677,23 @@ fmr.VoxelResolutionVerified = 1;
 fmr.PosInfosVerified = 1;
 % fmr.CoordinateSystem = 1;
 
-switch species    
+switch species
     case 'human' % for human data
-        fmr.Slice1CenterX = sl1c(1); % IK
-        fmr.Slice1CenterY = sl1c(2); % IK
-        fmr.Slice1CenterZ = sl1c(3); % IK
-        fmr.SliceNCenterX = slnc(1); % IK
-        fmr.SliceNCenterY = slnc(2); % IK
-        fmr.SliceNCenterZ = slnc(3); % IK
+        
+        fmr.Slice1CenterX = Slice1CenterX; % IK (and next 5)
+        fmr.Slice1CenterY = Slice1CenterY;
+        fmr.Slice1CenterZ = Slice1CenterZ;
+        fmr.SliceNCenterX = SliceNCenterX;
+        fmr.SliceNCenterY = SliceNCenterY;
+        fmr.SliceNCenterZ = SliceNCenterZ;
+        
+        % previous version for UMG human data was working as below with original formulation:
+%         fmr.Slice1CenterX = sl1c(1); % IK
+%         fmr.Slice1CenterY = sl1c(2); % IK
+%         fmr.Slice1CenterZ = sl1c(3); % IK
+%         fmr.SliceNCenterX = slnc(1); % IK
+%         fmr.SliceNCenterY = slnc(2); % IK
+%         fmr.SliceNCenterZ = slnc(3); % IK
         
     case 'monkey' % for monkey data
         fmr.Slice1CenterX = Slice1CenterX; % IK (and next 5)
@@ -692,7 +701,7 @@ switch species
         fmr.Slice1CenterZ = Slice1CenterZ;
         fmr.SliceNCenterX = SliceNCenterX;
         fmr.SliceNCenterY = SliceNCenterY;
-        fmr.SliceNCenterZ = SliceNCenterZ;        
+        fmr.SliceNCenterZ = SliceNCenterZ;
 end
 
 fmr.RowDirX = iop(1, 1);

@@ -169,7 +169,7 @@
 switch session_settings_id
 	
 	
-	case 'Human_reach-decision'
+	case 'Human_reach_decision_pilot'
 		
 		settings.Species = 'human';
 		
@@ -203,7 +203,7 @@ switch session_settings_id
 		
 		% settings for converting behavioral files to BV *.prt
 		settings.prt.beh2prt_function_handle = @mat2prt_reach_decision_pilot;
-		settings.model = '';
+		settings.model = ''; % 'only_cor_trials_cue_mem_mov';
 		
 		% settings for converting prt to sdm
 		settings.sdm.nvol = 800; % total number of volumes - skiped volumes
@@ -211,6 +211,46 @@ switch session_settings_id
 		settings.sdm.hpttp = 5; %default for human
 		settings.sdm.hnttp = 15; %default for human
 		settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
+        
+        
+        % settings for QA
+		settings.fmr_quality.outlier_detection_method = 'ne_framewise_disp';
+		% NeuroElf 'ne_fmriquality_method' | 'ne_fmriquality_TC_Quality2_method' | 'ne_framewise_disp' | 'ne_fmriquality_TC_custom_method'
+		
+		% specific settings for 'ne_fmriquality_method'
+		settings.fmr_quality.outlier_detection_threshold = 1; % outlier detection threshold (nr of criteria, default: 3)
+		settings.fmr_quality.n_sd = [6 5 5 5 4]; % number of SD for each criterion (default: [6 5 5 5 4]), see ne_fmriquality and http://neuroelf.net/wiki/doku.php?id=fmriquality
+		
+		% specific settings for 'ne_fmriquality_TC_Quality2_method'
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold = 1.5;
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_n_smooth = 11; % n volumes fr smoothing quality timecourse
+		
+		% specific settings for 'ne_framewise_disp'
+		settings.fmr_quality.fd_cutoff = 0.5;
+		settings.fmr_quality.fd_radius = 50; % mm, 50 human, 5 monkeys
+		
+		% general settings for all methods
+		settings.fmr_quality.reject_volumes_before_after_outlier	= [1	1];	% volumes to exclude before and after outlier volumes (for .sdm)
+		settings.fmr_quality.avg_exclude_before_after_outlier		= [500 500];	% ms, time to exclude from avg before / after outlier
+        
+        
+		% settings for creating vtc
+		settings.vtc_create.res		= 3;		% resolution 1 / 2 / 3
+		settings.vtc_create.meth	= 'linear';	% interpolation: 'cubic', 'lanczos3', {'linear'}, 'nearest'
+		settings.vtc_create.space	= 'tal';	% 'native' (monkeys) | 'acpc' | 'tal'
+		settings.vtc_create.bbox	= [];		% [xstart ystart zstart; xend yend zend]; % 2x3 bounding box (optional, default: small TAL box)
+		settings.vtc_create.dt		= 2;		% datatype override (default: uint16, FV 2)
+		
+		settings.vtc_filter.spkern	= [6 6 6];	% spatial smoothing kernel in mm
+		
+		% settings for multi-study GLM computation
+		settings.mdm.seppred =2; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
+		settings.mdm.zTransformation = 0; % apply z-transformation to volume time courses
+		settings.mdm.PSCTransformation = 1; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
+		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
+		settings.mdm.mask = 'Y:\MRI\Human\colin_brain_ICBMnorm_TAL.msk'; 
+		settings.mdm.robust = false; % don't run robust with FFX
+		
 		
 	case 'Curius_microstim_20130814-20131009'
 		

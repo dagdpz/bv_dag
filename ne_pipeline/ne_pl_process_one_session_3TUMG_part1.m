@@ -1,5 +1,5 @@
 function ne_pl_process_one_session_3TUMG_part1(session_path, dicom_folder, series_order, anat, subj,session_settings_id,proc_steps_array,varargin)
-% ne_pl_process_one_session_3TUMG_part1('Y:\MRI\Human\fMRI-reach-decision\Pilot\IVSK\20190620','dicom',[10 13 16 19 22],6,'IVSK','Human_reach-decision',{'create_fmr'});
+% ne_pl_process_one_session_3TUMG_part1('Y:\MRI\Human\fMRI-reach-decision\Pilot\IVSK\20190620','dicom',[10 13 16 19 22],6,'IVSK','Human_reach_decision_pilot',{'create_fmr'});
 % ne_pl_process_one_session_3TUMG_part1('F:\MRI\Curius\20140204','ani_0708',[7 8 9 12 13],10,'CU','Curius_microstim_20131129-now',{'all'});
 % ne_pl_process_one_session_3TUMG_part1('F:\MRI\Curius\20140204','ani_0708',[7 8 9 12 13],10,'CU','Curius_microstim_20131129-now',{'all'},'MCparams','MCzparams');
 % ne_pl_process_one_session_3TUMG_part1('F:\MRI\Curius\20140204','ani_0708',[7 8 9 12 13],10,'CU','Curius_microstim_20131129-now',{'create_prt'});
@@ -27,9 +27,9 @@ function ne_pl_process_one_session_3TUMG_part1(session_path, dicom_folder, serie
 %	'set_confound_preds'
 
 if strcmp(proc_steps_array,'all'),
-	proc_steps.create_fmr		= 1;
+	proc_steps.create_fmr		= 0;
 	proc_steps.create_prt		= 1;
-	proc_steps.preprocess_fmr	= 1;
+	proc_steps.preprocess_fmr	= 0;
 	proc_steps.create_sdm		= 1;
 	proc_steps.add_MC_sdm		= 1;
 	proc_steps.run_QA		= 1;
@@ -65,7 +65,7 @@ switch settings.Species
         % default parameters, for dynamic params (i.e. those params might change from session to session, even for same dataset)
         defpar = { ...
             % 'behorder','double', 'nonempty', []; ...			% order of behavioral data files [1 file -> 1 series (run)]
-            'behpattern', 'char', 'nonempty', '*_0*.mat'; ...		% pattern of behavioral data files for creating PRTs, '*_timing.txt' | '*.mat'
+            'behpattern', 'char', 'nonempty', '*_*.mat'; ...		% pattern of behavioral data files for creating PRTs, '*_timing.txt' | '*.mat'
             'PRTpattern','char', 'nonempty', '*.prt'; ...		% for creating SDMs, can be '*.prt' | '*_foravg.prt'
             'MCparams','char', 'nonempty', 'MCparams'; ...		% for adding motion correction parameters to SDM, can be 'MCparams' | 'MCzparams'
             'fConfPred','double','nonempty',0; ...			% first Confound Predictor in final SDMs for MDM

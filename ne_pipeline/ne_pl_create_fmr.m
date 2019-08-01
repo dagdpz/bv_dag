@@ -24,9 +24,9 @@ flags.xyres = [settings.fmr_create.ResolutionX,settings.fmr_create.ResolutionY];
 switch settings.Species
     case 'human'
         % n = neuroelf; fmr = n.createfmr(imafiles, flags); % original NE - problems with positioning ("BV -> FMR properties -> POS Info)
-	fmr = ne_createfmr(imafiles, flags, settings.Species); % modified IK
+        fmr = ne_createfmr(imafiles, flags, 'monkey'); % modified IK
     case 'monkey'
-       fmr = ne_createfmr(imafiles, flags, settings.Species); % modified IK
+        fmr = ne_createfmr(imafiles, flags, settings.Species); % modified IK
 end
 
 settings2set = fieldnames(settings.fmr_create);
@@ -34,10 +34,9 @@ length_settings = length(settings2set);
 
 
 for k=1:length_settings,
-	fmr.(settings2set{k}) = settings.fmr_create.(settings2set{k});	
+    fmr.(settings2set{k}) = settings.fmr_create.(settings2set{k});
 end
 
 fmr.SaveAs(fmr_fullpath);
 disp([fmr_fullpath ' created']);
 cd(ori_dir);
-	
