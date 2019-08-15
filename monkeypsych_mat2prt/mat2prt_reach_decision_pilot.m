@@ -92,19 +92,19 @@ end
 %% saccade CHOICE LEFT - red 
 
 % 'eye_choice_left_cue' 
-prtpreds(1).name = {'saccade_choice_left_cue'};
+prtpreds(1).name = {'sac_choi_l_cue'};
 prtpreds(1).r = 227; 
 prtpreds(1).g = 35; 
 prtpreds(1).b = 34; 
 
 % 'eye_choice_left_mem'
-prtpreds(2).name = {'saccade_choice_left_mem'};
+prtpreds(2).name = {'sac_choi_l_mem'};
 prtpreds(2).r = 227; 
 prtpreds(2).g = 35; 
 prtpreds(2).b = 34; 
 
 % 'eye_choice_left_mov'
-prtpreds(3).name = {'saccade_choice_left_mov'};
+prtpreds(3).name = {'sac_choi_l_mov'};
 prtpreds(3).r = 227; 
 prtpreds(3).g = 35; 
 prtpreds(3).b = 34; 
@@ -113,39 +113,39 @@ prtpreds(3).b = 34;
 %% saccade CHOICE RIGHT - orange
 
 % 'eye_choice_right_cue'
-prtpreds(4).name = {'saccade_choice_right_cue'};
-prtpreds(4).r = 253; 
-prtpreds(4).g = 198; 
-prtpreds(4).b = 11; 
+prtpreds(4).name = {'sac_choi_r_cue'};
+prtpreds(4).r = 241; 
+prtpreds(4).g = 142; 
+prtpreds(4).b = 28; 
 
 % 'eye_choice_right_mem'
-prtpreds(5).name = {'saccade_choice_right_mem'};
-prtpreds(5).r = 253; 
-prtpreds(5).g = 198; 
-prtpreds(5).b = 11; 
+prtpreds(5).name = {'sac_choi_r_mem'};
+prtpreds(5).r = 241; 
+prtpreds(5).g = 142; 
+prtpreds(5).b = 28; 
 
 % 'eye_choice_right_mov'
-prtpreds(6).name = {'saccade_choice_right_mov'};
-prtpreds(6).r = 253; 
-prtpreds(6).g = 198; 
-prtpreds(6).b = 11; 
+prtpreds(6).name = {'sac_choi_r_mov'};
+prtpreds(6).r = 241; 
+prtpreds(6).g = 142; 
+prtpreds(6).b = 28; 
 
 %% saccade INSTRUCTED LEFT - violett
 
 % 'eye_instructed_left_cue'
-prtpreds(7).name = {'saccade_instructed_left_cue'};
+prtpreds(7).name = {'sac_instr_l_cue'};
 prtpreds(7).r = 109;
 prtpreds(7).g = 57;
 prtpreds(7).b = 139;
 
 % 'eye_instructed_left_mem'
-prtpreds(8).name = {'saccade_instructed_left_mem'};
+prtpreds(8).name = {'sac_instr_l_mem'};
 prtpreds(8).r = 109;
 prtpreds(8).g = 57;
 prtpreds(8).b = 139;
 
 % 'eye_instructed_left_mov'
-prtpreds(9).name = {'saccade_instructed_left_mov'};
+prtpreds(9).name = {'sac_instr_l_mov'};
 prtpreds(9).r = 109;
 prtpreds(9).g = 57;
 prtpreds(9).b = 139;
@@ -153,19 +153,19 @@ prtpreds(9).b = 139;
 %% saccade INSTRUCTED RIGHT - red-violett
 
 % 'eye_instructed_right_cue'
-prtpreds(10).name = {'saccade_instructed_right_cue'};
+prtpreds(10).name = {'sac_instr_r_cue'};
 prtpreds(10).r = 196;
 prtpreds(10).g = 3;
 prtpreds(10).b = 125;
 
 % 'eye_instructed_right_mem'
-prtpreds(11).name = {'saccade_instructed_right_mem'};
+prtpreds(11).name = {'sac_instr_r_mem'};
 prtpreds(11).r = 196;
 prtpreds(11).g = 3;
 prtpreds(11).b = 125;
 
 % 'eye_instructed_right_mov'
-prtpreds(12).name = {'saccade_instructed_right_mov'};
+prtpreds(12).name = {'sac_instr_r_mov'};
 prtpreds(12).r = 196;
 prtpreds(12).g = 3;
 prtpreds(12).b = 125;
@@ -175,59 +175,59 @@ prtpreds(12).b = 125;
 %% reach CHOICE LEFT - green-yellow
 
 % 'hand_choice_left_cue'
-prtpreds(13).name = {'reach_choice_left_cue'};
-prtpreds(13).r = 140;
-prtpreds(13).g = 187;
-prtpreds(13).b = 38;
+prtpreds(13).name = {'reach_choi_l_cue'};
+prtpreds(13).r = 0;
+prtpreds(13).g = 142;
+prtpreds(13).b = 91;
 
 % 'hand_choice_left_mem'
-prtpreds(14).name = {'reach_choice_left_mem'};
-prtpreds(14).r = 140;
-prtpreds(14).g = 187;
-prtpreds(14).b = 38;
+prtpreds(14).name = {'reach_choi_l_mem'};
+prtpreds(14).r = 0;
+prtpreds(14).g = 142;
+prtpreds(14).b = 91;
 
 % 'hand_choice_left_mov'
-prtpreds(15).name = {'reach_choice_left_mov'};
-prtpreds(15).r = 140;
-prtpreds(15).g = 187;
-prtpreds(15).b = 38;
+prtpreds(15).name = {'reach_choi_l_mov'};
+prtpreds(15).r = 0;
+prtpreds(15).g = 142;
+prtpreds(15).b = 91;
 
 %% reach CHOICE RIGHT - yellow
 
 % 'hand_choice_right_cue'
-prtpreds(16).name = {'reach_choice_right_cue'};
-prtpreds(16).r = 244;
-prtpreds(16).g = 229;
-prtpreds(16).b = 0;
+prtpreds(16).name = {'reach_choi_r_cue'};
+prtpreds(16).r = 140;
+prtpreds(16).g = 187;
+prtpreds(16).b = 38;
 
 % 'hand_choice_right_mem'
-prtpreds(17).name = {'reach_choice_right_mem'};
-prtpreds(17).r = 244;
-prtpreds(17).g = 229;
-prtpreds(17).b = 0;
+prtpreds(17).name = {'reach_choi_r_mem'};
+prtpreds(17).r = 140;
+prtpreds(17).g = 187;
+prtpreds(17).b = 38;
 
 % 'hand_choice_right_mov'
-prtpreds(18).name = {'reach_choice_right_mov'};
-prtpreds(18).r = 244;
-prtpreds(18).g = 229;
-prtpreds(18).b = 0;
+prtpreds(18).name = {'reach_choi_r_mov'};
+prtpreds(18).r = 140;
+prtpreds(18).g = 187;
+prtpreds(18).b = 38;
 
 %% reach INSTRUCTED LEFT - blue
 
 % 'hand_instructed_left_cue'
-prtpreds(19).name = {'reach_instructed_left_cue'};
+prtpreds(19).name = {'reach_instr_l_cue'};
 prtpreds(19).r = 42;
 prtpreds(19).g = 113;
 prtpreds(19).b = 176;
 
 % 'hand_instructed_left_mem'
-prtpreds(20).name = {'reach_instructed_left_mem'};
+prtpreds(20).name = {'reach_instr_l_mem'};
 prtpreds(20).r = 42;
 prtpreds(20).g = 113;
 prtpreds(20).b = 176;
 
 % 'hand_instructed_left_mov'
-prtpreds(21).name = {'reach_instructed_left_mov'};
+prtpreds(21).name = {'reach_instr_l_mov'};
 prtpreds(21).r = 42;
 prtpreds(21).g = 113;
 prtpreds(21).b = 176;
@@ -235,22 +235,22 @@ prtpreds(21).b = 176;
 %% reach INSTRUCTED RIGHT - green
 
 % 'hand_instructed_right_cue'
-prtpreds(22).name = {'reach_instructed_right_cue'};
-prtpreds(22).r = 0;
-prtpreds(22).g = 142;
-prtpreds(22).b = 91;
+prtpreds(22).name = {'reach_instr_r_cue'};
+prtpreds(22).r = 7;
+prtpreds(22).g = 186;
+prtpreds(22).b = 233;
 
 % 'hand_instructed_right_mem'
-prtpreds(23).name = {'reach_instructed_right_mem'};
-prtpreds(23).r = 0;
-prtpreds(23).g = 142;
-prtpreds(23).b = 91;
+prtpreds(23).name = {'reach_instr_r_mem'};
+prtpreds(23).r = 7;
+prtpreds(23).g = 186;
+prtpreds(23).b = 233;
 
 % 'hand_instructed_right_mov'
-prtpreds(24).name = {'reach_instructed_right_mov'};
-prtpreds(24).r = 0;
-prtpreds(24).g = 142;
-prtpreds(24).b = 91;
+prtpreds(24).name = {'reach_instr_r_mov'};
+prtpreds(24).r = 7;
+prtpreds(24).g = 186;
+prtpreds(24).b = 233;
 
 
 
