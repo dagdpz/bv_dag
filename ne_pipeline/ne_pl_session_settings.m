@@ -182,7 +182,7 @@ switch session_settings_id
 		settings.fmr_create.InplaneResolutionX	= 3; % voxel size
 		settings.fmr_create.InplaneResolutionY	= 3;
 		settings.fmr_create.SliceThickness	= 3;
-		settings.fmr_create.SliceGap		= 1; % is this a yes (1) or no (0) information?????
+		settings.fmr_create.SliceGap		= 0.3; % is this a yes (1) or no (0) information?????
 		settings.fmr_create.VoxelResolutionVerified = 1;
 		settings.fmr_create.GapThickness	= 0.3; % Slicespacing - SliceThickness
 		settings.fmr_create.TimeResolutionVerified = 1;
