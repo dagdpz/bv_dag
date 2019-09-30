@@ -1,30 +1,49 @@
-function era = ne_sdm2era_prt(basedir,tc_file_list, prt_file_list, TOPLOT, era_config,conditions_config)
-%NE_SDM2ERA_PRT			- convert any timecourse (MC sdm, any rtc, any mat) to era plot
+function era = ne_sdm2era_prt(basedir,tc_file_list, prt_file_list, TOPLOT, era_config, conditions_config)
+%NE_SDM2ERA_PRT			- convert any timecourse (MC sdm, any rtc, any mat) to era plot, using prt file(s)
 % ne_sdm2era_prt(pwd,{'Gro2018-06-21_run01_task_GR_20180621_run01_MCparams.sdm'; 'Gro2018-06-21_run02_task_GR_20180621_run02_MCparams.sdm'},{'Gro2018-06-21_run01.prt'; 'Gro2018-06-21_run02.prt'}, 1);
 % ne_sdm2era_prt(pwd,'*run01_MCparams.sdm','*run01.prt', 1); % only run01
 % ne_sdm2era_prt(pwd,'*_MCparams.sdm','*.prt', 1); % all runs
+% ne_sdm2era_prt(basedir,'*_MCparams.sdm','*.prt', 1, {'TR',900},{'cond_regexp','reach.+mov'});
+% ne_sdm2era_prt(basedir,'*_MCparams.sdm','*.prt', 1, {'TR',900,'pred2take','MC'},{'cond_regexp','reach.+mov'});
+
+% conditions_config
+% e.g. {'cond_regexp','reach.+mov'}
 
 % Similar to AVG::Average  - average time course according to AVG info
 % BUT!!! Note: this function only works for Volume-based AVG files
 %        since without the FMR/VTC/MTC the TR is unknown
 
+
+era_config_def.TR			= 2000; % s
+era_config_def.pre			= 10; % volumes
+era_config_def.post			= 20; % volumes
+era_config_def.baseline_start	= -3; % volumes
+era_config_def.baseline_end		= -1; % volumes
+era_config_def.baseline_mode	= 3; % 0 or 3, https://support.brainvoyager.com/documents/Functional_Statistics/Introduction/BaselineEventRelatedAveraging_v01.pdf
+era_config_def.pred2take        = []; % [] - all, array of pred, or regexp string
+    
 if nargin < 4,
 	TOPLOT = 0;
 end
 
 if nargin < 5,
-	era_config.TR			= 2000; % s
-	era_config.pre			= 10; % volumes
-	era_config.post			= 20; % volumes
-	era_config.baseline_start	= -3; % volumes
-	era_config.baseline_end		= -1; % volumes
-	era_config.baseline_mode	= 0; % https://support.brainvoyager.com/documents/Functional_Statistics/Introduction/BaselineEventRelatedAveraging_v01.pdf
+    era_config = era_config_def;
+    
+elseif iscell(era_config),
+        
+    era_config_temp = struct(era_config{:});
+    era_config = era_config_def;
+    
+    for fn = fieldnames(era_config_temp)'
+        era_config.(fn{1}) = era_config_temp.(fn{1});
+    end
 	
 end
 
 if nargin < 6,
 	conditions_config = [];
 end
+
 
 if isstr(tc_file_list)
 	if strfind(tc_file_list,'*');
@@ -86,6 +105,29 @@ end
 sdm = xff(tc_file_list{1});
 prt = xff(prt_file_list{1});
 
+if ~isempty(era_config.pred2take),
+    
+    if isnumeric(era_config.pred2take),
+        sdm.NrOfPredictors = length(era_config.pred2take);
+    else
+        pi = regexp(sdm.PredictorNames',era_config.pred2take);
+        pii = find(cellfun(@(x) ~isempty(x), pi, 'UniformOutput', 1));
+        sdm.NrOfPredictors = length(pii);
+    end
+    
+end
+
+if ~isempty(conditions_config),
+    
+    conditions_config = struct(conditions_config{:});
+    
+    ci = regexp(prt.ConditionNames',conditions_config.cond_regexp);
+    cii = find(cellfun(@(x) ~isempty(x), ci, 'UniformOutput', 1));
+    
+    prt.NrOfConditions = length(cii);
+    
+end    
+
 
 if TOPLOT,
 	fs = 8; % FontSize
@@ -102,7 +144,18 @@ for c=1:prt.NrOfConditions, % for each prt condition
 		
 		sdm = xff(tc_file_list{f});
 		prt = xff(prt_file_list{f});
+        
+        if ~isempty(era_config.pred2take), % remove unwanted predictors
+            sdm.NrOfPredictors = length(pii);
+            sdm.PredictorColors = sdm.PredictorColors(pii,:);
+            sdm.PredictorNames = sdm.PredictorNames(pii);
+            sdm.SDMMatrix = sdm.SDMMatrix(:,pii);  
+        end
 		
+        if ~isempty(conditions_config), % remove unwanted conditions
+            prt.Cond = prt.Cond(cii);
+        end
+        
 		triggers = round(prt.Cond(c).OnOffsets(:,1)/era_config.TR);
 		triggers = triggers(triggers > era_config.pre & triggers + era_config.post < sdm.NrOfDataPoints );
 		

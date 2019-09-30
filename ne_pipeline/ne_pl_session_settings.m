@@ -172,6 +172,7 @@ switch session_settings_id
 	case 'Human_reach_decision_pilot'
 		
 		settings.Species = 'human';
+        settings.model = '';
 		
 		% settings for create fmr
 		settings.fmr_create.NrOfSkippedVolumes = 0;
