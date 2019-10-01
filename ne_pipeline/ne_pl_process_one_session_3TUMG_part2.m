@@ -83,6 +83,7 @@ disp('==========================================================================
 [~, name] = system('hostname');
 disp([datestr(now) ' @' name]);
 disp(['session_path ',session_path]);
+disp(['model_path ',model_path]);
 disp(['subj ',subj]);
 disp(['session_settings_id ',session_settings_id]);
 disp(['proc_steps_array' proc_steps_array]);
@@ -156,7 +157,7 @@ if proc_steps.exclude_outliers_avg
 	avg = findfiles(model_path, '*.avg');
 	for a = 1:length(avg),
 		if isempty(strfind(avg{a},'_no_outliers')),
-			ne_pl_exclude_outliers_avg(model_path,avg{a});
+			ne_pl_exclude_outliers_avg(session_path,avg{a});
 		end
 	end
 end

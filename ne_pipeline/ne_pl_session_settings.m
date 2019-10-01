@@ -233,6 +233,7 @@ switch session_settings_id
 		% general settings for all methods
 		settings.fmr_quality.reject_volumes_before_after_outlier	= [1	1];	% volumes to exclude before and after outlier volumes (for .sdm)
 		settings.fmr_quality.avg_exclude_before_after_outlier		= [500 500];	% ms, time to exclude from avg before / after outlier
+        settings.fmr_quality.plot_events = 'reach.+mov'; % if '', no events would be plotted, or 'reward', or regular expression such as 'reach.+mov'
         
         
 		% settings for creating vtc

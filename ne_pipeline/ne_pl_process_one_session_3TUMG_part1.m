@@ -114,6 +114,7 @@ disp('==========================================================================
 [~, name] = system('hostname');
 disp([datestr(now) ' @' name]);
 disp(['session_path ',session_path]);
+disp(['model_path ',model_path]);
 disp(['dicom_folder ',dicom_folder]);
 disp(['series_order ',mat2str(series_order)]);
 disp(['anat ',mat2str(anat)]);

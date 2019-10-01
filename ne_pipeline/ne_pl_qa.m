@@ -56,8 +56,16 @@ switch settings.fmr_quality.outlier_detection_method
 end
 
 
+if isfield(settings.fmr_quality,'plot_events'),
+    axes(findobj(get(gsh,'Children'),'Tag','TC volumes')); % activate TC volumes axes
+    prt_fullpath = findfiles(session_path,['*' run_name '.prt']);    
+    if ~isempty(prt_fullpath),
+        ne_add_prt_condition_2tc(prt_fullpath{1},settings.fmr_quality.plot_events,'volumes',settings.fmr_create.TR);
+    end
+end
 
-if 1 % add reward markers
+% previous version for monkey fMRI - now obsolete, use the approach above
+if 0 % add reward markers
 	axes(findobj(get(gsh,'Children'),'Tag','TC volumes')); % activate TC volumes axes
 	prt_fullpath = findfiles(session_path,['*' run_name '.prt']);
 	if ~isempty(prt_fullpath),
