@@ -1,5 +1,6 @@
-function prt_fname = mat2prt_reach_decision_pilot(mat_file, run_name)
+function prt_fname = mat2prt_reach_decision_pilot_v2(mat_file, run_name)
 % Peter's thesis on reach decisions
+% added ITI and ABORT predictors
 
 if nargin < 2,
     run_name = '';
