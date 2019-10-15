@@ -5,7 +5,6 @@ if nargin < 2,
     run_name = '';
 end
 
-% mat_file = ('Y:\Personal\Peter\Data\MAPA\20190808\MAPA_2019-08-08_03.mat')
 % mat_file = ('Y:\Personal\Peter\Data\IVSK\20190620\IVSK2019-06-20_17.mat')
 % run_name = '';
 
@@ -17,7 +16,7 @@ load(mat_file, '-mat');
 cue_onset_delay = 0; %cue is roughly 200 ms long (sometimes 214, 213 etc.)
 cue_offset_delay = 800;
 
-% duration of memory period in ms, starting from 7 s after beginning of memory: -> [onset + 7000 onset, lasting 14000]
+% duration of memory period in ms, starting from 7 s after beginning of memory: -> [onset + 7000 onset + 14000]
 mem_onset_delay = 7000; % delay is 15 s long
 mem_offset_delay = -1000;
 
@@ -28,14 +27,9 @@ mov_onset_delay = 0;
 mov_offset_delay = 200;
 
 
-ITI_onset_delay = 0;
-ITI_offset_delay = 0;
-
-aborted_onset_delay = 0;
-aborted_offset_delay = 0;
 %% this is manual part - defining condition names and etc.
 
-NrofPreds = 3*8+1+1; % 3 events of interest, 8 trial types + 1 ITI + 1 aborted
+NrofPreds = 3*8; % 3 events of interest, 8 trial types
 
 
 %% CHANGE "TRIAL" TO GET conditions
@@ -116,7 +110,7 @@ prtpreds(3).g = 35;
 prtpreds(3).b = 34;
 
 
-% saccade CHOICE RIGHT - orange
+%% saccade CHOICE RIGHT - orange
 
 % 'eye_choice_right_cue'
 prtpreds(4).name = {'sac_choi_r_cue'};
@@ -136,7 +130,7 @@ prtpreds(6).r = 241;
 prtpreds(6).g = 142;
 prtpreds(6).b = 28;
 
-% saccade INSTRUCTED LEFT - violett
+%% saccade INSTRUCTED LEFT - violett
 
 % 'eye_instructed_left_cue'
 prtpreds(7).name = {'sac_instr_l_cue'};
@@ -156,7 +150,7 @@ prtpreds(9).r = 109;
 prtpreds(9).g = 57;
 prtpreds(9).b = 139;
 
-% saccade INSTRUCTED RIGHT - red-violett
+%% saccade INSTRUCTED RIGHT - red-violett
 
 % 'eye_instructed_right_cue'
 prtpreds(10).name = {'sac_instr_r_cue'};
@@ -178,7 +172,7 @@ prtpreds(12).b = 125;
 
 %% +++++ HAND/REACH ++++++
 
-% reach CHOICE LEFT - green-yellow
+%% reach CHOICE LEFT - green-yellow
 
 % 'hand_choice_left_cue'
 prtpreds(13).name = {'reach_choi_l_cue'};
@@ -198,7 +192,7 @@ prtpreds(15).r = 0;
 prtpreds(15).g = 142;
 prtpreds(15).b = 91;
 
-% reach CHOICE RIGHT - yellow
+%% reach CHOICE RIGHT - yellow
 
 % 'hand_choice_right_cue'
 prtpreds(16).name = {'reach_choi_r_cue'};
@@ -218,7 +212,7 @@ prtpreds(18).r = 140;
 prtpreds(18).g = 187;
 prtpreds(18).b = 38;
 
-% reach INSTRUCTED LEFT - blue
+%% reach INSTRUCTED LEFT - blue
 
 % 'hand_instructed_left_cue'
 prtpreds(19).name = {'reach_instr_l_cue'};
@@ -238,7 +232,7 @@ prtpreds(21).r = 42;
 prtpreds(21).g = 113;
 prtpreds(21).b = 176;
 
-% reach INSTRUCTED RIGHT - green
+%% reach INSTRUCTED RIGHT - green
 
 % 'hand_instructed_right_cue'
 prtpreds(22).name = {'reach_instr_r_cue'};
@@ -258,18 +252,7 @@ prtpreds(24).r = 7;
 prtpreds(24).g = 186;
 prtpreds(24).b = 233;
 
-%%
-% 'ITI'
-prtpreds(25).name = {'ITI'};
-prtpreds(25).r = 220;
-prtpreds(25).g = 220;
-prtpreds(25).b = 220;
 
-% aborted trials
-prtpreds(26).name = {'aborted'};
-prtpreds(26).r = 128;
-prtpreds(26).g = 128;
-prtpreds(26).b = 128;
 
 %% GET ONSETS AND OFFSETS AND PUT THEM IN PRTPREDS
 
@@ -362,56 +345,6 @@ for i = 1:length(eff)
 end % loop effector
 
 
-%temp = trial([trial.success] == 0);
-
-
-
-%% Add ITI Onsets and Offsets
-
-ITI_onset = [];
-ITI_offset = [];
-
-for i = 1:length(trial) %loop over trials to get the ITI (state 50) onsets and offsets
-    
-    ITI_samples = trial(i).tSample_from_time_start(trial(i).state == 50);
-    
-    ITI_onset  = [ITI_onset ITI_samples(1)]; % first one of ITI
-    ITI_offset = [ITI_offset ITI_samples(end)]; % last one of ITI
-    
-end
-
-% convert to mili seconds and add variable delay (see beginning of file)
-prtpreds(strcmp('ITI',[prtpreds.name])).onset  = round(ITI_onset *1000) + ITI_onset_delay;
-prtpreds(strcmp('ITI',[prtpreds.name])).offset = round(ITI_offset*1000) + ITI_offset_delay;
-
-
-%% Add Aborted Onsets and Offsets
-
-aborted_onset = [];
-aborted_offset = [];
-temp_aborted = trial([trial.success] == 0);
-
-for i = 1:length(temp_aborted) % loop over unsuccessful trials to get the a vector with every timestamp from the trial, but not the ITI 
-    
-    aborted_cue = temp_aborted(i).states_onset(temp_aborted(i).states == 6);
-    
-    if isempty(aborted_cue) % if error occured before onset of the cue, no aborted trial has to be modeled, so skip it
-        continue;
-    end
-    
-    aborted_samples = temp_aborted(i).tSample_from_time_start(temp_aborted(i).state ~= 50);
-    
-    aborted_onset  = [aborted_onset aborted_cue]; 
-    aborted_offset = [aborted_offset aborted_samples(end)]; % last one before ITI
-    
-end
-
-% convert to mili seconds and add variable delay (see beginning of file)
-prtpreds(strcmp('aborted',[prtpreds.name])).onset  = round(aborted_onset *1000) + aborted_onset_delay;
-prtpreds(strcmp('aborted',[prtpreds.name])).offset = round(aborted_offset*1000) + aborted_offset_delay;
-
-
-
 %%
 for i = 1:length(prtpreds)
     prtpreds(i).name = char(prtpreds(i).name );
@@ -461,3 +394,5 @@ end
 fclose(fid);
 
 disp(['Protocol ' prt_fname ' saved']);
+
+

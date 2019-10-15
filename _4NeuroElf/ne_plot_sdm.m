@@ -1,5 +1,6 @@
 function ne_plot_sdm(sdm_fullname,prt_fullname,TR,n_task_predictors)
-% ne_plot_sdm('D:\MRI\Bacchus\20141106\Bacchus_2014-11-06_run01_task_BA_20141106_run01_MCparams_outlier_preds_6pred.sdm','D:\MRI\Bacchus\20141106\Bacchus_2014-11-06_run01.prt')
+% ne_plot_sdm('D:\MRI\Bacchus\20141106\Bacchus_2014-11-06_run01_task_BA_20141106_run01_MCparams_outlier_preds_6pred.sdm','D:\MRI\Bacchus\20141106\Bacchus_2014-11-06_run01.prt');
+% ne_plot_sdm([p filesep 'LEHU_2019-07-25_run01_task_LEHU_20190725_1_run01_MCparams.sdm'],[p filesep 'LEHU_2019-07-25_run01.prt'],900); % p is path
 
 if nargin < 2,
 	prt_fullname = '';
@@ -20,10 +21,11 @@ figure('Name',sdm_fullname,'Position',[100 100 1000 800]);
 ha1 = subplot(2,1,1); hold on;
 set(ha1,'ColorOrder',sdm.PredictorColors(1:n_task_predictors,:)/255);
 plot([0:sdm.NrOfDataPoints-1]*TR/1000,sdm.SDMMatrix(:,1:n_task_predictors)); hold on;
-legend(sdm.PredictorNames(1:n_task_predictors),'Interpreter','none');
+legend(sdm.PredictorNames(1:n_task_predictors),'Interpreter','none','Location','EastOutside');
 
 plot([0:sdm.NrOfDataPoints-1]*TR/1000,sum(sdm.SDMMatrix(:,1:n_task_predictors),2),'k-','LineWidth',2); % sum of predictors
-
+title('Main predictors');
+xlabel('Time (s)');
 
 if ~isempty(prt_fullname),
 	ylim = get(gca,'Ylim');
@@ -38,8 +40,9 @@ ha2 = subplot(2,1,2); hold on;
 % set(ha2,'ColorOrder',sdm.PredictorColors(n_task_predictors+1:end,:)/255,'Color',[0.5 0.5 0.5]);
 % set(ha2,'ColorOrder',jet(sdm.NrOfPredictors - n_task_predictors));
 plot([0:sdm.NrOfDataPoints-1]*TR/1000,sdm.SDMMatrix(:,n_task_predictors+1:end));
-xlabel('s');
-legend(sdm.PredictorNames(n_task_predictors+1:end),'Interpreter','none');
+title('Confound predictors');
+xlabel('Time (s)');
+legend(sdm.PredictorNames(n_task_predictors+1:end),'Interpreter','none','Location','EastOutside');
 end
 
 
