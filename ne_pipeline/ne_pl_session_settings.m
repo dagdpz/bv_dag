@@ -203,7 +203,7 @@ switch session_settings_id
 		settings.fmr_filter.tempsc = 3; % sin/cos motion correction (very low frequencies: lower than 0.005 Hz)
 		
 		% settings for converting behavioral files to BV *.prt
-		settings.prt.beh2prt_function_handle = @mat2prt_reach_decision_pilot;
+		settings.prt.beh2prt_function_handle = @mat2prt_reach_decision_pilot_v2;
 		settings.model = ''; % 'only_cor_trials_cue_mem_mov';
 		
 		% settings for converting prt to sdm
