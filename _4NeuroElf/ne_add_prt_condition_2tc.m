@@ -29,7 +29,8 @@ if ~isempty(cond_idx),
 					onsets = onsets / 1000;
 				end
 		end
-		hold on; plot(onsets,ylim(1)*ones(size(onsets)),'kv',varargin{:});
+		% hold on; plot(onsets,ylim(1)*ones(size(onsets)),'kv',varargin{:});
+        ig_add_multiple_vertical_lines(onsets,'Color',[0 0 0],'LineStyle',':');
     end
     
     title([settings.fmr_quality.plot_events ' added']);

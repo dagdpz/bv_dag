@@ -19,7 +19,7 @@ era_config_def.pre			= 10; % volumes
 era_config_def.post			= 20; % volumes
 era_config_def.baseline_start	= -3; % volumes
 era_config_def.baseline_end		= -1; % volumes
-era_config_def.baseline_mode	= 3; % 0 or 3, https://support.brainvoyager.com/documents/Functional_Statistics/Introduction/BaselineEventRelatedAveraging_v01.pdf
+era_config_def.baseline_mode	= 3; % 0 - raw data, 3 - %signal change trial baseline, see https://support.brainvoyager.com/documents/Functional_Statistics/Introduction/BaselineEventRelatedAveraging_v01.pdf
 era_config_def.pred2take        = []; % [] - all, array of pred, or regexp string
     
 if nargin < 4,
@@ -181,7 +181,7 @@ for c=1:prt.NrOfConditions, % for each prt condition
 	
 	
 	if TOPLOT,
-		figure('Name',sprintf('%s %d files %d events',prt.ConditionName{c},n_tc_files, size(era(c,p).tc,2) ));
+		figure('Name',sprintf('%s %d runs %d events',prt.ConditionName{c},n_tc_files, size(era(c,p).tc,2) ));
 		for p = 1:sdm.NrOfPredictors,
 			subplot(n_s_rows,n_s_cols,p);
 			if sum(sdm.PredictorColors(p,:))==255*3,
@@ -189,7 +189,7 @@ for c=1:prt.NrOfConditions, % for each prt condition
 			end
 			if ~isempty(era(c,p).tc),		
 				plot(era_config.TR/1000*[-era_config.pre:era_config.post],era(c,p).tc,'Color',sdm.PredictorColors(p,:)/255,'LineWidth',0.5); hold on;
-				plot(era_config.TR/1000*[-era_config.pre:era_config.post],mean(era(c,p).tc,2),'Color',sdm.PredictorColors(p,:)/500,'LineWidth',2);
+				plot(era_config.TR/1000*[-era_config.pre:era_config.post],mean(era(c,p).tc,2),'k','Color',sdm.PredictorColors(p,:)/500,'LineWidth',2,'Marker','.');
 				ig_add_zero_lines;
 				title(sdm.PredictorNames{p},'Interpreter','none','FontSize',fs);
 				xlabel('Time (s)','FontSize',fs);

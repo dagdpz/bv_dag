@@ -33,7 +33,7 @@ if strcmp(proc_steps_array,'all'),
 	proc_steps.create_sdm		= 1;
 	proc_steps.add_MC_sdm		= 1;
 	proc_steps.run_QA           = 1;
-	proc_steps.add_outliers_sdm	= 0;
+	proc_steps.add_outliers_sdm	= 1;
 	proc_steps.set_confound_preds	= 0;
 	
 else
