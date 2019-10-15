@@ -33,7 +33,7 @@ if ~isempty(cond_idx),
         ig_add_multiple_vertical_lines(onsets,'Color',[0 0 0],'LineStyle',':');
     end
     
-    title([settings.fmr_quality.plot_events ' added']);
+    title([cond_name ' added']);
 end
 
 
