@@ -25,7 +25,7 @@ function [Slice1CenterX,Slice1CenterY,Slice1CenterZ,SliceNCenterX,SliceNCenterY,
 % $Revision: 1.0 $  $Date: 2016-03-01 18:23:16 $
 
 % ADDITIONAL INFO:
-% This function is part of ne_createfmr.m, which is part of DAG NeuroElf pipeline, residing in Sources/bv_umg
+% This function is part of ne_createfmr.m, which is part of DAG NeuroElf pipeline, residing in bv_dag
 %%%%%%%%%%%%%%%%%%%%%%%%%[DAG mfile header version 1]%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 if nargin < 2,

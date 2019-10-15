@@ -33,6 +33,12 @@ if ~isempty(settings.mdm.mask)
     opts.mask = settings.mdm.mask;
 end
 
+% added IK 20190801
+if settings.mdm.robust
+    add_name = [add_name '_robust'];
+    opts.robust = true;
+end
+
 if isfield(settings.sdm, 'ppicond') && ~isempty(settings.sdm.ppicond)
     voi = xff(settings.sdm.ppivoi);
     add_name = [add_name '_ppi' voi.VOI(settings.sdm.ppivoiidx).Name];
@@ -45,4 +51,3 @@ opts.outfile = glm_filename;
 
 glm = mdm.ComputeGLM(opts);
 disp([glm_filename ' created']);
-end

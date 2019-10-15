@@ -1,4 +1,5 @@
 function ne_pl_process_one_session_3TUMG_part2(session_path, subj, session_settings_id, proc_steps_array, varargin)
+% ne_pl_process_one_session_3TUMG_part2('Y:\MRI\Human\fMRI-reach-decision\Pilot\IVSK\20190620','IVSK','Human_reach_decision_pilot',{'all'},'prt2avg_script','ne_prt2avg_reach_decision_pilot','vmr_pattern','.vmr');
 % ne_pl_process_one_session_3TUMG_part2('F:\MRI\Curius\20140204','CU','Curius_microstim_20131129-now',{'all'},'prt2avg_script','ne_prt2avg_fixation_memory_microstim');
 % ne_pl_process_one_session_3TUMG_part2('D:\MRI\Bacchus\20141106','BA','Bacchus_reach_and_stay_cues',{'all'},'prt2avg_script','ne_prt2avg_Bacchus_reach_and_stay_cues','vtc_pattern','*spkern*.vtc','sdm_pattern','*MCparams_outlier_preds.sdm');
 % ne_pl_process_one_session_3TUMG_part2('D:\MRI\Human.Caltech\IK\20100409','IK', 'Human_spatial_decision_Caltech',{'all'},'prt2avg_script','ne_prt2avg_human_decision_caltech','prt_pattern','*_foravg.prt','sdm_pattern','*MCparams_outlier_preds.sdm');
@@ -14,8 +15,8 @@ function ne_pl_process_one_session_3TUMG_part2(session_path, subj, session_setti
 %	'create_vtc'
 %	'filter_vtc'
 %	'create_ppi_sdms'
-%	'create_mdm'
 %	'create_avg'
+%	'create_mdm'
 %	'exclude_outliers_avg'
 %	'create_glm'
 
@@ -23,27 +24,28 @@ if strcmp(proc_steps_array,'all'),
 	
 	proc_steps.create_vtc		= 1;
 	proc_steps.filter_vtc		= 1;
-	proc_steps.create_ppi_sdms	= 0;
-	proc_steps.create_mdm		= 1;
+	proc_steps.create_ppi_sdms	= 0; % special case for PPI
 	proc_steps.create_avg		= 1;
-	proc_steps.exclude_outliers_avg	= 1;
-	proc_steps.create_glm		= 0;
+    proc_steps.create_mdm		= 1;
+	proc_steps.exclude_outliers_avg	= 0; % changed to 0 temporarily
+	proc_steps.create_glm		= 1;
 	
 	
 else
+    
 	proc_steps.create_vtc		= 0;
 	proc_steps.filter_vtc		= 0;
 	proc_steps.create_ppi_sdms	= 0;
-	proc_steps.create_mdm		= 0;
 	proc_steps.create_avg		= 0;
+    proc_steps.create_mdm		= 0;
 	proc_steps.exclude_outliers_avg	= 0;
 	proc_steps.create_glm		= 0;
 	
 	temp = (strfind(proc_steps_array,'create_vtc')); if ~isempty([temp{:}]),		proc_steps.create_vtc = 1;		end
 	temp = (strfind(proc_steps_array,'filter_vtc')); if ~isempty([temp{:}]),		proc_steps.filter_vtc = 1;		end
 	temp = (strfind(proc_steps_array,'create_ppi_sdms')); if ~isempty([temp{:}]),	proc_steps.create_ppi_sdms = 1; end
-	temp = (strfind(proc_steps_array,'create_mdm')); if ~isempty([temp{:}]),		proc_steps.create_mdm = 1;		end
 	temp = (strfind(proc_steps_array,'create_avg')); if ~isempty([temp{:}]),		proc_steps.create_avg = 1;		end
+    temp = (strfind(proc_steps_array,'create_mdm')); if ~isempty([temp{:}]),		proc_steps.create_mdm = 1;		end
 	temp = (strfind(proc_steps_array,'exclude_outliers_avg')); if ~isempty([temp{:}]),	proc_steps.exclude_outliers_avg = 1;	end
 	temp = (strfind(proc_steps_array,'create_glm')); if ~isempty([temp{:}]),		proc_steps.create_glm = 1;		end
 	
@@ -81,6 +83,7 @@ disp('==========================================================================
 [~, name] = system('hostname');
 disp([datestr(now) ' @' name]);
 disp(['session_path ',session_path]);
+disp(['model_path ',model_path]);
 disp(['subj ',subj]);
 disp(['session_settings_id ',session_settings_id]);
 disp(['proc_steps_array' proc_steps_array]);
@@ -154,7 +157,7 @@ if proc_steps.exclude_outliers_avg
 	avg = findfiles(model_path, '*.avg');
 	for a = 1:length(avg),
 		if isempty(strfind(avg{a},'_no_outliers')),
-			ne_pl_exclude_outliers_avg(model_path,avg{a});
+			ne_pl_exclude_outliers_avg(session_path,avg{a});
 		end
 	end
 end
