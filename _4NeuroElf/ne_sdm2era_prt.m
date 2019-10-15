@@ -19,7 +19,7 @@ era_config_def.pre			= 10; % volumes
 era_config_def.post			= 20; % volumes
 era_config_def.baseline_start	= -3; % volumes
 era_config_def.baseline_end		= -1; % volumes
-era_config_def.baseline_mode	= 3; % 0 - raw data, 3 - %signal change trial baseline, see https://support.brainvoyager.com/documents/Functional_Statistics/Introduction/BaselineEventRelatedAveraging_v01.pdf
+era_config_def.baseline_mode	= 3; % -1 - subtract baseline, 0 - raw data, 3 - %signal change trial baseline, see https://support.brainvoyager.com/documents/Functional_Statistics/Introduction/BaselineEventRelatedAveraging_v01.pdf
 era_config_def.pred2take        = []; % [] - all, array of pred, or regexp string
     
 if nargin < 4,
@@ -166,6 +166,10 @@ for c=1:prt.NrOfConditions, % for each prt condition
 				
 				
 				switch era_config.baseline_mode
+                    
+                    case -1 % subtract baseline
+                        baseline_volumes = triggers(t) + era_config.baseline_start:triggers(t) + era_config.baseline_end;
+						era(c,p).tc = [era(c,p).tc  sdm.SDMMatrix(volumes2take,p) - mean(sdm.SDMMatrix(baseline_volumes,p)) ];
 					case 0 % raw timecourse
 						era(c,p).tc = [era(c,p).tc  sdm.SDMMatrix(volumes2take,p)];
 					case 3 % epoch based %signal change
