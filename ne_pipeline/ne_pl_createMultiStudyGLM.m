@@ -8,6 +8,7 @@ function glm = ne_pl_createMultiStudyGLM(glm_path, glm_name, session_settings_id
 run('ne_pl_session_settings');
 
 mdm = xff(mdm_file);
+
 mdm.SeparatePredictors = settings.mdm.seppred; % separation of predictors
 
 add_name = '';

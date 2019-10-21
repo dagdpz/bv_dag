@@ -1,6 +1,7 @@
 function avg = ne_pl_create_avg_multisession(basedir,session_list,avg_path,avg_add_name,prt2avg_script,session_settings_id, varargin)
 % ne_pl_create_avg_multisession('Z:\MRI\Curius\',{'20140213' '20140214' '20140220' '20140221' '20140226' '20140304' '20140306'},'Z:\MRI\Curius\combined\microstim_20140213-20140306\PNM2014','combined_','ne_prt2avg_fixation_memory_microstim');
 % create avg for multiple sessions
+% This function does not work for avgs without outliers, since the information about outliers is not in prt files -> use NE_COMBINE_AVG instead
 
 defpar = { ...
     'vtc_pattern', 'char', 'nonempty', '*spkern*.vtc'; ...		
