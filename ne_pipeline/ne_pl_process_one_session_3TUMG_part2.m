@@ -27,7 +27,7 @@ if strcmp(proc_steps_array,'all'),
 	proc_steps.create_ppi_sdms	= 0; % special case for PPI
 	proc_steps.create_avg		= 1;
     proc_steps.create_mdm		= 1;
-	proc_steps.exclude_outliers_avg	= 0; % changed to 0 temporarily
+	proc_steps.exclude_outliers_avg	= 1; % changed to 0 temporarily
 	proc_steps.create_glm		= 1;
 	
 	
@@ -56,7 +56,7 @@ defpar = { ...
 	'vmr_pattern', 'char', 'nonempty',	'*ACPC*.vmr';... % for vtc creation, use '.vmr' for humans, '*ACPC.vmr' for monkeys
 	'fmr_pattern', 'char', 'nonempty',	'*_tf.fmr';... % for vtc creation
 	'vtc_pattern', 'char', 'nonempty',	'*spkern*.vtc'; ... % for AVG creation, MDM creation, and/or PPI
-	'sdm_pattern', 'char', 'nonempty',	'*task*MCparams.sdm'; ... % for MDM creation, '*task_CU_*.sdm'
+	'sdm_pattern', 'char', 'nonempty',	'*task*MCparams.sdm'; ... % for MDM creation, e.g. '*task_CU_*.sdm' or '*task*outlier_preds'
 	'prt_pattern', 'char', 'nonempty',	'*.prt'; ... % for AVG creation and/or PPI
 	'prt2avg_script','char', 'nonempty',	'ne_prt2avg_generic';... % for AVG creation
 	'mdm_prefix', 'char', 'nonempty',	'session_'; ... % for generated MDM's file name
