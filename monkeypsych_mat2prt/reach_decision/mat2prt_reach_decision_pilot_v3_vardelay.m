@@ -59,6 +59,8 @@ NrofPreds = 3*8*5+1+1; % 3 events of interest, 8 trial types, 5 delays + 1 ITI +
 [trial.eff_name] = deal([]);
 [trial([trial.effector]==3).eff_name] = deal({'sac'});
 [trial([trial.effector]==4).eff_name] = deal({'reach'});
+[trial.delay] = deal([]);
+
 
 for k = 1 : length(trial)
     
@@ -95,9 +97,23 @@ for k = 1 : length(trial)
     else
         trial(k).target_chosen = {'none'};
         
-    end  % if for chosen target or not
+    end  % if for chosen target
     
-    
+    % which delay
+    switch trial(k).task.timing.mem_time_hold;
+        
+        case 3
+            trial(k).delay = {'3'};
+        case 6
+            trial(k).delay = {'6'};
+        case 9
+            trial(k).delay = {'9'};    
+        case 12
+            trial(k).delay = {'12'};
+        case 15
+            trial(k).delay = {'15'};
+            
+    end
 end
 
 
@@ -880,16 +896,16 @@ prtpreds(120).b = 240;
 
 %%
 % 'ITI'
-prtpreds(25).name = {'ITI'};
-prtpreds(25).r = 220;
-prtpreds(25).g = 220;
-prtpreds(25).b = 220;
+prtpreds(121).name = {'ITI'};
+prtpreds(121).r = 220;
+prtpreds(121).g = 220;
+prtpreds(121).b = 220;
 
 % aborted trials
-prtpreds(26).name = {'aborted'};
-prtpreds(26).r = 128;
-prtpreds(26).g = 128;
-prtpreds(26).b = 128;
+prtpreds(122).name = {'aborted'};
+prtpreds(122).r = 128;
+prtpreds(122).g = 128;
+prtpreds(122).b = 128;
 
 %% GET ONSETS AND OFFSETS AND PUT THEM IN PRTPREDS
 
@@ -922,6 +938,7 @@ for i = 1:length(eff)
                     [trial.success]       == 1      & ...
                     strcmp(eff(i),[trial.eff_name]) & ...
                     strcmp(cho(k),[trial.choice])   & ...
+                    strcmp(del(d),[trial.delay])    & ...
                     strcmp(sid(l),[trial.target_chosen]) );
                 
                 % create temporary name out of loop inputs to compare with
@@ -1074,7 +1091,7 @@ fid = fopen(prt_fname,'w');
 
 fprintf(fid,'\n');
 
-fprintf(fid,'FileVersion:\t%d\n\n',2);
+fprintf(fid,'FileVersion:\t%d\n\n',3);
 
 fprintf(fid,'ResolutionOfTime:\t%s\n\n','msec');
 
