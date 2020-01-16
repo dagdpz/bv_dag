@@ -1,4 +1,4 @@
-function prt_fname = mat2prt_reach_decision_pilot_v3(mat_file, run_name)
+function prt_fname = mat2prt_reach_decision_pilot_v3_vardelay(mat_file, run_name)
 % Peter's thesis on reach decisions
 % v2: added ITI and ABORT predictors
 % v3: added variable delay
