@@ -1,4 +1,4 @@
-function prt_fname = mat2prt_reach_decision_pilot_v2(mat_file, run_name)
+function prt_fname = mat2prt_reach_decision_v1_vardelay_forglm(mat_file, run_name)
 % Peter's thesis on reach decisions
 % added ITI and ABORT predictors
 
@@ -16,10 +16,10 @@ load(mat_file, '-mat');
 %% task timing parameters
 
 cue_onset_delay = 0; %cue is roughly 200 ms long (sometimes 214, 213 etc.)
-cue_offset_delay = 800;
+cue_offset_delay = 300;
 
 % duration of memory period in ms, starting from 7 s after beginning of memory: -> [onset + 7000 onset, lasting 14000]
-mem_onset_delay = 7000; % delay is 15 s long
+mem_onset_delay = 1000; % delay is 15 s long
 mem_offset_delay = -1000;
 
 % [onset of state 9 onset of state 10 + 200 ms] (you add 200 ms
