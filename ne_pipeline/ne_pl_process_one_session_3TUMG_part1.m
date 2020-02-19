@@ -65,7 +65,7 @@ switch settings.Species
         % default parameters, for dynamic params (i.e. those params might change from session to session, even for same dataset)
         defpar = { ...
             % 'behorder','double', 'nonempty', []; ...			% order of behavioral data files [1 file -> 1 series (run)]
-            'behpattern', 'char', 'nonempty', '*_*.mat'; ...		% pattern of behavioral data files for creating PRTs, '*_timing.txt' | '*.mat'
+            'behpattern', 'char', 'nonempty', '*_??.mat'; ...		% pattern of behavioral data files for creating PRTs, '*_timing.txt' | '*.mat'
             'PRTpattern','char', 'nonempty', '*.prt'; ...		% for creating SDMs, can be '*.prt' | '*_foravg.prt'
             'MCparams','char', 'nonempty', 'MCparams'; ...		% for adding motion correction parameters to SDM, can be 'MCparams' | 'MCzparams'
             'fConfPred','double','nonempty',0; ...			% first Confound Predictor in final SDMs for MDM
