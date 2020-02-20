@@ -5,6 +5,9 @@ function era = ne_sdm2era_prt(basedir,tc_file_list, prt_file_list, TOPLOT, era_c
 % ne_sdm2era_prt(pwd,'*_MCparams.sdm','*.prt', 1); % all runs
 % ne_sdm2era_prt(basedir,'*_MCparams.sdm','*.prt', 1, {'TR',900},{'cond_regexp','reach.+mov'});
 % ne_sdm2era_prt(basedir,'*_MCparams.sdm','*.prt', 1, {'TR',900,'pred2take','MC'},{'cond_regexp','reach.+mov'});
+% ne_sdm2era_prt(basedir,'*_MCzparams.sdm','*.prt', 1, {'TR',900,'baseline_mode',-1},{'cond_regexp','reach.+mov'}); % here basedir - separate paths for tc and prt
+% ne_sdm2era_prt(basedir,'*_outlier_volumes.mat','*.prt', 2, {'TR',900,'baseline_mode',-1},{'cond_regexp','reach.+mov'}); % here basedir - separate paths for tc and prt
+% ne_sdm2era_prt(basedir,'*_outlier_volumes.mat','*.prt', 2, {'TR',900,'baseline_mode',-1},{'cond_regexp','mov'}); % here basedir - separate paths for tc and prt
 
 % conditions_config
 % e.g. {'cond_regexp','reach.+mov'}
@@ -19,11 +22,11 @@ era_config_def.pre			= 10; % volumes
 era_config_def.post			= 20; % volumes
 era_config_def.baseline_start	= -3; % volumes
 era_config_def.baseline_end		= -1; % volumes
-era_config_def.baseline_mode	= 3; % -1 - subtract baseline, 0 - raw data, 3 - %signal change trial baseline, see https://support.brainvoyager.com/documents/Functional_Statistics/Introduction/BaselineEventRelatedAveraging_v01.pdf
+era_config_def.baseline_mode	= 3; % -1: subtract baseline, 0: raw data, 3: %signal change trial baseline, see https://support.brainvoyager.com/documents/Functional_Statistics/Introduction/BaselineEventRelatedAveraging_v01.pdf
 era_config_def.pred2take        = []; % [] - all, array of pred, or regexp string
     
 if nargin < 4,
-	TOPLOT = 0;
+	TOPLOT = 0; % if 1 - plot, if 2 - plot and save figure
 end
 
 if nargin < 5,
@@ -44,17 +47,25 @@ if nargin < 6,
 	conditions_config = [];
 end
 
+if iscell(basedir), % cell with two elements, for sdm/rtc/mat and for prt separately
+    basedir1 = basedir{1};
+    basedir2 = basedir{2};
+else % single common basedir path
+    basedir1 = basedir;
+    basedir2 = basedir;
+end
+    
 
 if isstr(tc_file_list)
 	if strfind(tc_file_list,'*');
-		[tc_file_list] = findfiles(basedir, tc_file_list, 'dirs=0', 'depth=1');
+		[tc_file_list] = findfiles(basedir1, tc_file_list, 'dirs=0', 'depth=1');
 	end
 end
 
 
 if isstr(prt_file_list)
 	if strfind(prt_file_list,'*');
-		[prt_file_list] = findfiles(basedir, prt_file_list, 'dirs=0', 'depth=1');
+		[prt_file_list] = findfiles(basedir2, prt_file_list, 'dirs=0', 'depth=1');
 	end
 end
 
@@ -102,20 +113,34 @@ end
 %           Weights: [15x0 double]
 %             Color: [0 160 0]
 
-sdm = xff(tc_file_list{1});
-prt = xff(prt_file_list{1});
-
-if ~isempty(era_config.pred2take),
+if strcmp(tc_file_list{1}(end-3:end),'.sdm'),
+    figure_prefix = '_sdm_based';
     
-    if isnumeric(era_config.pred2take),
-        sdm.NrOfPredictors = length(era_config.pred2take);
-    else
-        pi = regexp(sdm.PredictorNames',era_config.pred2take);
-        pii = find(cellfun(@(x) ~isempty(x), pi, 'UniformOutput', 1));
-        sdm.NrOfPredictors = length(pii);
+    sdm = xff(tc_file_list{1});
+    
+    if ~isempty(era_config.pred2take),
+        
+        if isnumeric(era_config.pred2take),
+            sdm.NrOfPredictors = length(era_config.pred2take);
+        else
+            pi = regexp(sdm.PredictorNames',era_config.pred2take);
+            pii = find(cellfun(@(x) ~isempty(x), pi, 'UniformOutput', 1));
+            sdm.NrOfPredictors = length(pii);
+        end
+        
     end
+
+elseif strcmp(tc_file_list{1}(end-3:end),'.mat'), 
+    figure_prefix = '_mat_based';
+    sdm = read_mat_as_sdm(tc_file_list{1},era_config);
+    
+else
+    error(['Unknown format: ' tc_file_list{1}]);
     
 end
+    
+prt = xff(prt_file_list{1});
+
 
 if ~isempty(conditions_config),
     
@@ -142,14 +167,19 @@ for c=1:prt.NrOfConditions, % for each prt condition
 	
 	for f = 1:n_tc_files, % for each TC file
 		
-		sdm = xff(tc_file_list{f});
+		
 		prt = xff(prt_file_list{f});
         
-        if ~isempty(era_config.pred2take), % remove unwanted predictors
-            sdm.NrOfPredictors = length(pii);
-            sdm.PredictorColors = sdm.PredictorColors(pii,:);
-            sdm.PredictorNames = sdm.PredictorNames(pii);
-            sdm.SDMMatrix = sdm.SDMMatrix(:,pii);  
+        if strcmp(tc_file_list{f}(end-3:end),'.sdm')
+            sdm = xff(tc_file_list{f});
+            if ~isempty(era_config.pred2take), % remove unwanted predictors
+                sdm.NrOfPredictors = length(pii);
+                sdm.PredictorColors = sdm.PredictorColors(pii,:);
+                sdm.PredictorNames = sdm.PredictorNames(pii);
+                sdm.SDMMatrix = sdm.SDMMatrix(:,pii);  
+            end
+        else
+            sdm = read_mat_as_sdm(tc_file_list{f},era_config); 
         end
 		
         if ~isempty(conditions_config), % remove unwanted conditions
@@ -185,7 +215,8 @@ for c=1:prt.NrOfConditions, % for each prt condition
 	
 	
 	if TOPLOT,
-		figure('Name',sprintf('%s %d runs %d events',prt.ConditionName{c},n_tc_files, size(era(c,p).tc,2) ));
+		hf(c) = figure('Name',sprintf('%s %d runs %d events',prt.ConditionName{c},n_tc_files, size(era(c,p).tc,2) ),'Position',[100 100 600 900]);
+        
 		for p = 1:sdm.NrOfPredictors,
 			subplot(n_s_rows,n_s_cols,p);
 			if sum(sdm.PredictorColors(p,:))==255*3,
@@ -199,9 +230,36 @@ for c=1:prt.NrOfConditions, % for each prt condition
 				xlabel('Time (s)','FontSize',fs);
 				set(gca,'Xlim',era_config.TR/1000*([-era_config.pre era_config.post]));
 			end
-		end
-		
+        end
+        
+	ig_mlabel('','',get(hf(c),'Name'),'Interpreter','none');	
 	end % of if TOPLOT
 	
 end
+
+if TOPLOT==2, 
+    
+    for c = 1:length(hf),
+        orient(hf(c),'tall');
+        saveas(hf(c), [basedir2 filesep prt.ConditionName{c} figure_prefix '_sdm2era'  '.pdf'], 'pdf'); 
+    end
+end
+
+
+function sdm = read_mat_as_sdm(matfile,era_config)
+load(matfile);
+
+sdm.NrOfDataPoints = size(fq.TC.Quality,1);
+
+sdm.NrOfPredictors = size(fq.TC.Quality,2);
+sdm.PredictorNames = {'Global' 'Foreground' 'Outliers' 'zScoreGlobal' 'SmoothEst'};
+sdm.SDMMatrix = fq.TC.Quality;
+        
+if isfield(fq,'FD')
+        sdm.NrOfPredictors = sdm.NrOfPredictors + 1;
+        sdm.PredictorNames = {'Global' 'Foreground' 'Outliers' 'zScoreGlobal' 'SmoothEst' 'FD'};
+        sdm.SDMMatrix = [sdm.SDMMatrix fq.FD];
+end
+sdm.PredictorColors = fix(jet(sdm.NrOfPredictors)*255);
+
 

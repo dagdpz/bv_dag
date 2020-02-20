@@ -59,14 +59,42 @@ for r = 1:n_runs
 			settings.fmr_quality.avg_exclude_before_after_outlier = exclude_ba;
 		end
 		if plot_info,
+            
 			figure('Name',mat_outliers{r},'Position',[200 200 800 800]);
+            
+            subplot(2,1,1)
 			plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.TC.Foreground,'Color',[0 0 0]); hold on;
 			add_volume_markers(outlier_volumes*settings.fmr_create.TR/1000,'Color',[0.9 0.7 0.7],'LineStyle','-');
 			plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.TC.Foreground,'Color',[0 0 0]); hold on;
 			ylim = get(gca,'Ylim');
 			legend_str = {};
 			set(gca,'Xlim',[0 max([1:fq.Dims(4)]*settings.fmr_create.TR/1000)]);
-
+            ylabel('fq.TC.Foreground');
+            xlabel('Time (s)');
+            
+            subplot(2,1,2)
+            if isfield(fq,'FD')
+                plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.FD,'Color',[0 0 0]); hold on;
+                add_volume_markers(outlier_volumes*settings.fmr_create.TR/1000,'Color',[0.9 0.7 0.7],'LineStyle','-');
+                plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.FD,'Color',[0 0 0]); hold on;
+                ylim = get(gca,'Ylim');
+                legend_str = {};
+                set(gca,'Xlim',[0 max([1:fq.Dims(4)]*settings.fmr_create.TR/1000)]);
+                ylabel('fq.FD');
+                xlabel('Time (s)');
+                
+            else 
+                plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.TC.Quality); hold on;
+                add_volume_markers(outlier_volumes*settings.fmr_create.TR/1000,'Color',[0.9 0.7 0.7],'LineStyle','-');
+                plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.TC.Quality); hold on;
+                ylim = get(gca,'Ylim');
+                legend_str = {};
+                set(gca,'Xlim',[0 max([1:fq.Dims(4)]*settings.fmr_create.TR/1000)]);
+                ylabel('fq.TC.Quality');
+                xlabel('Time (s)');
+                
+            end
+            
 		end
 		
 		switch avg.ProtocolTimeResolution
