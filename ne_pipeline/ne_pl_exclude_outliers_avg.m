@@ -69,8 +69,9 @@ for r = 1:n_runs
 			ylim = get(gca,'Ylim');
 			legend_str = {};
 			set(gca,'Xlim',[0 max([1:fq.Dims(4)]*settings.fmr_create.TR/1000)]);
-            ylabel('fq.TC.Foreground');
-            xlabel('Time (s)');
+            ylabel('fq.TC.Foreground','FontSize',8);
+            xlabel('Time (s)','FontSize',8);
+            title(avg_fullpath,'interpreter','none','FontSize',8);	
             
             subplot(2,1,2)
             if isfield(fq,'FD')
@@ -80,8 +81,8 @@ for r = 1:n_runs
                 ylim = get(gca,'Ylim');
                 legend_str = {};
                 set(gca,'Xlim',[0 max([1:fq.Dims(4)]*settings.fmr_create.TR/1000)]);
-                ylabel('fq.FD');
-                xlabel('Time (s)');
+                ylabel('fq.FD','FontSize',8);
+                xlabel('Time (s)','FontSize',8);
                 
             else 
                 plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.TC.Quality); hold on;
@@ -90,10 +91,11 @@ for r = 1:n_runs
                 ylim = get(gca,'Ylim');
                 legend_str = {};
                 set(gca,'Xlim',[0 max([1:fq.Dims(4)]*settings.fmr_create.TR/1000)]);
-                ylabel('fq.TC.Quality');
-                xlabel('Time (s)');
+                ylabel('fq.TC.Quality','FontSize',8);
+                xlabel('Time (s)','FontSize',8);
                 
             end
+            title([mat_outliers{r}],'interpreter','none','FontSize',8);	
             
 		end
 		
@@ -140,7 +142,6 @@ for r = 1:n_runs
 		
 	end
 	if plot_info,
-		ht = title(gca,[mat_outliers{r}],'interpreter','none','FontSize',8,'LineWidth',10);	
 		orient('tall');
 		saveas(gcf, [mat_outliers{r} '.pdf'], 'pdf');
 		close(gcf);
