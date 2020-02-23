@@ -224,7 +224,7 @@ for c=1:prt.NrOfConditions, % for each prt condition
 			end
 			if ~isempty(era(c,p).tc),		
 				plot(era_config.TR/1000*[-era_config.pre:era_config.post],era(c,p).tc,'Color',sdm.PredictorColors(p,:)/255,'LineWidth',0.5); hold on;
-				plot(era_config.TR/1000*[-era_config.pre:era_config.post],mean(era(c,p).tc,2),'k','Color',sdm.PredictorColors(p,:)/500,'LineWidth',2,'Marker','.');
+				plot(era_config.TR/1000*[-era_config.pre:era_config.post],mean(era(c,p).tc,2),'k','Color',sdm.PredictorColors(p,:)/500,'LineWidth',2,'Marker','.','MarkerSize',5);
 				ig_add_zero_lines;
 				title(sdm.PredictorNames{p},'Interpreter','none','FontSize',fs);
 				xlabel('Time (s)','FontSize',fs);

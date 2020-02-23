@@ -1,7 +1,8 @@
 function ne_vtc_bounding_box(vtc_fullname,varargin)
 % Show VTC bounding box
 vtc = xff(vtc_fullname);
-disp(sprintf('%s bounding box %d %d %d %d %d %d %d ', vtc_fullname, vtc.XStart, vtc.XEnd, vtc.YStart, vtc.YEnd, vtc.ZStart, vtc.ZEnd));
+disp(sprintf('%s BB %d %d %d %d %d %d | BV internal: %d %d %d %d %d %d', vtc_fullname, vtc.XStart, vtc.XEnd, vtc.YStart, vtc.YEnd, vtc.ZStart, vtc.ZEnd, ...
+                                                                                       vtc.ZStart, vtc.ZEnd, vtc.XStart, vtc.XEnd, vtc.YStart, vtc.YEnd));
 vtc.ClearObject;
 
 % use vtc.BoundingBox
