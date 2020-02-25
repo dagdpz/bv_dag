@@ -135,7 +135,7 @@ if isjavascript % new version for BV 2.x and javascript
     disp('// END SET SESSION-SPECIFIC PARAMETERS	');
     
     if isjavascript == 2, % via BV COM, implemented for monkeys
-        disp('Running BV COM');
+        disp('Running BV COM!!!');
             
         bv = actxserver('BrainVoyagerQX.BrainVoyagerQXScriptAccess.1');
         n_runs = k - 1;
