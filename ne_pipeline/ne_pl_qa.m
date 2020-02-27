@@ -55,12 +55,18 @@ switch settings.fmr_quality.outlier_detection_method
 			
 end
 
-
 if isfield(settings.fmr_quality,'plot_events'),
-    axes(findobj(get(gsh,'Children'),'Tag','TC volumes')); % activate TC volumes axes
     prt_fullpath = findfiles(session_path,['*' run_name '.prt']);    
     if ~isempty(prt_fullpath),
-        ne_add_prt_condition_2tc(prt_fullpath{1},settings.fmr_quality.plot_events,'volumes',settings.fmr_create.TR);
+        ax = findobj(get(gsh,'Children'),'Tag','TC volumes'); 
+        if ~isempty(ax) % activate TC volumes axes
+            ne_add_prt_condition_2tc(prt_fullpath{1},settings.fmr_quality.plot_events,'volumes',settings.fmr_create.TR);
+        end
+        ax = findobj(get(gsh,'Children'),'Tag','FD volumes');
+        if ~isempty(ax),
+            axes(ax); % activate TC volumes axes
+            ne_add_prt_condition_2tc(prt_fullpath{1},settings.fmr_quality.plot_events,'volumes',settings.fmr_create.TR);
+        end    
     end
 end
 
@@ -73,7 +79,6 @@ if 0 % add reward markers
 	end
 end
 	
-
 % save *_outlier_volumes.mat
 % use "SDMMatrix_2" and "PredictorNames_2" names to conform to expectations of ne_add_pred2sdm
 PredictorNames_2 = '';

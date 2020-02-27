@@ -59,14 +59,44 @@ for r = 1:n_runs
 			settings.fmr_quality.avg_exclude_before_after_outlier = exclude_ba;
 		end
 		if plot_info,
+            
 			figure('Name',mat_outliers{r},'Position',[200 200 800 800]);
+            
+            subplot(2,1,1)
 			plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.TC.Foreground,'Color',[0 0 0]); hold on;
 			add_volume_markers(outlier_volumes*settings.fmr_create.TR/1000,'Color',[0.9 0.7 0.7],'LineStyle','-');
 			plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.TC.Foreground,'Color',[0 0 0]); hold on;
 			ylim = get(gca,'Ylim');
 			legend_str = {};
 			set(gca,'Xlim',[0 max([1:fq.Dims(4)]*settings.fmr_create.TR/1000)]);
-
+            ylabel('fq.TC.Foreground','FontSize',8);
+            xlabel('Time (s)','FontSize',8);
+            title(avg_fullpath,'interpreter','none','FontSize',8);	
+            
+            subplot(2,1,2)
+            if isfield(fq,'FD')
+                plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.FD,'Color',[0 0 0]); hold on;
+                add_volume_markers(outlier_volumes*settings.fmr_create.TR/1000,'Color',[0.9 0.7 0.7],'LineStyle','-');
+                plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.FD,'Color',[0 0 0]); hold on;
+                ylim = get(gca,'Ylim');
+                legend_str = {};
+                set(gca,'Xlim',[0 max([1:fq.Dims(4)]*settings.fmr_create.TR/1000)]);
+                ylabel('fq.FD','FontSize',8);
+                xlabel('Time (s)','FontSize',8);
+                
+            else 
+                plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.TC.Quality); hold on;
+                add_volume_markers(outlier_volumes*settings.fmr_create.TR/1000,'Color',[0.9 0.7 0.7],'LineStyle','-');
+                plot([1:fq.Dims(4)]*settings.fmr_create.TR/1000,fq.TC.Quality); hold on;
+                ylim = get(gca,'Ylim');
+                legend_str = {};
+                set(gca,'Xlim',[0 max([1:fq.Dims(4)]*settings.fmr_create.TR/1000)]);
+                ylabel('fq.TC.Quality','FontSize',8);
+                xlabel('Time (s)','FontSize',8);
+                
+            end
+            title([mat_outliers{r}],'interpreter','none','FontSize',8);	
+            
 		end
 		
 		switch avg.ProtocolTimeResolution
@@ -112,7 +142,6 @@ for r = 1:n_runs
 		
 	end
 	if plot_info,
-		ht = title(gca,[mat_outliers{r}],'interpreter','none','FontSize',8,'LineWidth',10);	
 		orient('tall');
 		saveas(gcf, [mat_outliers{r} '.pdf'], 'pdf');
 		close(gcf);

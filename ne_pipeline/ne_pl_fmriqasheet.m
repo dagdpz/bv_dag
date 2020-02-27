@@ -206,6 +206,7 @@ elseif strcmp(fmr_quality.outlier_detection_method,'ne_framewise_disp')
         mat2str(outlier_volumes'))];
     
     ht = title(tcp1,['fMRI QA sheet v1: ' q.Filename sprintf('\n') str sprintf('\n') fmr_quality.outlier_detection_method],'interpreter','none','FontSize',8,'LineWidth',10);
+    set(tcp1,'Tag','FD volumes');
     
     tcp2 = subplot(rows, cols, [3 4]); hold on;
     set(gca,'ColorOrder',tccmap);

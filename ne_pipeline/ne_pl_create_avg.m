@@ -4,7 +4,8 @@ if nargin < 6,
 	avg_add_name = ''; % no custom add-on to avg name (which comes from prt2avg_script)
 end
 
-avg = xff('new:avg');
+avg = xff('new:avg'); % if  multiple avgs are to be created, this should be done for each avg in the prt2avg_script
+
 % empty avg
 %                FileVersion: 4
 %               FuncDataType: 'VTC'
@@ -28,12 +29,37 @@ avg = xff('new:avg');
 	       
 run(prt2avg_script);
 
-avg.NrOfFiles	= length(vtc_list);    
-avg.BaseDirectory = strrep([basedir],'\','/');
-avg.FileNames = strrep(vtc_list,'\','/');
+if ~exist('mAVG','var'), % standard approach, no multiple avgs are found in the 'prt2avg_script', one avg is created 
+    
+    avg.BaseDirectory = strrep([basedir],'\','/');
+    avg.FileNames = strrep(vtc_list,'\','/');
+    avg.NrOfFiles	= length(vtc_list);   
+    
+    avg_fullpath = [avg_path filesep avg_add_name avg_name '.avg'];
+    avg.SaveAs(avg_fullpath);
+    disp([avg_fullpath ' created']);
+    
+else % multiple avgs to be created
+    
+    for a = 1:numel(mAVG),
+        
+        avg = mAVG(a).avg;
+        avg_name = mAVG(a).avg_name;
+        
+        avg.BaseDirectory = strrep([basedir],'\','/');
+        avg.FileNames = strrep(vtc_list,'\','/');
+        avg.NrOfFiles	= length(vtc_list);
+        
+        avg_fullpath = [avg_path filesep avg_add_name avg_name '.avg'];
+        avg.SaveAs(avg_fullpath);
+        disp([avg_fullpath ' created']);
+     
+        
+    end
+    
+end
 
-avg_fullpath = [avg_path filesep avg_add_name avg_name '.avg'];
-avg.SaveAs(avg_fullpath);
-disp([avg_fullpath ' created']);
+ 
+
 
 

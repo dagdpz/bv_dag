@@ -33,7 +33,8 @@ if ~isempty(cond_idx),
         ig_add_multiple_vertical_lines(onsets,'Color',[0 0 0],'LineStyle',':');
     end
     
-    title([cond_name ' added']);
+   ig_add_title([cond_name ' added']);
+   
 end
 
 
