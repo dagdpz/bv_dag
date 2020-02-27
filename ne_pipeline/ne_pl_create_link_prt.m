@@ -22,7 +22,7 @@ else
 	
 	if ~isempty(fmr_fullpath),
 		fmr = xff(fmr_fullpath);
-		fmr.ProtocolFile = prt_fullpath;
+		fmr.ProtocolFile = [model_path filesep prt_fullpath];
 		fmr.Save;
 	end
 	
