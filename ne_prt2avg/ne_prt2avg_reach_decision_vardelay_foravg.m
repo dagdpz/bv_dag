@@ -75,7 +75,7 @@ for e = 1:length(conditions2take_all)
     avg.TextColor = [255 255 255];
     
     mAVG(e).avg = avg;
-    mAVG(e).avg = [avg_name '_' delay_name{e}] ;
+    mAVG(e).avg_name = [avg_name '_' delay_name{e}] ;
     
 end
 % avg.Curve
