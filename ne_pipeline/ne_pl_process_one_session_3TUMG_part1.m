@@ -70,6 +70,7 @@ switch settings.Species
             'MCparams','char', 'nonempty', 'MCparams'; ...		% for adding motion correction parameters to SDM, can be 'MCparams' | 'MCzparams'
             'fConfPred','double','nonempty',0; ...			% first Confound Predictor in final SDMs for MDM
             'SDMpattern','char', 'nonempty', '*task*MCparams.sdm'; ...	% for setting confound predictors, can be '*task*MCparams.sdm' | '*task*outlier_preds.sdm'
+            'beh2prt_function_handle','char','nonempty',''; ...  % if not empty, specify beh2prt_function_handle to override settings.prt.beh2prt_function_handle
             };
         
     case 'monkey'
@@ -81,6 +82,7 @@ switch settings.Species
             'MCparams','char', 'nonempty', 'MCparams'; ...		% for adding motion correction parameters to SDM, can be 'MCparams' | 'MCzparams'
             'fConfPred','double','nonempty',0; ...			% first Confound Predictor in final SDMs for MDM
             'SDMpattern','char', 'nonempty', '*task*MCparams.sdm'; ...	% for setting confound predictors, can be '*task*MCparams.sdm' | '*task*outlier_preds.sdm'
+            'beh2prt_function_handle','char','nonempty',''; ...  % if not empty, specify beh2prt_function_handle to override settings.prt.beh2prt_function_handle
             };
 end
 
@@ -202,9 +204,9 @@ if proc_steps.create_prt
             run_name = ['run' num2str(k,'%02d')];
             fmr_fullpath = [session_path filesep run_name filesep subj '_' session_name '_' run_name '.fmr'];
             if exist(fmr_fullpath,'file'),
-                ne_pl_create_link_prt([session_path filesep beh_files(k).name], run_name, fmr_fullpath, model_path, session_settings_id);
+                ne_pl_create_link_prt([session_path filesep beh_files(k).name], run_name, fmr_fullpath, model_path, session_settings_id, params.beh2prt_function_handle);
             else
-                ne_pl_create_link_prt([session_path filesep beh_files(k).name], run_name, '', model_path, session_settings_id);
+                ne_pl_create_link_prt([session_path filesep beh_files(k).name], run_name, '', model_path, session_settings_id, params.beh2prt_function_handle);
             end
         end
     end

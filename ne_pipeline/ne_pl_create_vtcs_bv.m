@@ -142,6 +142,7 @@ if isjavascript % new version for BV 2.x and javascript
         
         SimianCreateVTC(bv,n_runs,session_path,anat,run_path,fmr,trf,vtc,settings);
         
+        bv.Exit;
     end
 
     
