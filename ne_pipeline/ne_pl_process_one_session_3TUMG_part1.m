@@ -70,7 +70,7 @@ switch settings.Species
             'MCparams','char', 'nonempty', 'MCparams'; ...		% for adding motion correction parameters to SDM, can be 'MCparams' | 'MCzparams'
             'fConfPred','double','nonempty',0; ...			% first Confound Predictor in final SDMs for MDM
             'SDMpattern','char', 'nonempty', '*task*MCparams.sdm'; ...	% for setting confound predictors, can be '*task*MCparams.sdm' | '*task*outlier_preds.sdm'
-            'beh2prt_function_handle','char','nonempty',''; ...  % if not empty, specify beh2prt_function_handle to override settings.prt.beh2prt_function_handle
+            'beh2prt_function_handle','function_handle','deblank',''; ...  % if not empty, specify beh2prt_function_handle to override settings.prt.beh2prt_function_handle
             'model', 'char', 'deblank', '';... % for flexibility, e.g. during prt creation
             };
         
@@ -83,7 +83,7 @@ switch settings.Species
             'MCparams', 'char', 'nonempty', 'MCparams'; ...		% for adding motion correction parameters to SDM, can be 'MCparams' | 'MCzparams'
             'fConfPred', 'double', 'nonempty', 0; ...			% first Confound Predictor in final SDMs for MDM
             'SDMpattern', 'char', 'nonempty', '*task*MCparams.sdm'; ...	% for setting confound predictors, can be '*task*MCparams.sdm' | '*task*outlier_preds.sdm'
-            'beh2prt_function_handle', 'char', 'nonempty', ''; ...  % if not empty, specify beh2prt_function_handle to override settings.prt.beh2prt_function_handle
+            'beh2prt_function_handle', 'function_handle', 'deblank', ''; ...  % if not empty, specify beh2prt_function_handle to override settings.prt.beh2prt_function_handle
             'model', 'char', 'deblank', '';... % for flexibility, e.g. during prt creation
             };
 end
@@ -100,7 +100,7 @@ ori_dir = pwd;
 dicom_path = [session_path filesep dicom_folder];
 cd(session_path);
 
-if isempty(settings.model)
+if isempty(settings.model) && ~isempty(settings.prt.beh2prt_function_handle)
     settings.model = func2str(settings.prt.beh2prt_function_handle);
 end
 
