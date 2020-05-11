@@ -22,8 +22,8 @@ function ne_pl_process_one_session_3TUMG_part2(session_path, subj, session_setti
 
 if strcmp(proc_steps_array,'all'),
 	
-	proc_steps.create_vtc		= 1;
-	proc_steps.filter_vtc		= 1;
+	proc_steps.create_vtc		= 0;
+	proc_steps.filter_vtc		= 0;
 	proc_steps.create_ppi_sdms	= 0; % special case for PPI
 	proc_steps.create_avg		= 1;
     proc_steps.create_mdm		= 1;
