@@ -71,6 +71,7 @@ switch settings.Species
             'fConfPred','double','nonempty',0; ...			% first Confound Predictor in final SDMs for MDM
             'SDMpattern','char', 'nonempty', '*task*MCparams.sdm'; ...	% for setting confound predictors, can be '*task*MCparams.sdm' | '*task*outlier_preds.sdm'
             'beh2prt_function_handle','char','nonempty',''; ...  % if not empty, specify beh2prt_function_handle to override settings.prt.beh2prt_function_handle
+            'model', 'char', 'deblank', '';... % for flexibility, e.g. during prt creation
             };
         
     case 'monkey'
@@ -78,11 +79,12 @@ switch settings.Species
         defpar = { ...
             % 'behorder','double', 'nonempty', []; ...			% order of behavioral data files [1 file -> 1 series (run)]
             'behpattern', 'char', 'nonempty', '*_*.mat'; ...		% pattern of behavioral data files for creating PRTs, '*_timing.txt' | '*.mat'
-            'PRTpattern','char', 'nonempty', '*.prt'; ...		% for creating SDMs, can be '*.prt' | '*_foravg.prt'
-            'MCparams','char', 'nonempty', 'MCparams'; ...		% for adding motion correction parameters to SDM, can be 'MCparams' | 'MCzparams'
-            'fConfPred','double','nonempty',0; ...			% first Confound Predictor in final SDMs for MDM
-            'SDMpattern','char', 'nonempty', '*task*MCparams.sdm'; ...	% for setting confound predictors, can be '*task*MCparams.sdm' | '*task*outlier_preds.sdm'
-            'beh2prt_function_handle','char','nonempty',''; ...  % if not empty, specify beh2prt_function_handle to override settings.prt.beh2prt_function_handle
+            'PRTpattern', 'char', 'nonempty', '*.prt'; ...		% for creating SDMs, can be '*.prt' | '*_foravg.prt'
+            'MCparams', 'char', 'nonempty', 'MCparams'; ...		% for adding motion correction parameters to SDM, can be 'MCparams' | 'MCzparams'
+            'fConfPred', 'double', 'nonempty', 0; ...			% first Confound Predictor in final SDMs for MDM
+            'SDMpattern', 'char', 'nonempty', '*task*MCparams.sdm'; ...	% for setting confound predictors, can be '*task*MCparams.sdm' | '*task*outlier_preds.sdm'
+            'beh2prt_function_handle', 'char', 'nonempty', ''; ...  % if not empty, specify beh2prt_function_handle to override settings.prt.beh2prt_function_handle
+            'model', 'char', 'deblank', '';... % for flexibility, e.g. during prt creation
             };
 end
 
@@ -101,6 +103,11 @@ cd(session_path);
 if isempty(settings.model)
     settings.model = func2str(settings.prt.beh2prt_function_handle);
 end
+
+if ~isempty(params.model), % override if model is provided as varargin
+    settings.model = params.model;
+end
+
 model_path = [session_path filesep settings.model];
 [success,message] = mkdir(model_path);
 if ~success,
