@@ -74,9 +74,6 @@ end
 [~,session_name] = fileparts(session_path);
 
 ne_pl_session_settings;
-if isempty(settings.model)
-    settings.model = func2str(settings.prt.beh2prt_function_handle);
-end
 
 if ~isempty(params.model), % override if model is provided as varargin
     settings.model = params.model;

@@ -100,8 +100,12 @@ ori_dir = pwd;
 dicom_path = [session_path filesep dicom_folder];
 cd(session_path);
 
-if isempty(settings.model) && ~isempty(settings.prt.beh2prt_function_handle)
-    settings.model = func2str(settings.prt.beh2prt_function_handle);
+if isempty(settings.model)
+    if ~isempty(settings.prt.beh2prt_function_handle)
+        settings.model = func2str(settings.prt.beh2prt_function_handle);
+    else
+        settings.model = func2str(params.beh2prt_function_handle);
+    end
 end
 
 if ~isempty(params.model), % override if model is provided as varargin
