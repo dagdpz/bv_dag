@@ -56,7 +56,7 @@ for s = 1:length(settings_for)
         AverageBaselineFrom =  repmat(AverageBaselineFrom,length(conditions2take_all),1);
         AverageBaselineTo   =  repmat(AverageBaselineTo  ,length(conditions2take_all),1);
         PreInterval         =  repmat(PreInterval        ,length(conditions2take_all),1);
-        PostInterval        =  str2double(delay_name) + PostInterval;
+        PostInterval        =  (str2double(delay_name) + PostInterval)';
         NrOfTimePoints	    =  PreInterval + PostInterval + 1;
         
     elseif strcmp('mov',settings_for(s))
@@ -88,7 +88,7 @@ for s = 1:length(settings_for)
         AverageBaselineFrom =  AverageBaselineFrom - str2double(delay_name);
         AverageBaselineTo   =  AverageBaselineTo   - str2double(delay_name);
         PreInterval         =  PreInterval         + str2double(delay_name);
-        PostInterval        =  repmat(PostInterval,1,length(conditions2take_all));
+        PostInterval        = repmat(PostInterval,1,length(conditions2take_all));
         NrOfTimePoints	    = PreInterval + PostInterval + 1;
         
         
