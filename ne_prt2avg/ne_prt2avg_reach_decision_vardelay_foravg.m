@@ -1,3 +1,4 @@
+function ne_prt2avg_reach_decision_vardelay_foravg
 % ne_prt2avg_reach_decision_vardelay_foravg
 
 % Depending on delays and timepoint of alignment, 3 different settings have
@@ -11,7 +12,7 @@ for s = 1:length(settings_for)
     
     delay_name          = {'3' '6' '9' '12' '15'};
     avg_name_suffix = delay_name;
-    avg_name_base   = [mfilename '_' settings_for(s)];
+    avg_name_base   = ([mfilename '_' settings_for{s}]);
     
     % Settings here are seen relative to onset of cue, because the
     % baseline is defined before the cue for both, alignment to cue and
@@ -175,3 +176,4 @@ end %loop cue mov
 %     PreIntervalColor
 %     PostIntervalColor
 
+end
