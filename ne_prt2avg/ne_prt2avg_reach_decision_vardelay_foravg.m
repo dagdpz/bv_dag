@@ -1,4 +1,3 @@
-function ne_prt2avg_reach_decision_vardelay_foravg
 % ne_prt2avg_reach_decision_vardelay_foravg
 
 % Depending on delays and timepoint of alignment, 3 different settings have
@@ -175,5 +174,3 @@ end %loop cue mov
 %     StdErrThick
 %     PreIntervalColor
 %     PostIntervalColor
-
-end
