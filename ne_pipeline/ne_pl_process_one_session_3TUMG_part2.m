@@ -22,8 +22,8 @@ function ne_pl_process_one_session_3TUMG_part2(session_path, subj, session_setti
 
 if strcmp(proc_steps_array,'all'),
 	
-	proc_steps.create_vtc		= 1;
-	proc_steps.filter_vtc		= 1;
+	proc_steps.create_vtc		= 0;
+	proc_steps.filter_vtc		= 0;
 	proc_steps.create_ppi_sdms	= 0; % special case for PPI
 	proc_steps.create_avg		= 1;
     proc_steps.create_mdm		= 1;
@@ -74,6 +74,12 @@ end
 [~,session_name] = fileparts(session_path);
 
 ne_pl_session_settings;
+
+if isempty(settings.model) % PN 20200518
+    if ~isempty(settings.prt.beh2prt_function_handle)
+        settings.model = func2str(settings.prt.beh2prt_function_handle);
+    end
+end
 
 if ~isempty(params.model), % override if model is provided as varargin
     settings.model = params.model;
