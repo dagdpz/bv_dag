@@ -22,9 +22,14 @@ settings.fmr_create.NrOfSkippedVolumes = 0;
 flags.xyres = [settings.fmr_create.ResolutionX,settings.fmr_create.ResolutionY];
 
 switch settings.Species
-    case 'human'
-        % n = neuroelf; fmr = n.createfmr(imafiles, flags); % original NE - problems with positioning ("BV -> FMR properties -> POS Info)
-        fmr = ne_createfmr(imafiles, flags, 'monkey'); % modified IK
+    case 'human'       
+        if strcmp(neuroelf_version,'1.1')
+        	% n = neuroelf; fmr = n.createfmr(imafiles, flags); % original NE - in 1.0 problems with positioning ("BV -> FMR properties -> POS Info)
+                                                                % also, non-power-2 matrix sizes were not accomodated
+            fmr = ne_createfmr_1dot1(imafiles, flags); % modified IK
+        else            
+            fmr = ne_createfmr(imafiles, flags, 'monkey'); % modified IK
+        end
     case 'monkey'
         fmr = ne_createfmr(imafiles, flags, settings.Species); % modified IK
 end
