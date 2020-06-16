@@ -689,16 +689,17 @@ else
 end
 
 % get things into a square matrix with a power-2
-psdim = [64, 70, 80, 96, 128, 192, 256]; % IK
-mxdim = max(DimX, DimY);
-mndim = find(mxdim <= psdim);
-if isempty(mndim)
-    error( ...
-        'neuroelf:DataTooLarge', ...
-        'Data too large to fit into square matrix.' ...
-    );
-end
-acdim = psdim(mndim(1));
+% psdim = [64, 70, 80, 96, 128, 192, 256]; % <-IK: one approach
+% mxdim = max(DimX, DimY);
+% mndim = find(mxdim <= psdim);
+% if isempty(mndim)
+%     error( ...
+%         'neuroelf:DataTooLarge', ...
+%         'Data too large to fit into square matrix.' ...
+%     );
+% end
+% acdim = psdim(mndim(1));
+acdim = max(flags.xyres(1),flags.xyres(2)); % <-IK: more generic(?) approach
 
 % create object
 fmr = xff('new:fmr');
