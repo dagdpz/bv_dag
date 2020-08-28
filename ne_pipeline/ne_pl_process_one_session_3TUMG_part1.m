@@ -27,13 +27,13 @@ function ne_pl_process_one_session_3TUMG_part1(session_path, dicom_folder, serie
 %	'set_confound_preds'
 
 if strcmp(proc_steps_array,'all'),
-	proc_steps.create_fmr		= 1;
-	proc_steps.create_prt		= 1;
-	proc_steps.preprocess_fmr	= 1;
-	proc_steps.create_sdm		= 1;
-	proc_steps.add_MC_sdm		= 1;
-	proc_steps.run_QA           = 1;
-	proc_steps.add_outliers_sdm	= 1;
+	proc_steps.create_fmr		= 0; %1
+	proc_steps.create_prt		= 0; %1
+	proc_steps.preprocess_fmr	= 0; %1
+	proc_steps.create_sdm		= 0; %1
+	proc_steps.add_MC_sdm		= 0; %1
+	proc_steps.run_QA           = 0; %1
+	proc_steps.add_outliers_sdm	= 0; %1
 	proc_steps.set_confound_preds	= 0;
 	
 else
