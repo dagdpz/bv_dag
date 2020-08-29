@@ -39,6 +39,7 @@ end
 
 % default parameters, for dynamic params (i.e. those params might change from session to session, even for same dataset)
 defpar = { ...
+    'model', 'char', 'deblank', '';... % for flexibility, e.g. during avg creation
     'vtc_pattern', 'char', 'nonempty', '*spkern*.vtc'; ...		
     'sdm_pattern', 'char', 'nonempty', '*task_*_*.sdm'; ...
     'prt_pattern', 'char', 'nonempty', '*.prt'; ...
@@ -57,9 +58,17 @@ if isempty(strfind(dataset_path,basedir)), % not a full path
 end
 
 run('ne_pl_session_settings');
+
 if isempty(settings.model)
-    settings.model = func2str(settings.prt.beh2prt_function_handle);
+    if ~isempty(settings.prt.beh2prt_function_handle)
+        settings.model = func2str(settings.prt.beh2prt_function_handle);
+    end
 end
+
+if ~isempty(params.model), % override if model is provided as varargin % PN
+    settings.model = params.model;
+end
+
 
 dataset_path = [dataset_path filesep settings.model];
 
@@ -71,7 +80,7 @@ if ~exist(dataset_path, 'dir')
 end
 
 if proc_steps.create_mdm
-ne_pl_create_mdm_multisession(basedir,session_list,dataset_path,dataset_name,session_settings_id,'vtc_pattern',params.vtc_pattern,'sdm_pattern',params.sdm_pattern);
+ne_pl_create_mdm_multisession(basedir,session_list,dataset_path,dataset_name,session_settings_id,'vtc_pattern',params.vtc_pattern,'sdm_pattern',params.sdm_pattern,'model',params.model);
 end
 
 if proc_steps.create_avg

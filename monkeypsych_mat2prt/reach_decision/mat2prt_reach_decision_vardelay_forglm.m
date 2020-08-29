@@ -1,6 +1,6 @@
-function prt_fname = mat2prt_reach_decision_v1_vardelay_forglm(mat_file, run_name)
+function prt_fname = mat2prt_reach_decision_vardelay_forglm(mat_file, run_name)
 % Peter's thesis on reach decisions
-% added ITI and ABORT predictors
+% % modeling includes: trial_types, aborted, ITI
 
 if nargin < 2,
     run_name = '';

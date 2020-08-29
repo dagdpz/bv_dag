@@ -1,7 +1,6 @@
-function prt_fname = mat2prt_reach_decision_v1_vardelay_foravg(mat_file, run_name)
+function prt_fname = mat2prt_reach_decision_vardelay_foravg(mat_file, run_name)
 % Peter's thesis on reach decisions
-% v2: added ITI and ABORT predictors
-% v3: added variable delay
+% modeling includes: trial_types, DELAYS, aborted, ITI
 
 if nargin < 2,
     run_name = '';
@@ -23,7 +22,7 @@ cue_offset_delay = 300;
 mem_onset_delay = 1000; % length: 1s
 mem_offset_delay = -1000;
 
-% [onset of state 9 onset of state 10 + 200 ms] (you add 200 ms
+% [onset of state 9, onset of state 10 + 200 ms] (you add 200 ms
 % because of estimated longer duration to reach the final destination in
 % the target (state 10 starts when crossing the border of the target)
 mov_onset_delay = 0;

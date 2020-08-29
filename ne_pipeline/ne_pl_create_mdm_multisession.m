@@ -6,6 +6,7 @@ function mdm = ne_pl_create_mdm_multisession(basedir,session_list,mdm_path,mdm_n
 
 
 defpar = { ...
+    'model', 'char', 'deblank', ''; ... % for flexibility, e.g. during avg creation % PN 20200518
     'vtc_pattern', 'char', 'nonempty', '*spkern*.vtc'; ...		
     'sdm_pattern', 'char', 'nonempty', '*task_*_*.sdm'; ...
 };
@@ -26,8 +27,15 @@ end
 % make sure mdm_path contains model_path
 run('ne_pl_session_settings');
 if isempty(settings.model)
-    settings.model = func2str(settings.prt.beh2prt_function_handle);
+    if ~isempty(settings.prt.beh2prt_function_handle)
+        settings.model = func2str(settings.prt.beh2prt_function_handle);
+    end
 end
+
+if ~isempty(params.model) 
+    settings.model = params.model;
+end
+
 
 if isempty(strfind(mdm_path,settings.model)),
     mdm_path = [mdm_path filesep settings.model];

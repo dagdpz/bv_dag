@@ -22,12 +22,12 @@ function ne_pl_process_one_session_3TUMG_part2(session_path, subj, session_setti
 
 if strcmp(proc_steps_array,'all'),
 	
-	proc_steps.create_vtc		= 1;
-	proc_steps.filter_vtc		= 1;
+	proc_steps.create_vtc		= 0;
+	proc_steps.filter_vtc		= 0;
 	proc_steps.create_ppi_sdms	= 0; % special case for PPI
 	proc_steps.create_avg		= 1;
     proc_steps.create_mdm		= 1;
-	proc_steps.exclude_outliers_avg	= 1; % changed to 0 temporarily
+	proc_steps.exclude_outliers_avg	= 0; % changed to 0 temporarily
 	proc_steps.create_glm		= 1;
 	
 	
@@ -53,6 +53,7 @@ end
 
 % default parameters, for dynamic params (i.e. those params might change from session to session, even for same dataset)
 defpar = { ...
+    'model', 'char', 'deblank', '';... % for flexibility, e.g. during avg creation
 	'vmr_pattern', 'char', 'nonempty',	'*ACPC*.vmr';... % for vtc creation, use '.vmr' for humans, '*ACPC.vmr' for monkeys
 	'fmr_pattern', 'char', 'nonempty',	'*_tf.fmr';... % for vtc creation
 	'vtc_pattern', 'char', 'nonempty',	'*spkern*.vtc'; ... % for AVG creation, MDM creation, and/or PPI
@@ -73,9 +74,17 @@ end
 [~,session_name] = fileparts(session_path);
 
 ne_pl_session_settings;
-if isempty(settings.model)
-    settings.model = func2str(settings.prt.beh2prt_function_handle);
+
+if isempty(settings.model) % PN 20200518
+    if ~isempty(settings.prt.beh2prt_function_handle)
+        settings.model = func2str(settings.prt.beh2prt_function_handle);
+    end
 end
+
+if ~isempty(params.model), % override if model is provided as varargin
+    settings.model = params.model;
+end
+
 model_path = [session_path filesep settings.model];
 
 diary([session_path filesep settings.model filesep 'ne_pl_process_one_session_3TUMG_part2.log']);
