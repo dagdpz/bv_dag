@@ -35,9 +35,11 @@ if ~isempty(settings.mdm.mask)
 end
 
 % added IK 20190801
-if settings.mdm.robust
-    add_name = [add_name '_robust'];
-    opts.robust = true;
+if isfield(settings.mdm,'robust'),
+    if settings.mdm.robust
+        add_name = [add_name '_robust'];
+        opts.robust = true;
+    end
 end
 
 if isfield(settings.sdm, 'ppicond') && ~isempty(settings.sdm.ppicond)

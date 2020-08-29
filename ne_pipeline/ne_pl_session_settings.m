@@ -711,9 +711,9 @@ switch session_settings_id
 		
 		% settings for multi-study GLM computation
 		settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
-		settings.mdm.zTransformation = 0; % apply z-transformation to volume time courses
-		settings.mdm.PSCTransformation = 1; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
+		settings.mdm.zTransformation = 1; % apply z-transformation to volume time courses
+		settings.mdm.PSCTransformation = 0; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
 		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
-		settings.mdm.mask = 'D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk';
+		settings.mdm.mask = 'Y:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk';
 		
 end
