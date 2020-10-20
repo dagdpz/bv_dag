@@ -8,7 +8,7 @@ function nemni_pl3_prt_sdm_nifti
 
 
 load('D:\MRI\Human\fMRI-reach-decision\test_subject\JOOD_protocol.mat');
-throwaway = strcmp('JOOD',{prot.name});
+throwaway = strcmp('JOODcorr',{prot.name});
 
 prot(~throwaway) = [];
 
@@ -65,7 +65,7 @@ for i = 1:length(prot) %loop subjects
             
             % loop through mat files
             for m = 1:length(beh_files),
-                run_name = ['run' num2str(k,'%02d')]; % current run
+                run_name = ['run' num2str(m,'%02d')]; % current run
                 
                 % create PRT
                 prt_fullpath = mat2prt_reach_decision_vardelay_forglm([session_path filesep beh_files(m).name],run_name);         
@@ -146,7 +146,7 @@ for i = 1:length(prot) %loop subjects
             disp(sprintf('ERROR: cannot match task_sdm_files (%d) to MC_sdm_files (%d)',length(task_sdm_files),length(MC_sdm_files)));
         else
             for m = 1:length(task_sdm_files),
-                ne_pl_add_pred_sdm([model_path filesep task_sdm_files(k).name],[session_path filesep MC_sdm_files(k).name]);
+                ne_pl_add_pred_sdm([model_path filesep task_sdm_files(m).name],[session_path filesep MC_sdm_files(m).name]);
                 
             end
         end
