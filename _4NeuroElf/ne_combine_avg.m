@@ -43,29 +43,58 @@ if ~strcmp(session_list{1},avg1.FileNames{1}(1:length(session_list{1}))), % file
 end
 
 for k=2:length(session_list),
-	if avg_pattern,
-		avg_name = findfiles([basedir filesep session_list{k} filesep avg_search_path],avg_pattern,struct('depth',1));
-		avg_name = avg_name{1}; [dummy,avg_name,ext] = fileparts(avg_name); avg_name = [avg_name ext];
-	end
-	avgk_fullname = [basedir filesep session_list{k} filesep avg_search_path filesep avg_name];
-	avgk = xff(avgk_fullname);
-	for c = 1:avg.NrOfCurves
-		avg.Curve(c).NrOfConditionEvents = avg.Curve(c).NrOfConditionEvents + avgk.Curve(c).NrOfConditionEvents;
-		for f=1:avgk.NrOfFiles,
-			if avg.Curve(c).NrOfConditionEvents,
-				avg.Curve(c).File(avg.NrOfFiles+f).EventPointsInFile = avg.NrOfFiles + avgk.Curve(c).File(f).EventPointsInFile;
-				avg.Curve(c).File(avg.NrOfFiles+f).Points = avgk.Curve(c).File(f).Points;
+    if avg_pattern,
+        avg_name = findfiles([basedir filesep session_list{k} filesep avg_search_path],avg_pattern,struct('depth',1));
+        avg_name = avg_name{1}; [dummy,avg_name,ext] = fileparts(avg_name); avg_name = [avg_name ext];
+    end
+    avgk_fullname = [basedir filesep session_list{k} filesep avg_search_path filesep avg_name];
+    avgk = xff(avgk_fullname);
+    for c = 1:avg.NrOfCurves
+        avg.Curve(c).NrOfConditionEvents = avg.Curve(c).NrOfConditionEvents + avgk.Curve(c).NrOfConditionEvents;
+        for f=1:avgk.NrOfFiles,
+            
+            %% PN 20201022 START
+            
+            
+            if avgk.Curve(c).NrOfConditionEvents,
+                %if avgk.Curve(c).NrOfConditionEvents
+                avg.Curve(c).File(avg.NrOfFiles+f).EventPointsInFile = avg.NrOfFiles + avgk.Curve(c).File(f).EventPointsInFile;
+                avg.Curve(c).File(avg.NrOfFiles+f).Points = avgk.Curve(c).File(f).Points;
+                %end
+            else
+                avg.Curve(c).File(avg.NrOfFiles+f).EventPointsInFile = [];
             end
+            
+            
+            if isnan(avg.Curve(c).EventDuration)
+                avg.Curve(c).EventDuration = avgk.Curve(c).EventDuration;
+            end
+            
+            
+            %             if avg.Curve(c).NrOfConditionEvents,
+            %                 avg.Curve(c).File(avg.NrOfFiles+f).EventPointsInFile = avg.NrOfFiles + avgk.Curve(c).File(f).EventPointsInFile;
+            %                 avg.Curve(c).File(avg.NrOfFiles+f).Points = avgk.Curve(c).File(f).Points;
+            %             end
+            
+            % The problem was, that it checked, whether there was a trial in the previous avg
+            % (NrofConditionEvents of avg), but not if there is one in the following
+            % avg (NrofConditionEvents of avgk) running into the error that
+            % EventPointsInFile of avgk could not be found. Nevertheless, FileNames and
+            % NrofFiles of avgk are added (see below).
+            
+            %% PN 20201022 END
+            
             if ~strcmp(session_list{k},avgk.FileNames{f}(1:length(session_list{k}))), % filenames do not contain session name
                 if c == 1,
                     avgk.FileNames{f} = [session_list{k} filesep avgk.FileNames{f}];
                 end
             end
-		end
-		
-	end
-	avg.FileNames = [avg.FileNames; avgk.FileNames];
-	avg.NrOfFiles = avg.NrOfFiles + avgk.NrOfFiles;
+        end
+    end
+    
+    
+    avg.FileNames = [avg.FileNames; avgk.FileNames];
+    avg.NrOfFiles = avg.NrOfFiles + avgk.NrOfFiles;
 end
 
 % Make sure that basedir and FileNames together represent a valid path.
