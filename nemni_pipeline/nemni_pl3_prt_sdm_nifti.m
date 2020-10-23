@@ -12,11 +12,22 @@ throwaway = strcmp('JOODcorr',{prot.name});
 
 prot(~throwaway) = [];
 
+
+%% settings
+% general
 runpath = 'D:\MRI\Human\fMRI-reach-decision\test_subject';
 session_settings_id = 'Human_reach_decision';
-old_dir = pwd;
 
+% sdm creation
 sdm_template = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\template_sdm_MCparams.sdm';
+
+% vtc creation
+nifti_pattern = 's8wrhum_*.nii';
+% vtc temporal filter
+min_wavelength = 60;
+
+%%
+old_dir = pwd;
 netools = neuroelf;
 
 for i = 1:length(prot) %loop subjects
@@ -158,19 +169,26 @@ for i = 1:length(prot) %loop subjects
             epi_path = [session_path filesep 'run0' num2str(m)'];
             
             % preprocessed nifti
-            nifti_name = dir(fullfile(epi_path,'s8wrhum_*.nii')); % s6wrhum_*.nii
+            nifti_name = dir(fullfile(epi_path,nifti_pattern)); % s6wrhum_*.nii
             nifti_name = nifti_name.name;
             nifti_file =   [epi_path filesep nifti_name]; 
             
+            % nifti --> vtc
             clear vtc
             vtc = netools.importvtcfromanalyze({nifti_file});
             vtc.TR = 900;
             
-            % link prt to vtc
-            vtc.NameOfLinkedPRT = [session_path filesep prt_files(m).name];
-            vtc.SaveAs([epi_path filesep prot(i).name '_' prot(i).session(k).date '_run0' num2str(m) '_preproc.vtc']);            
+            % high pass filter vtc
+            vtc.Filter(struct('temp',1,'tempdct',min_wavelength);
             
+            % add PRT to nifti
+            vtc.NameOfLinkedPRT = [session_path filesep prt_files(m).name];
+            
+            % save
+            vtc.SaveAs([epi_path filesep prot(i).name '_' prot(i).session(k).date '_run0' num2str(m) '_preproc_tf.vtc']);            
+
         end
+        
 
     end
 end
