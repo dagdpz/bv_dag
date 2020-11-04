@@ -7,22 +7,29 @@ function nemni_pl3_prt_sdm_nifti
 % 3. change MCparams SDM with other motion correction
 
 
-load('D:\MRI\Human\fMRI-reach-decision\test_subject\JOOD_protocol.mat');
-throwaway = strcmp('JOODcorr',{prot.name});
 
-prot(~throwaway) = [];
+
+%%%% IMPLEMENT MEMORY BUFFER!!
+
+load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
+no_throwaway = strcmp('LUAM',{prot.name});%|...
+%             strcmp('FARA',{prot.name})|...
+%             strcmp('JOOD',{prot.name})|...
+%             strcmp('CLSC',{prot.name});
+prot(~no_throwaway) = [];
 
 
 %% settings
 % general
-runpath = 'D:\MRI\Human\fMRI-reach-decision\test_subject';
+runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI'; %folder containing subjects containing MRI data
+runpath_behavioral = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data'; %folder containing subjects containing BEHAVIORAL matfiles
 session_settings_id = 'Human_reach_decision';
 
 % sdm creation
 sdm_template = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\template_sdm_MCparams.sdm';
 
 % vtc creation
-nifti_pattern = 's8wrhum_*.nii';
+nifti_pattern = 's6wrhum_*.nii';
 % vtc temporal filter
 min_wavelength = 60;
 
@@ -43,12 +50,17 @@ for i = 1:length(prot) %loop subjects
         %% check existence and copying matfiles to folder
         for m = 1 : length(prot(i).session(k).epi) 
             
-            %runpath_beh = [runpath filesep ... % Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\CLSC\20200114\CLSC_2020-01-14_07.mat
-            runpath_beh = ['Y:\MRI\Human\fMRI-reach-decision\Experiment' filesep ... % Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\CLSC\20200114\CLSC_2020-01-14_07.mat
-                'behavioral_data' filesep ...
+            runpath_beh = [runpath_behavioral filesep ... % Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\CLSC\20200114\CLSC_2020-01-14_07.mat
                 prot(i).name filesep ...
                 prot(i).session(k).date filesep ...
                 prot(i).session(k).epi(m).mat_file ];
+                       
+%             %runpath_beh = [runpath filesep ... % Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\CLSC\20200114\CLSC_2020-01-14_07.mat
+%             runpath_beh = ['Y:\MRI\Human\fMRI-reach-decision\Experiment' filesep ... % Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\CLSC\20200114\CLSC_2020-01-14_07.mat
+%                 'behavioral_data' filesep ...
+%                 prot(i).name filesep ...
+%                 prot(i).session(k).date filesep ...
+%                 prot(i).session(k).epi(m).mat_file ];
             
             if ~(exist([session_path filesep prot(i).session(k).epi(m).mat_file],'file') == 2) % if it is not there already
                 copyfile(runpath_beh,[session_path filesep])
@@ -144,12 +156,13 @@ for i = 1:length(prot) %loop subjects
             sdm.SDMMatrix(:,:) = mp_txt;
             
             % save
-            sdm_name = [prot(i).name '_' prot.session(k).date '_' 'run0' num2str(m) '_MCparams.sdm'];
+            sdm_name = [prot(i).name '_' prot(i).session(k).date '_' 'run0' num2str(m) '_MCparams.sdm'];
             sdm.SaveAs([session_path filesep sdm_name]);
             
         end
         
         %% add MC to sdm
+        
         task_sdm_files = dir([model_path filesep '*_task.sdm']);
         MC_sdm_files = dir([session_path filesep '*_MCparams.sdm']);
         
@@ -179,7 +192,7 @@ for i = 1:length(prot) %loop subjects
             vtc.TR = 900;
             
             % high pass filter vtc
-            vtc.Filter(struct('temp',1,'tempdct',min_wavelength);
+            %vtc.Filter(struct('temp',1,'tempdct',min_wavelength);
             
             % add PRT to nifti
             vtc.NameOfLinkedPRT = [session_path filesep prt_files(m).name];
