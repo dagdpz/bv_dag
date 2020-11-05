@@ -61,7 +61,7 @@ switch settings.fmr_quality.outlier_detection_method
         outlier_volumes = add_neighboring_volumes(outlier_volumes,settings.fmr_quality.reject_volumes_before_after_outlier,fq.Dims(4));
         
         MoCoSDM = [session_path filesep name '_MCparams.sdm'];
-        fq.FD = ne_FD_outlier_detection(MoCoSDM, settings.fmr_quality.fd_cutoff, settings.fmr_quality.fd_radius);
+        [dummy, fq.FD] = ne_FD_outlier_detection(MoCoSDM, settings.fmr_quality.fd_cutoff, settings.fmr_quality.fd_radius);
         fq.DVARS_Stat = DVARS_Stat;
         fq.outlier_volumes = outlier_volumes;
         [gsh] = ne_pl_fmriqasheet(fq,settings.fmr_quality);

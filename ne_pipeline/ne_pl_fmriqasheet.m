@@ -235,9 +235,9 @@ elseif strcmp(fmr_quality.outlier_detection_method,'ne_DVARS')
     odt = fmr_quality.DVARS_psig;
     plot(DeltapDvar,'Color',[0 0 0]);
     line([1 nvol],[odt odt],'Color',[1 0 0]);
-    plot(outlier_volumes,DeltapDvar(outlier_volumes),'Color',[1 0.5 0.5]);
+    plot(outlier_volumes,DeltapDvar(outlier_volumes),'r.');
     
-    legend({'Delta %Dvar'});
+    legend({'Delta %Dvar' 'pract. sig','outliers'});
     set(tcp2,'Tag','TC volumes');
     
 end
