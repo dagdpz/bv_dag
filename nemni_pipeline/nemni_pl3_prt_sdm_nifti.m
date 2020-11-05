@@ -30,8 +30,11 @@ sdm_template = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\temp
 
 % vtc creation
 nifti_pattern = 's6wrhum_*.nii';
+
+% mask source
+msk_source = 'Y:\Sources\NeuroElf_v11_7521\_files\masks\colin_brain_ICBMnorm_wholebrain3mm.msk';
 % vtc temporal filter
-min_wavelength = 60;
+min_wavelength = 128;
 
 %%
 old_dir = pwd;
@@ -175,7 +178,7 @@ for i = 1:length(prot) %loop subjects
             end
         end
         
-        %% create vtc from nifti (+link prt)
+        %% create vtc from nifti (+link prt) (+apply mask)
        
         for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
             
@@ -191,18 +194,36 @@ for i = 1:length(prot) %loop subjects
             vtc = netools.importvtcfromanalyze({nifti_file});
             vtc.TR = 900;
             
-            % high pass filter vtc
-            %vtc.Filter(struct('temp',1,'tempdct',min_wavelength);
+
+            
+            % mask vtc
+            vtc.MaskWithMSK(msk);
             
             % add PRT to nifti
             vtc.NameOfLinkedPRT = [session_path filesep prt_files(m).name];
             
             % save
-            vtc.SaveAs([epi_path filesep prot(i).name '_' prot(i).session(k).date '_run0' num2str(m) '_preproc_tf.vtc']);            
+            vtc.SaveAs([epi_path filesep prot(i).name '_' prot(i).session(k).date '_run0' num2str(m) '.vtc']);            
 
         end
         
-
+        %% temporal filter
+        for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
+            
+            epi_path = [session_path filesep 'run0' num2str(m)'];
+            
+            vtc_name = dir(fullfile(epi_path,['*run0' num2str(m) '.vtc']));
+            vtc_name = vtc_name.name;
+            
+            clear vtc
+            vtc = xff([epi_path filesep vtc_name]);
+            
+            % high pass filter vtc
+            vtc.Filter(struct('temp',1,'tempdct',min_wavelength);
+            vtc.Save;
+            vtc.ClearObject;
+        end
+        
     end
 end
 %%
