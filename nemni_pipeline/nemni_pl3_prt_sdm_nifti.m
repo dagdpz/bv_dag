@@ -227,17 +227,17 @@ for i = 1:length(prot) %loop subjects
         
         %% adding outlier predictors to sdm
         
-        task_and_MC_sdm_files = dir([model_path filesep '*task*' '*MCparams.sdm']);
-        outlier_mat_files = dir([session_path filesep '*_outlier_volumes.mat']);
-        
-        if length(task_and_MC_sdm_files) ~= length(outlier_mat_files),
-            disp(sprintf('ERROR: cannot match task and MC sdm files (%d) to outlier mat files (%d)',length(task_and_MC_sdm_files),length(outlier_mat_files)));
-        else
-            for m = 1:length(task_and_MC_sdm_files),
-                ne_pl_add_pred_sdm([model_path filesep task_and_MC_sdm_files(m).name],[session_path filesep outlier_mat_files(m).name],0,'outlier_preds');
-            end
-        end
-        
+%         task_and_MC_sdm_files = dir([model_path filesep '*task*' '*MCparams.sdm']);
+%         outlier_mat_files = dir([session_path filesep '*_outlier_volumes.mat']);
+%         
+%         if length(task_and_MC_sdm_files) ~= length(outlier_mat_files),
+%             disp(sprintf('ERROR: cannot match task and MC sdm files (%d) to outlier mat files (%d)',length(task_and_MC_sdm_files),length(outlier_mat_files)));
+%         else
+%             for m = 1:length(task_and_MC_sdm_files),
+%                 ne_pl_add_pred_sdm([model_path filesep task_and_MC_sdm_files(m).name],[session_path filesep outlier_mat_files(m).name],0,'outlier_preds');
+%             end
+%         end
+%         
 
         
          %% temporal filter
