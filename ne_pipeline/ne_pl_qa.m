@@ -44,6 +44,27 @@ switch settings.fmr_quality.outlier_detection_method
 			outlier_volumes = add_neighboring_volumes(outlier_volumes,settings.fmr_quality.reject_volumes_before_after_outlier,fq.Dims(4));
 		end
 		[gsh] = ne_pl_fmriqasheet(fq,settings.fmr_quality);
+        
+    case 'ne_DVARS'
+        netools = neuroelf;
+        vtc = xff(fmr_fullpath);
+		[fq, ~] = netools.fmriquality(vtc,settings.fmr_quality);
+        
+        V2 = vtc.VTCData;
+        % V2 = V2(:,:,1:40,:); % only take upper slices of the brain
+        X0 = size(V2,2); Y0 = size(V2,3); Z0 = size(V2,4); T0 = size(V2,1);
+        I0 = prod([X0,Y0,Z0]);
+        V2 = shiftdim(V2,1);
+        Y  = reshape(V2,[I0,T0]); clear V2;
+        
+        [outliers, DVARS_Stat] = ne_DVARS_outlier_detection(Y,settings.fmr_quality.DVARS_psig);
+        
+        MoCoSDM = [session_path filesep name '_MCparams.sdm'];
+        fq.FD = ne_FD_outlier_detection(MoCoSDM, settings.fmr_quality.fd_cutoff, settings.fmr_quality.fd_radius);
+        fq.DVARS_Stat = DVARS_Stat;
+        fq.outliers = outliers;
+        [gsh] = ne_pl_fmriqasheet(fq,settings.fmr_quality);
+
 		
 	case 'ne_fmriquality_TC_custom_method'
 		% use a custom function
