@@ -217,11 +217,11 @@ elseif strcmp(fmr_quality.outlier_detection_method,'ne_framewise_disp')
     
 elseif strcmp(fmr_quality.outlier_detection_method,'ne_DVARS')
     
-    outlier_volumes = q.outliers;
+    outlier_volumes = q.outlier_volumes;
     tcp1 = subplot(rows, cols, [1 2]);
     plot(q.FD,'Color',[0 0 0]); hold on;
     line([1 nvol],[fmr_quality.fd_cutoff fmr_quality.fd_cutoff],'Color',[1 0 0]);
-    hl = add_volume_markers(q.outliers,'LineWidth',0.5,'Color',[1 0.6 0.8]);
+    hl = add_volume_markers(q.outlier_volumes,'LineWidth',0.5,'Color',[1 0.6 0.8]);
     plot(q.FD,'Color',[0 0 0]);
     
     str = [str sprintf('Outlier volumes: %d (%.1f%%) \n %s',length(outlier_volumes),100*length(outlier_volumes)/nvol,...

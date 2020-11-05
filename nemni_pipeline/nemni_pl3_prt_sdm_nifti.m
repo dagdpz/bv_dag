@@ -18,7 +18,8 @@ no_throwaway = strcmp('LUAM',{prot.name});%|...
 %             strcmp('CLSC',{prot.name});
 prot(~no_throwaway) = [];
 
-
+prot(1).session(2) = [];
+prot(1).session(2) = [];
 %% settings
 % general
 runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI'; %folder containing subjects containing MRI data
@@ -178,51 +179,67 @@ for i = 1:length(prot) %loop subjects
             end
         end
         
-        %% create vtc from nifti (+link prt) (+apply mask)
-       
-        for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
-            
-            epi_path = [session_path filesep 'run0' num2str(m)'];
-            
-            % preprocessed nifti
-            nifti_name = dir(fullfile(epi_path,nifti_pattern)); % s6wrhum_*.nii
-            nifti_name = nifti_name.name;
-            nifti_file =   [epi_path filesep nifti_name]; 
-            
-            % nifti --> vtc
-            clear vtc
-            vtc = netools.importvtcfromanalyze({nifti_file});
-            vtc.TR = 900;
-            
-
-            
-            % mask vtc
-            vtc.MaskWithMSK(msk);
-            
-            % add PRT to nifti
-            vtc.NameOfLinkedPRT = [session_path filesep prt_files(m).name];
-            
-            % save
-            vtc.SaveAs([epi_path filesep prot(i).name '_' prot(i).session(k).date '_run0' num2str(m) '.vtc']);            
-
-        end
+%         %% create vtc from nifti (+link prt) (+apply mask)
+%        
+%         for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
+%             
+%             epi_path = [session_path filesep 'run0' num2str(m)'];
+%             
+%             % preprocessed nifti
+%             nifti_name = dir(fullfile(epi_path,nifti_pattern)); % s6wrhum_*.nii
+%             nifti_name = nifti_name.name;
+%             nifti_file =   [epi_path filesep nifti_name]; 
+%             
+%             % nifti --> vtc
+%             clear vtc
+%             vtc = netools.importvtcfromanalyze({nifti_file});
+%             vtc.TR = 900;
+%             
+%             % mask vtc
+%             msk = xff(msk_source);
+%             vtc.MaskWithMSK(msk);
+%           
+%             % add PRT to nifti
+%             vtc.NameOfLinkedPRT = [session_path filesep prt_files(m).name];
+%             
+%             % save
+%             vtc.SaveAs([epi_path filesep prot(i).name '_' prot(i).session(k).date '_run0' num2str(m) '.vtc']);   
+%             disp(['Saved ' [epi_path filesep prot(i).name '_' prot(i).session(k).date '_run0' num2str(m) '.vtc']]);
+% 
+%             vtc.ClearObject;
+%         end
         
-        %% temporal filter
+        %% DVARS
+        
         for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
             
+            % vtc path
             epi_path = [session_path filesep 'run0' num2str(m)'];
-            
             vtc_name = dir(fullfile(epi_path,['*run0' num2str(m) '.vtc']));
             vtc_name = vtc_name.name;
             
-            clear vtc
-            vtc = xff([epi_path filesep vtc_name]);
+            % apply QA function
+            ne_pl_qa(session_path,[epi_path filesep vtc_name],['run0' num2str(m)],session_settings_id);
             
-            % high pass filter vtc
-            vtc.Filter(struct('temp',1,'tempdct',min_wavelength);
-            vtc.Save;
-            vtc.ClearObject;
+            
         end
+        
+         %% temporal filter
+%         for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
+%             
+%             epi_path = [session_path filesep 'run0' num2str(m)'];
+%             
+%             vtc_name = dir(fullfile(epi_path,['*run0' num2str(m) '.vtc']));
+%             vtc_name = vtc_name.name;
+%             
+%             clear vtc
+%             vtc = xff([epi_path filesep vtc_name]);
+%             
+%             % high pass filter vtc
+%             vtc.Filter(struct('temp',1,'tempdct',min_wavelength));
+%             vtc.Save;
+%             vtc.ClearObject;
+%         end
         
     end
 end

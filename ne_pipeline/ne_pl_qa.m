@@ -57,12 +57,13 @@ switch settings.fmr_quality.outlier_detection_method
         V2 = shiftdim(V2,1);
         Y  = reshape(V2,[I0,T0]); clear V2;
         
-        [outliers, DVARS_Stat] = ne_DVARS_outlier_detection(Y,settings.fmr_quality.DVARS_psig);
+        [outlier_volumes, DVARS_Stat] = ne_DVARS_outlier_detection(Y,settings.fmr_quality.DVARS_psig);
+        outlier_volumes = add_neighboring_volumes(outlier_volumes,settings.fmr_quality.reject_volumes_before_after_outlier,fq.Dims(4));
         
         MoCoSDM = [session_path filesep name '_MCparams.sdm'];
         fq.FD = ne_FD_outlier_detection(MoCoSDM, settings.fmr_quality.fd_cutoff, settings.fmr_quality.fd_radius);
         fq.DVARS_Stat = DVARS_Stat;
-        fq.outliers = outliers;
+        fq.outlier_volumes = outlier_volumes;
         [gsh] = ne_pl_fmriqasheet(fq,settings.fmr_quality);
 
 		
