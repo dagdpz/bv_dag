@@ -28,10 +28,14 @@ switch settings.Species
                                                                 % also, non-power-2 matrix sizes were not accomodated
             fmr = ne_createfmr_1dot1(imafiles, flags); % modified IK
         else            
-            fmr = ne_createfmr(imafiles, flags, 'monkey'); % modified IK
+            fmr = ne_createfmr(imafiles, flags, 'monkey'); % modified IK ***WHY MONKEY???
         end
     case 'monkey'
-        fmr = ne_createfmr(imafiles, flags, settings.Species); % modified IK
+        if strcmp(neuroelf_version,'1.1')
+             fmr = ne_createfmr_1dot1(imafiles, flags); % modified IK
+        else
+            fmr = ne_createfmr(imafiles, flags, settings.Species); % modified IK
+        end
 end
 
 settings2set = fieldnames(settings.fmr_create);
