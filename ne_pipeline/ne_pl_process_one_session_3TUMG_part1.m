@@ -11,7 +11,7 @@ function ne_pl_process_one_session_3TUMG_part1(session_path, dicom_folder, serie
 
 % Inputs required:
 % 1) session_path
-% 2) dicom_folder 
+% 2) dicom_folder
 % 3) series order - functional EPI series
 % 4) anat series (use 0 if no session anat)
 % 5) subj (First two letters for monkey, 2 and 2 (Name / Family name) for human, CAPITAL
@@ -27,35 +27,35 @@ function ne_pl_process_one_session_3TUMG_part1(session_path, dicom_folder, serie
 %	'set_confound_preds'
 
 if strcmp(proc_steps_array,'all'),
-	proc_steps.create_fmr		= 0; %1
-	proc_steps.create_prt		= 0; %1
-	proc_steps.preprocess_fmr	= 0; %1
-	proc_steps.create_sdm		= 0; %1
-	proc_steps.add_MC_sdm		= 0; %1
-	proc_steps.run_QA           = 0; %1
-	proc_steps.add_outliers_sdm	= 0; %1
-	proc_steps.set_confound_preds	= 0;
-	
+    proc_steps.create_fmr		= 0; %1
+    proc_steps.create_prt		= 0; %1
+    proc_steps.preprocess_fmr	= 0; %1
+    proc_steps.create_sdm		= 0; %1
+    proc_steps.add_MC_sdm		= 0; %1
+    proc_steps.run_QA           = 0; %1
+    proc_steps.add_outliers_sdm	= 0; %1
+    proc_steps.set_confound_preds	= 0;
+    
 else
-	proc_steps.create_fmr		= 0;
-	proc_steps.create_prt		= 0;
-	proc_steps.preprocess_fmr	= 0;
-	proc_steps.create_sdm		= 0;
-	proc_steps.add_MC_sdm		= 0;
-	proc_steps.run_QA		= 0;
-	proc_steps.add_outliers_sdm	= 0;
-	proc_steps.set_confound_preds	= 0;
-	
-	temp = (strfind(proc_steps_array,'create_fmr')); if ~isempty([temp{:}]),		proc_steps.create_fmr = 1;		end
-	temp = (strfind(proc_steps_array,'create_prt')); if ~isempty([temp{:}]),		proc_steps.create_prt = 1;		end	
-	temp = (strfind(proc_steps_array,'preprocess_fmr')); if ~isempty([temp{:}]),		proc_steps.preprocess_fmr = 1;		end
-	temp = (strfind(proc_steps_array,'create_sdm')); if ~isempty([temp{:}]),		proc_steps.create_sdm = 1;		end	
-	temp = (strfind(proc_steps_array,'add_MC_sdm')); if ~isempty([temp{:}]),		proc_steps.add_MC_sdm = 1;		end
-	temp = (strfind(proc_steps_array,'run_QA')); if ~isempty([temp{:}]),			proc_steps.run_QA = 1;			end
-	temp = (strfind(proc_steps_array,'add_outliers_sdm')); if ~isempty([temp{:}]),		proc_steps.add_outliers_sdm = 1;	end
-	temp = (strfind(proc_steps_array,'set_confound_preds')); if ~isempty([temp{:}]),	proc_steps.set_confound_preds = 1;	end
+    proc_steps.create_fmr		= 0;
+    proc_steps.create_prt		= 0;
+    proc_steps.preprocess_fmr	= 0;
+    proc_steps.create_sdm		= 0;
+    proc_steps.add_MC_sdm		= 0;
+    proc_steps.run_QA		= 0;
+    proc_steps.add_outliers_sdm	= 0;
+    proc_steps.set_confound_preds	= 0;
+    
+    temp = (strfind(proc_steps_array,'create_fmr')); if ~isempty([temp{:}]),		proc_steps.create_fmr = 1;		end
+    temp = (strfind(proc_steps_array,'create_prt')); if ~isempty([temp{:}]),		proc_steps.create_prt = 1;		end
+    temp = (strfind(proc_steps_array,'preprocess_fmr')); if ~isempty([temp{:}]),		proc_steps.preprocess_fmr = 1;		end
+    temp = (strfind(proc_steps_array,'create_sdm')); if ~isempty([temp{:}]),		proc_steps.create_sdm = 1;		end
+    temp = (strfind(proc_steps_array,'add_MC_sdm')); if ~isempty([temp{:}]),		proc_steps.add_MC_sdm = 1;		end
+    temp = (strfind(proc_steps_array,'run_QA')); if ~isempty([temp{:}]),			proc_steps.run_QA = 1;			end
+    temp = (strfind(proc_steps_array,'add_outliers_sdm')); if ~isempty([temp{:}]),		proc_steps.add_outliers_sdm = 1;	end
+    temp = (strfind(proc_steps_array,'set_confound_preds')); if ~isempty([temp{:}]),	proc_steps.set_confound_preds = 1;	end
 end
-	
+
 ne_pl_session_settings;
 
 % default parameters, for dynamic params (i.e. those params might change from session to session, even for same dataset)
@@ -89,9 +89,9 @@ switch settings.Species
 end
 
 if nargin > 7, % specified dynamic params
-	params = checkstruct(struct(varargin{:}), defpar);
+    params = checkstruct(struct(varargin{:}), defpar);
 else
-	params = checkstruct(struct, defpar);
+    params = checkstruct(struct, defpar);
 end
 
 [~,session_name] = fileparts(session_path);
@@ -115,13 +115,13 @@ end
 model_path = [session_path filesep settings.model];
 [success,message] = mkdir(model_path);
 if ~success,
-	disp(sprintf('ERROR: %s',message));
+    disp(sprintf('ERROR: %s',message));
 else
-	disp(sprintf('Processing %s',settings.model));
+    disp(sprintf('Processing %s',settings.model));
 end
 
 % try
-	
+
 diary([model_path filesep 'ne_pl_process_one_session_3TUMG_part1.log']);
 disp('======================================================================================');
 [~, name] = system('hostname');
@@ -157,39 +157,39 @@ if ~isempty(dicom_folder) % perform dicom file operations and create appropriate
         rmdir('PaxHeader','s');
     end
     
-
-% copy DICOMs to individual run folders (run01 run02 etc.)
-for k = 1:length(series_order), % for each run
-	run_name = ['run' num2str(k,'%02d')];
-	[~,mess,~] = mkdir(session_path,run_name);
-	if isempty(mess),
-		movefile([dicom_path filesep '*-' sprintf('%04d',series_order(k)) '-*.dcm'],[session_path filesep run_name]);
-%         movefile([dicom_path filesep '*-' sprintf('1%03d',series_order(k)) '-*.dcm'],[session_path filesep run_name]);
-		disp([[session_path filesep run_name] ' created']);
-	else
-		disp([[session_path filesep run_name] ' already exists']);
-	end
-	
-end 
-
-if anat,
-    [~,mess,~] = mkdir(session_path,'anat');
-    if isempty(mess),
-        movefile([dicom_path filesep '*-' sprintf('%04d',anat) '-*.dcm'],[session_path filesep 'anat']);
-        %               movefile([dicom_path filesep '*-' sprintf('1%03d',anat) '-*.dcm'],[session_path filesep 'anat']);
-        disp([[session_path filesep 'anat'] ' created']);
-    else
-        disp([[session_path filesep 'anat'] ' already exists']);
+    
+    % copy DICOMs to individual run folders (run01 run02 etc.)
+    for k = 1:length(series_order), % for each run
+        run_name = ['run' num2str(k,'%02d')];
+        [~,mess,~] = mkdir(session_path,run_name);
+        if isempty(mess),
+            movefile([dicom_path filesep '*-' sprintf('%04d',series_order(k)) '-*.dcm'],[session_path filesep run_name]);
+            %         movefile([dicom_path filesep '*-' sprintf('1%03d',series_order(k)) '-*.dcm'],[session_path filesep run_name]);
+            disp([[session_path filesep run_name] ' created']);
+        else
+            disp([[session_path filesep run_name] ' already exists']);
+        end
+        
     end
     
-end
-
-
-d = dir(dicom_path);
-if ~any([d(3:end).isdir]),
-    resort_dicom2series(dicom_path);
-end
-
+    if anat,
+        [~,mess,~] = mkdir(session_path,'anat');
+        if isempty(mess),
+            movefile([dicom_path filesep '*-' sprintf('%04d',anat) '-*.dcm'],[session_path filesep 'anat']);
+            %               movefile([dicom_path filesep '*-' sprintf('1%03d',anat) '-*.dcm'],[session_path filesep 'anat']);
+            disp([[session_path filesep 'anat'] ' created']);
+        else
+            disp([[session_path filesep 'anat'] ' already exists']);
+        end
+        
+    end
+    
+    
+    d = dir(dicom_path);
+    if ~any([d(3:end).isdir]),
+        resort_dicom2series(dicom_path);
+    end
+    
 end % of dicom operations
 
 
