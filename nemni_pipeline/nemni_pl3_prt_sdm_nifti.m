@@ -1,25 +1,27 @@
 function nemni_pl3_prt_sdm_nifti
 %% AFTER PREPROCESSING, BEFORE MODEL CREATION
 
-% 0. PRT und SDM creation
-% 1. Transforming nii to VTC
-% 2. change TR
+% 1. copy behavioral files to mri files
+% 2. PRT und SDM (task + MCparams) creation
 % 3. change MCparams SDM with other motion correction
+% 4. Transforming nii to VTC (change TR)
+% 5. apply mask
+% 6. DVARS
+% 7. add outlier volumes to sdm
+% 8. temporal filtering vtc
 
+% processed: ANEL, ANRI, CAST
+% left out: ANRE
 
-
-
-%%%% IMPLEMENT MEMORY BUFFER!!
-
+tic;
 load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
-no_throwaway = strcmp('LUAM',{prot.name});%|...
-%             strcmp('FARA',{prot.name})|...
-%             strcmp('JOOD',{prot.name})|...
-%             strcmp('CLSC',{prot.name});
-prot(~no_throwaway) = [];
+throwaway = strcmp('ANEL',{prot.name})|...
+             strcmp('ANRE',{prot.name})|...
+             strcmp('ANRI',{prot.name})|...
+             strcmp('CAST',{prot.name});
+prot(throwaway) = [];
 
-prot(1).session(2) = [];
-prot(1).session(2) = [];
+
 %% settings
 % general
 runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI'; %folder containing subjects containing MRI data
@@ -33,19 +35,21 @@ sdm_template = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\temp
 nifti_pattern = 's6wrhum_*.nii';
 
 % mask source
-msk_source = 'Y:\Sources\NeuroElf_v11_7521\_files\masks\colin_brain_ICBMnorm_wholebrain3mm.msk';
+msk_source = 'Y:\MRI\Human\mni_icbm152_t1_tal_nlin_sym_09a_mask_vtc.msk';
 % vtc temporal filter
 min_wavelength = 128;
 
-%%
+%
 old_dir = pwd;
-netools = neuroelf;
 
+%%
 for i = 1:length(prot) %loop subjects
     
     sessions = length(prot(i).session);
     
     for k = 1:sessions % loop sessions
+        
+        netools = neuroelf;
         
         session_path = [runpath filesep ... % Y:\MRI\Human\fMRI-reach-decision\Experiment\CLSC\20200114
             prot(i).name filesep ...
@@ -74,7 +78,8 @@ for i = 1:length(prot) %loop subjects
         end
         
         %% PRT creation
-  
+        disp('---- creating prt');
+        
         beh_files = dir([session_path filesep '*_??.mat']);% PRT files
         series_order =  [prot(i).session(k).epi.nr1];     % number of EPIs
         
@@ -110,6 +115,8 @@ for i = 1:length(prot) %loop subjects
         cd(old_dir);
         
         %% task SDM creation
+        disp('---- creating sdm for each run');
+        
         prt_files = dir([model_path filesep '*.prt']);
         
         if isempty(prt_files),
@@ -122,6 +129,7 @@ for i = 1:length(prot) %loop subjects
         
         
         %% MCparams SDM creation
+        disp('---- creating MCparams SDM');
         
         for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
             
@@ -167,6 +175,7 @@ for i = 1:length(prot) %loop subjects
         end
         
         %% add MC to sdm
+        disp('---- adding motion correction predictors to sdm');
         
         task_sdm_files = dir([model_path filesep '*_task.sdm']);
         MC_sdm_files = dir([session_path filesep '*_MCparams.sdm']);
@@ -180,37 +189,39 @@ for i = 1:length(prot) %loop subjects
             end
         end
         
-         %% create vtc from nifti (+link prt) (+apply mask)
-%        
-%         for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
-%             
-%             epi_path = [session_path filesep 'run0' num2str(m)'];
-%             
-%             % preprocessed nifti
-%             nifti_name = dir(fullfile(epi_path,nifti_pattern)); % s6wrhum_*.nii
-%             nifti_name = nifti_name.name;
-%             nifti_file =   [epi_path filesep nifti_name]; 
-%             
-%             % nifti --> vtc
-%             clear vtc
-%             vtc = netools.importvtcfromanalyze({nifti_file});
-%             vtc.TR = 900;
-%             
-%             % mask vtc
-%             msk = xff(msk_source);
-%             vtc.MaskWithMSK(msk);
-%           
-%             % add PRT to nifti
-%             vtc.NameOfLinkedPRT = [session_path filesep prt_files(m).name];
-%             
-%             % save
-%             vtc.SaveAs([epi_path filesep prot(i).name '_' prot(i).session(k).date '_run0' num2str(m) '.vtc']);   
-%             disp(['Saved ' [epi_path filesep prot(i).name '_' prot(i).session(k).date '_run0' num2str(m) '.vtc']]);
-% 
-%             vtc.ClearObject;
-%         end
+        %% create vtc from nifti (+link prt) (+apply mask)
+        disp('---- creating vtc from nifti');
+        
+        for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
+            
+            epi_path = [session_path filesep 'run0' num2str(m)'];
+            
+            % preprocessed nifti
+            nifti_name = dir(fullfile(epi_path,nifti_pattern)); % s6wrhum_*.nii
+            nifti_name = nifti_name.name;
+            nifti_file =   [epi_path filesep nifti_name]; 
+            
+            % nifti --> vtc
+            clear vtc
+            vtc = netools.importvtcfromanalyze({nifti_file});
+            vtc.TR = 900;
+            
+            % mask vtc
+            msk = xff(msk_source);
+            vtc.MaskWithMSK(msk);
+          
+            % add PRT to nifti
+            vtc.NameOfLinkedPRT = [session_path filesep prt_files(m).name];
+            
+            % save
+            vtc.SaveAs([epi_path filesep prot(i).name '_' prot(i).session(k).date '_run0' num2str(m) '.vtc']);   
+            disp(['Saved ' [epi_path filesep prot(i).name '_' prot(i).session(k).date '_run0' num2str(m) '.vtc']]);
+
+            
+        end
         
         %% DVARS
+        disp('---- running QA');
         
         for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
             
@@ -226,37 +237,63 @@ for i = 1:length(prot) %loop subjects
         end
         
         %% adding outlier predictors to sdm
+        disp('---- adding outlier predictors to sdm');
         
-%         task_and_MC_sdm_files = dir([model_path filesep '*task*' '*MCparams.sdm']);
-%         outlier_mat_files = dir([session_path filesep '*_outlier_volumes.mat']);
-%         
-%         if length(task_and_MC_sdm_files) ~= length(outlier_mat_files),
-%             disp(sprintf('ERROR: cannot match task and MC sdm files (%d) to outlier mat files (%d)',length(task_and_MC_sdm_files),length(outlier_mat_files)));
-%         else
-%             for m = 1:length(task_and_MC_sdm_files),
-%                 ne_pl_add_pred_sdm([model_path filesep task_and_MC_sdm_files(m).name],[session_path filesep outlier_mat_files(m).name],0,'outlier_preds');
-%             end
-%         end
-%         
+        task_and_MC_sdm_files = dir([model_path filesep '*task*' '*MCparams.sdm']);
+        outlier_mat_files = dir([session_path filesep '*_outlier_volumes.mat']);
+        
+        if length(task_and_MC_sdm_files) ~= length(outlier_mat_files),
+            disp(sprintf('ERROR: cannot match task and MC sdm files (%d) to outlier mat files (%d)',length(task_and_MC_sdm_files),length(outlier_mat_files)));
+        else
+            for m = 1:length(task_and_MC_sdm_files),
+                ne_pl_add_pred_sdm([model_path filesep task_and_MC_sdm_files(m).name],[session_path filesep outlier_mat_files(m).name],0,'outlier_preds');
+            end
+        end
+        
 
         
-         %% temporal filter
-%         for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
-%             
-%             epi_path = [session_path filesep 'run0' num2str(m)'];
-%             
-%             vtc_name = dir(fullfile(epi_path,['*run0' num2str(m) '.vtc']));
-%             vtc_name = vtc_name.name;
-%             
-%             clear vtc
-%             vtc = xff([epi_path filesep vtc_name]);
-%             
-%             % high pass filter vtc
-%             vtc.Filter(struct('temp',1,'tempdct',min_wavelength));
-%             vtc.Save;
-%             vtc.ClearObject;
-%         end
+        %% temporal filter
+        disp('---- filtering vtc');
         
+        for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
+            
+            epi_path = [session_path filesep 'run0' num2str(m)'];
+            
+            vtc_name = dir(fullfile(epi_path,['*run0' num2str(m) '.vtc']));
+            vtc_name = vtc_name.name;
+            
+            clear vtc
+            vtc = xff([epi_path filesep vtc_name]);
+            
+            % high pass filter vtc
+            vtc.Filter(struct('temp',1,'tempdct',min_wavelength));
+            vtc.SaveAs([epi_path filesep  vtc_name(1:end-4) '_tf.vtc']); 
+            
+             disp(['saved ' epi_path filesep  vtc_name(1:end-4) '_tf.vtc']);
+        end
+        
+%%
+    save('Y:\MRI\Human\fMRI-reach-decision\Experiment\buffer_for_pipeline.mat',...
+        'prot',...
+        'i',...
+        'k',...
+        'runpath',...
+        'runpath_behavioral',...
+        'session_settings_id',...
+        'sdm_template',...
+        'nifti_pattern',...
+        'msk_source',...
+        'min_wavelength',...
+        'old_dir');
+    %memory
+    %inmem
+    
+    clear all
+    
+    load('Y:\MRI\Human\fMRI-reach-decision\Experiment\buffer_for_pipeline.mat')
+
     end
 end
 %%
+toc;
+

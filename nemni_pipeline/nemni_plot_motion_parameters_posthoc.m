@@ -1,5 +1,7 @@
+function nemni_plot_motion_parameters_posthoc
 %% get motion parameters afterwards
 % https://www.jiscmail.ac.uk/cgi-bin/webadmin?A2=spm;8b797981.1502
+
 
 
 filt = ['^rp_*','.*\.txt$'];
@@ -28,4 +30,6 @@ for i = 1:size(b,1)
     motname = [mydata filesep 'motion_sub_' sprintf('%02.0f', i) '_' mydate '.png'];
     % print(printfig, '-dpng', '-noui', '-r100', motname);  % enable to print to file
     % close(printfig);   % enable to close graphic window
-end;
+    
+    
+end

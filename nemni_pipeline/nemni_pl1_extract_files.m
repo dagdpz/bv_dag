@@ -6,9 +6,8 @@ clear all
 load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
 
 %throwaway =  strcmp('ANEL',{prot.name})| strcmp('ANRE',{prot.name})| strcmp('ANRI',{prot.name})| strcmp('CAST',{prot.name})| strcmp('CLSC',{prot.name})| strcmp('DAGU',{prot.name})| strcmp('ELRH',{prot.name})| strcmp('EVBO',{prot.name})| strcmp('FARA',{prot.name})| strcmp('HEGR',{prot.name})| strcmp('HESE',{prot.name});
-throwaway =  strcmp('JOOD',{prot.name});
-
-prot(~throwaway) = [];
+%throwaway =  strcmp('JOOD',{prot.name});
+%prot(~throwaway) = [];
 
 
 runpath = 'D:\MRI\Human\fMRI-reach-decision\mni_Experiment';
@@ -29,7 +28,7 @@ for i = 1:length(prot) %loop subjects
             nifti_path_source = nifti_path_source_or;
         end
         
-        mni_sort_nifti_into_folders(...
+        nemni_sort_nifti_into_folders(...
             nifti_path_source ,...                                  % nifti_path_source
             [runpath filesep prot(i).name filesep prot(i).session(k).date],... % session_path
             prot(i).session(k).hum,...                              % hum_nr
