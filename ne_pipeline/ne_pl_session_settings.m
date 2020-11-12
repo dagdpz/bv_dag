@@ -674,7 +674,7 @@ switch session_settings_id
 		settings.fmr_quality.avg_exclude_before_after_outlier		= [100 100];	% ms, time to exclude from avg before / after outlier
         settings.fmr_quality.plot_events = 'reward'; % if '', no events would be plotted, or 'reward', or regular expression such as 'reach.+mov'
         
-        settings.fmr_quality.avg_exclude_before_after_outlier = [100 100]; % ms, time to exclude from avg before / after outlier
+    
 
         
 % up to 2020        
