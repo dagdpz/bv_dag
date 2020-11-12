@@ -10,16 +10,12 @@ function nemni_pl3_prt_sdm_nifti
 % 7. add outlier volumes to sdm
 % 8. temporal filtering vtc
 
-% processed: ANEL, ANRI, CAST
-% left out: ANRE
-
-tic;
 load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
-throwaway = strcmp('ANEL',{prot.name})|...
-             strcmp('ANRE',{prot.name})|...
-             strcmp('ANRI',{prot.name})|...
-             strcmp('CAST',{prot.name});
-prot(throwaway) = [];
+% throwaway = strcmp('ANEL',{prot.name})|...
+%              strcmp('ANRE',{prot.name})|...
+%              strcmp('ANRI',{prot.name})|...
+%              strcmp('CAST',{prot.name});
+% prot(throwaway) = [];
 
 
 %% settings
@@ -169,8 +165,12 @@ for i = 1:length(prot) %loop subjects
             sdm.SDMMatrix(:,:) = mp_txt;
             
             % save
-            sdm_name = [prot(i).name '_' prot(i).session(k).date '_' 'run0' num2str(m) '_MCparams.sdm'];
-            sdm.SaveAs([session_path filesep sdm_name]);
+            sdm_name = [prot(i).name '_' prot(i).session(k).date '_' 'run0' num2str(m) '_MCparams'];
+            sdm.SaveAs([session_path filesep sdm_name '.sdm']);
+            
+            ne_plot_MC_onefile([session_path filesep sdm_name '.sdm']);
+            saveas(gcf, [session_path filesep sdm_name '.pdf'], 'pdf');
+            close(gcf);
             
         end
         
@@ -295,5 +295,5 @@ for i = 1:length(prot) %loop subjects
     end
 end
 %%
-toc;
+
 
