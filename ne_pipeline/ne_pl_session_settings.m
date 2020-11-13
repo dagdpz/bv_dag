@@ -256,7 +256,7 @@ switch session_settings_id
 		settings.mdm.zTransformation = 0; % apply z-transformation to volume time courses
 		settings.mdm.PSCTransformation = 1; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
 		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
-		settings.mdm.mask = 'Y:\MRI\Human\mni_icbm152_t1_tal_nlin_sym_09a_mask.msk'; %Y:\Sources\NeuroElf_v11_7521\_files\masks\colin_brain_ICBMnorm_brain3mm.msk'; %'Y:\MRI\Human\colin_brain_ICBMnorm_TAL.msk'; 
+		settings.mdm.mask = 'Y:\MRI\Human\mni_icbm152_t1_tal_nlin_sym_09a_vtc.msk'; %Y:\Sources\NeuroElf_v11_7521\_files\masks\colin_brain_ICBMnorm_brain3mm.msk'; %'Y:\MRI\Human\colin_brain_ICBMnorm_TAL.msk'; 
 		settings.mdm.robust = false; % don't run robust with FFX	
 	
 	case 'Human_reach_decision_pilot'
