@@ -113,8 +113,24 @@ for r = 1:n_runs
 		H = [];
 		for c = 1:avg.NrOfCurves,
 			% find out if this condition (curve) is present in this run (file)
-			temp = avg.Curve(c).File; files_for_this_curve = [temp.EventPointsInFile]+1; % +1 because avg files are 0-based
+           
+            %% PN 20201113 start
+            % what was there:
+			%temp = avg.Curve(c).File; files_for_this_curve = [temp.EventPointsInFile]+1; % +1 because avg files are 0-based
 			
+            % what I did:
+            temp = avg.Curve(c).File; 
+            
+            if isempty(vertcat(temp.Points))
+                continue;
+            else
+                files_for_this_curve = [temp.EventPointsInFile]+1; % +1 because avg files are 0-based
+            end
+            % why I did: if there is no curve in any run, than there is no
+            % such thing as "EventPointsInFile" in the struct
+            
+            %% PN 20200113 end
+            
 			if ismember(r,files_for_this_curve),
 				
 				% find the matching file
