@@ -602,6 +602,19 @@ switch session_settings_id
 		settings.fmr_filter.temp = true;
 		settings.fmr_filter.tempsc = 3; % cycles; "a cycle means that one sine wave (from 0 to 360 degrees or 0 to 2PI) is spread across the number of time points of the fMRI data,
 		% a cycle of 2 means that two sine waves fall within the extent of the data" (http://www.brainvoyager.com/bvqx/doc/UsersGuide/Preprocessing/TemporalHighPassFiltering.html)
+        
+        % settings for QA
+ 		settings.fmr_quality.outlier_detection_method = 'ne_framewise_disp'; % NeuroElf 'ne_fmriquality_method' | 'ne_fmriquality_TC_Quality2_method' | 'ne_framewise_disp' | 'ne_fmriquality_TC_custom_method'
+
+ 		% specific settings for method 'ne_framewise_disp'
+		settings.fmr_quality.fd_cutoff = 1;
+		settings.fmr_quality.fd_radius = 5;
+
+        % general settings for all methods
+		settings.fmr_quality.reject_volumes_before_after_outlier	= [1	1];	% volumes to exclude before and after outlier volumes (for .sdm)
+		settings.fmr_quality.avg_exclude_before_after_outlier		= [100 100];	% ms, time to exclude from avg before / after outlier
+        settings.fmr_quality.plot_events = 'reward'; % if '', no events would be plotted, or 'reward', or regular expression such as 'reach.+mov'
+        
 		
 		% settings for converting behavioral files to BV *.prt
 		settings.prt.beh2prt_function_handle = @BA_mat2prt_fixmem;
@@ -656,28 +669,43 @@ switch session_settings_id
 		settings.fmr_filter.temp = true;
 		settings.fmr_filter.tempsc = 3; % cycles; "a cycle means that one sine wave (from 0 to 360 degrees or 0 to 2PI) is spread across the number of time points of the fMRI data,
 		% a cycle of 2 means that two sine waves fall within the extent of the data" (http://www.brainvoyager.com/bvqx/doc/UsersGuide/Preprocessing/TemporalHighPassFiltering.html)
-		
-		% settings for QA
-		settings.fmr_quality.outlier_detection_method = 'ne_fmriquality_TC_Quality2_method'; % NeuroElf 'ne_fmriquality_method' | 'ne_fmriquality_TC_Quality2_method' | 'ne_framewise_disp' | 'ne_fmriquality_TC_custom_method'
-		% settings for method 'ne_fmriquality_TC_Quality2_method'
-		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold = []; % absolute outlier detection threshold for ne_fmriquality_TC_Quality2_method
-		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nsd = []; % number of standard deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
-		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nMAD = [];%2.5; % number of median absolute deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
-		% see Leys et al. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. Journal of Experimental Social Psychology, 49(4), 764–766.
-		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_prct = 1.5; % number of interquartile ranges added/subtracted to/from 75%/25% percentile of target signal to define upper and lower threshold
-		% see http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSLMotionOutliers
-		settings.fmr_quality.ne_fmriquality_TC_Quality2_n_smooth = 5; % n volumes for smoothing quality timecourse
-		settings.fmr_quality.reject_volumes_before_after_outlier = [0 0]; % volumes to exclude before and after outlier volumes
-		% settings for NeuroElf method 'ne_fmriquality_method'
-		%settings.fmr_quality.outlier_detection_threshold = 1; % outlier detection threshold for ne_method (nr of criteria, default: 3)
-		%settings.fmr_quality.n_sd = [6 5 5 5 4]; % number of SD for each criterion (default: [6 5 5 5 4]), see ne_fmriquality and http://neuroelf.net/wiki/doku.php?id=fmriquality
-		% settings for method 'ne_framewise_disp'
-		%settings.fmr_quality.reject_volumes_before_after_outlier = [1 1];
-		%settings.fmr_quality.fd_cutoff;
-		%settings.fmr_quality.fd_radius;
-		% settings for custom QA method
-		%settings.fmr_quality.ne_fmriquality_TC_custom_method_function_handle = @lll;
-		settings.fmr_quality.avg_exclude_before_after_outlier = [100 100]; % ms, time to exclude from avg before / after outlier
+   
+ 		% settings for QA
+ 		settings.fmr_quality.outlier_detection_method = 'ne_framewise_disp'; % NeuroElf 'ne_fmriquality_method' | 'ne_fmriquality_TC_Quality2_method' | 'ne_framewise_disp' | 'ne_fmriquality_TC_custom_method'
+
+ 		% specific settings for method 'ne_framewise_disp'
+		settings.fmr_quality.fd_cutoff = 1;
+		settings.fmr_quality.fd_radius = 5;
+
+        % general settings for all methods
+		settings.fmr_quality.reject_volumes_before_after_outlier	= [1	1];	% volumes to exclude before and after outlier volumes (for .sdm)
+		settings.fmr_quality.avg_exclude_before_after_outlier		= [100 100];	% ms, time to exclude from avg before / after outlier
+        settings.fmr_quality.plot_events = 'reward'; % if '', no events would be plotted, or 'reward', or regular expression such as 'reach.+mov'
+        
+    
+
+        
+% up to 2020        
+% 		settings.fmr_quality.outlier_detection_method = 'ne_fmriquality_TC_Quality2_method'; % NeuroElf 'ne_fmriquality_method' | 'ne_fmriquality_TC_Quality2_method' | 'ne_framewise_disp' | 'ne_fmriquality_TC_custom_method'
+% 		% settings for method 'ne_fmriquality_TC_Quality2_method'
+% 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold = []; % absolute outlier detection threshold for ne_fmriquality_TC_Quality2_method
+% 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nsd = []; % number of standard deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
+% 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nMAD = [];%2.5; % number of median absolute deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
+% 		% see Leys et al. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. Journal of Experimental Social Psychology, 49(4), 764–766.
+% 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_prct = 1.5; % number of interquartile ranges added/subtracted to/from 75%/25% percentile of target signal to define upper and lower threshold
+% 		% see http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSLMotionOutliers
+% 		settings.fmr_quality.ne_fmriquality_TC_Quality2_n_smooth = 5; % n volumes for smoothing quality timecourse
+% 		settings.fmr_quality.reject_volumes_before_after_outlier = [0 0]; % volumes to exclude before and after outlier volumes
+% 		% settings for NeuroElf method 'ne_fmriquality_method'
+% 		%settings.fmr_quality.outlier_detection_threshold = 1; % outlier detection threshold for ne_method (nr of criteria, default: 3)
+% 		%settings.fmr_quality.n_sd = [6 5 5 5 4]; % number of SD for each criterion (default: [6 5 5 5 4]), see ne_fmriquality and http://neuroelf.net/wiki/doku.php?id=fmriquality
+% 		% settings for method 'ne_framewise_disp'
+% 		%settings.fmr_quality.reject_volumes_before_after_outlier = [1 1];
+% 		%settings.fmr_quality.fd_cutoff;
+% 		%settings.fmr_quality.fd_radius;
+% 		% settings for custom QA method
+% 		%settings.fmr_quality.ne_fmriquality_TC_custom_method_function_handle = @lll;
+% 		settings.fmr_quality.avg_exclude_before_after_outlier = [100 100]; % ms, time to exclude from avg before / after outlier
 		
 		% settings for converting behavioral files to BV *.prt
 		settings.prt.beh2prt_function_handle = @BA_mat2prt_fixmemstim;%@mat2prt_fixmemstim; %mat2prt_ind; % @mat2prt_es_analysis

@@ -81,13 +81,13 @@ if isfield(settings.fmr_quality,'plot_events'),
     prt_fullpath = findfiles(session_path,['*' run_name '.prt']);    
     if ~isempty(prt_fullpath),
         ax = findobj(get(gsh,'Children'),'Tag','TC volumes'); 
-        if ~isempty(ax) 
-            axes(ax); % activate TC volumes axes
+        if ~isempty(ax) % activate TC volumes axes
+            axes(ax);
             ne_add_prt_condition_2tc(prt_fullpath{1},settings.fmr_quality.plot_events,'volumes',settings.fmr_create.TR);
         end
         ax = findobj(get(gsh,'Children'),'Tag','FD volumes');
         if ~isempty(ax),
-            axes(ax); % activate TC volumes axes
+            axes(ax); % activate FD volumes axes
             ne_add_prt_condition_2tc(prt_fullpath{1},settings.fmr_quality.plot_events,'volumes',settings.fmr_create.TR);
         end    
     end

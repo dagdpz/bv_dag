@@ -161,7 +161,7 @@ disp([new_avg_fullpath ' created']);
 function [points_without_outliers,n_removed] = remove_outliers(points,avg,outliers,settings,plot_info,ylim)
 points_without_outliers = [];
 for n = 1:length(points),
-	if plot_info, plot([points(n)/1000-avg.PreInterval points(n)/1000+avg.PostInterval],[ylim(1) ylim(1)],'g-'); end;
+	if plot_info, plot([points(n)/1000-avg.PreInterval points(n)/1000+avg.PostInterval],[ylim(1) ylim(1)],'g-','Color',[0.8 0.8 0.8]); end;
 	if isempty(intersect([points(n)-avg.PreInterval*1000 : points(n)+avg.PostInterval*1000],outliers)),
 		points_without_outliers = [points_without_outliers; points(n)];
 	end
