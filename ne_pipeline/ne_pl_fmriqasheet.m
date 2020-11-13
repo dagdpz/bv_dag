@@ -104,6 +104,8 @@ str = sprintf('Data dim: %d x %d x %d, nvol: %d \n', q.Dims(1:4));
 if strcmp(fmr_quality.outlier_detection_method,'ne_fmriquality_method') % original NE fmriquality method
 
 	odt = fmr_quality.outlier_detection_threshold;
+    outlier_volumes = find(q.Quality.Outliers.Volumes >= odt);
+    
 	% plot PSC time courses or slices with outliers marked
 	if m
 		tcp1 = subplot(rows, cols, targets(1));
@@ -118,12 +120,9 @@ if strcmp(fmr_quality.outlier_detection_method,'ne_fmriquality_method') % origin
 	hp = plot(2 * repmat(0:(nslc - 1), nvol, 1) + tcdata,'Color',[0 0 0]);
 	hold(tcp1, 'on');
 	
-	hl = add_volume_markers(find([q.Quality.Outliers.Volumes >= odt])','LineWidth',1,'Color',[0.4784    0.0627    0.8941]);
+	hl = add_volume_markers(outlier_volumes','LineWidth',1,'Color',[0.4784    0.0627    0.8941]);
 	set(gca,'children',[hp' hl]);
 	
-	str = [str sprintf('Outlier volumes: %d (%.1f%%) \n %s',sum(q.Quality.Outliers.Volumes >= odt),100*sum(q.Quality.Outliers.Volumes >= odt)/nvol,...
-			mat2str(find([q.Quality.Outliers.Volumes >= odt])'))];
-
 	ht = title(['fMRI QA sheet v1: ' q.Filename sprintf('\n') str sprintf('\n') fmr_quality.outlier_detection_method],'interpreter','none','FontSize',8,'LineWidth',10);
 
 	
@@ -184,13 +183,10 @@ elseif strcmp(fmr_quality.outlier_detection_method,'ne_fmriquality_TC_Quality2_m
     hl = add_volume_markers(outlier_volumes,'LineWidth',0.5,'Color',[1 0.6 0.8]);
     plot(target_signal,'Color',[0 0 0]);
 	
-	str = [str sprintf('Outlier volumes: %d (%.1f%%) \n %s',length(outlier_volumes),100*length(outlier_volumes)/nvol,...
-		mat2str(outlier_volumes'))];
-	
-	ht = title(tcp1,['fMRI QA sheet v1: ' q.Filename sprintf('\n') str sprintf('\n') fmr_quality.outlier_detection_method],'interpreter','none','FontSize',8,'LineWidth',10);
-	set(tcp2,'Tag','TC volumes');
-	
+
 elseif strcmp(fmr_quality.outlier_detection_method,'ne_framewise_disp')
+    
+    outlier_volumes = q.outlier_volumes;
     odt = fmr_quality.fd_cutoff;
     
     tcp1 = subplot(rows, cols, [1 2]);
@@ -198,14 +194,12 @@ elseif strcmp(fmr_quality.outlier_detection_method,'ne_framewise_disp')
     plot(target_signal,'Color',[0 0 0]); hold on;
     
     line([1 nvol],[odt odt],'Color',[1 0 0]);
-    outlier_volumes = find(target_signal > odt);
+    outlier_volumes_no_added = find(target_signal > odt);
     hl = add_volume_markers(outlier_volumes,'LineWidth',0.5,'Color',[1 0.6 0.8]);
+    hl = add_volume_markers(outlier_volumes_no_added,'LineWidth',0.5,'Color',[0.9 0 0]);
+    
     plot(target_signal,'Color',[0 0 0]);
-    
-    str = [str sprintf('Outlier volumes: %d (%.1f%%) \n %s',length(outlier_volumes),100*length(outlier_volumes)/nvol,...
-        mat2str(outlier_volumes'))];
-    
-    ht = title(tcp1,['fMRI QA sheet v1: ' q.Filename sprintf('\n') str sprintf('\n') fmr_quality.outlier_detection_method],'interpreter','none','FontSize',8,'LineWidth',10);
+   
     set(tcp1,'Tag','FD volumes');
     
     tcp2 = subplot(rows, cols, [3 4]); hold on;
@@ -224,10 +218,6 @@ elseif strcmp(fmr_quality.outlier_detection_method,'ne_DVARS')
     hl = add_volume_markers(q.outlier_volumes,'LineWidth',0.5,'Color',[1 0.6 0.8]);
     plot(q.FD,'Color',[0 0 0]);
     
-    str = [str sprintf('Outlier volumes: %d (%.1f%%) \n %s',length(outlier_volumes),100*length(outlier_volumes)/nvol,...
-        mat2str(outlier_volumes'))];
-    
-    ht = title(tcp1,['fMRI QA sheet v1: ' q.Filename sprintf('\n') str sprintf('\n') fmr_quality.outlier_detection_method],'interpreter','none','FontSize',8,'LineWidth',10);
     set(tcp1,'Tag','FD volumes');
     
     tcp2 = subplot(rows, cols, [3 4]); hold on;
@@ -243,6 +233,8 @@ elseif strcmp(fmr_quality.outlier_detection_method,'ne_DVARS')
 end
 
 
+str = [str sprintf('Outlier volumes: %d (%.1f%%)',length(outlier_volumes),100*length(outlier_volumes)/nvol)];
+ht = title(tcp1,['fMRI QA sheet v1: ' q.Filename sprintf('\n') str sprintf('\n') fmr_quality.outlier_detection_method],'interpreter','none','FontSize',8,'LineWidth',10);
 
 
 % show overall global signal-to-noise ratio info
@@ -314,4 +306,5 @@ else
 end
 
 set(ig_get_figure_axes,'box','off','Color',[0.95 0.95 0.95],'TickDir','out');
+set(findall(gcf,'-property','FontSize'),'FontSize',8);
 

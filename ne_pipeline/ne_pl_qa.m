@@ -8,14 +8,17 @@ switch settings.fmr_quality.outlier_detection_method
 	
 	case 'ne_fmriquality_method'
 		if strcmp('0.9c',neuroelf_version),
-			[fq, ~] = ne_fmriquality(fmr_fullpath,settings.fmr_quality);
+			[fq, ~] = ne_fmriquality(fmr_fullpath,settings.fmr_quality); % modified from original neuroelf function
 		else
 			netools = neuroelf;
 			[fq, ~] = netools.fmriquality(fmr_fullpath,settings.fmr_quality); % no custom n_sd settings implemented yet
-		end
-% 		[fq, ~] = ne_fmriquality(fmr_fullpath,settings.fmr_quality); % modified from original neuroelf function
- 		ne_pl_fmriqasheet(fq,settings.fmr_quality); % modified from original neuroelf function
-		outlier_volumes = find([fq.Quality.Outliers.Volumes >= settings.fmr_quality.outlier_detection_threshold])';	
+        end
+
+        outlier_volumes = find([fq.Quality.Outliers.Volumes >= settings.fmr_quality.outlier_detection_threshold])';	
+        outlier_volumes = add_neighboring_volumes(outlier_volumes,settings.fmr_quality.reject_volumes_before_after_outlier,length(fq.TC.Quality)); 
+        fq.outlier_volumes = outlier_volumes;
+ 		gsh = ne_pl_fmriqasheet(fq,settings.fmr_quality); % modified from original neuroelf function
+		
 		
 	case 'ne_fmriquality_TC_Quality2_method'
 		if strcmp('0.9c',neuroelf_version),
@@ -23,7 +26,8 @@ switch settings.fmr_quality.outlier_detection_method
 		else
 			netools = neuroelf;
 			[fq, ~] = netools.fmriquality(fmr_fullpath,settings.fmr_quality);
-		end
+        end
+        
 		% modified from original neuroelf function
 		[gsh, outlier_volumes] = ne_pl_fmriqasheet(fq,settings.fmr_quality);
 		
@@ -42,6 +46,7 @@ switch settings.fmr_quality.outlier_detection_method
 		if exist(MoCoSDM,'file'),
 			[outlier_volumes, fq.FD] = ne_FD_outlier_detection(MoCoSDM, settings.fmr_quality.fd_cutoff, settings.fmr_quality.fd_radius);
 			outlier_volumes = add_neighboring_volumes(outlier_volumes,settings.fmr_quality.reject_volumes_before_after_outlier,fq.Dims(4));
+            fq.outlier_volumes = outlier_volumes;
 		end
 		[gsh] = ne_pl_fmriqasheet(fq,settings.fmr_quality);
         
@@ -81,8 +86,8 @@ if isfield(settings.fmr_quality,'plot_events'),
     prt_fullpath = findfiles(session_path,['*' run_name '.prt']);    
     if ~isempty(prt_fullpath),
         ax = findobj(get(gsh,'Children'),'Tag','TC volumes'); 
-        if ~isempty(ax) % activate TC volumes axes
-            axes(ax);
+        if ~isempty(ax) 
+            axes(ax); % activate TC volumes axes
             ne_add_prt_condition_2tc(prt_fullpath{1},settings.fmr_quality.plot_events,'volumes',settings.fmr_create.TR);
         end
         ax = findobj(get(gsh,'Children'),'Tag','FD volumes');

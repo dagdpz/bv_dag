@@ -215,6 +215,19 @@ switch session_settings_id
         % settings for QA
 		settings.fmr_quality.outlier_detection_method = 'ne_DVARS';
 		% NeuroElf 'ne_fmriquality_method' | 'ne_fmriquality_TC_Quality2_method' | 'ne_framewise_disp' | 'ne_DVARS' | 'ne_fmriquality_TC_custom_method' 
+        
+		
+		% specific settings for 'ne_fmriquality_method'
+		settings.fmr_quality.outlier_detection_threshold = 1; % outlier detection threshold (nr of criteria, default: 3)
+		settings.fmr_quality.n_sd = [6 5 5 5 4]; % number of SD for each criterion (default: [6 5 5 5 4]), see ne_fmriquality and http://neuroelf.net/wiki/doku.php?id=fmriquality
+		
+		% specific settings for 'ne_fmriquality_TC_Quality2_method'
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold = 1.5;
+		settings.fmr_quality.ne_fmriquality_TC_Quality2_n_smooth = 11; % n volumes fr smoothing quality timecourse
+		
+		% specific settings for 'ne_framewise_disp'
+		settings.fmr_quality.fd_cutoff = 0.5;
+		settings.fmr_quality.fd_radius = 50; % mm, 50 human, 5 monkeys
 		
 		% specific settings for 'ne_framewise_disp'
 		settings.fmr_quality.fd_cutoff = 0.5;
@@ -243,7 +256,7 @@ switch session_settings_id
 		settings.mdm.zTransformation = 0; % apply z-transformation to volume time courses
 		settings.mdm.PSCTransformation = 1; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
 		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
-		settings.mdm.mask = 'Y:\Sources\NeuroElf_v11_7521\_files\masks\colin_brain_ICBMnorm_brain3mm.msk'; %'Y:\MRI\Human\colin_brain_ICBMnorm_TAL.msk'; 
+		settings.mdm.mask = 'Y:\MRI\Human\mni_icbm152_t1_tal_nlin_sym_09a_mask.msk'; %Y:\Sources\NeuroElf_v11_7521\_files\masks\colin_brain_ICBMnorm_brain3mm.msk'; %'Y:\MRI\Human\colin_brain_ICBMnorm_TAL.msk'; 
 		settings.mdm.robust = false; % don't run robust with FFX	
 	
 	case 'Human_reach_decision_pilot'
@@ -682,8 +695,6 @@ switch session_settings_id
 		settings.fmr_quality.avg_exclude_before_after_outlier		= [100 100];	% ms, time to exclude from avg before / after outlier
         settings.fmr_quality.plot_events = 'reward'; % if '', no events would be plotted, or 'reward', or regular expression such as 'reach.+mov'
         
-    
-
         
 % up to 2020        
 % 		settings.fmr_quality.outlier_detection_method = 'ne_fmriquality_TC_Quality2_method'; % NeuroElf 'ne_fmriquality_method' | 'ne_fmriquality_TC_Quality2_method' | 'ne_framewise_disp' | 'ne_fmriquality_TC_custom_method'
