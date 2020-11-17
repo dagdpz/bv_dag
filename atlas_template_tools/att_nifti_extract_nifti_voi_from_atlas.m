@@ -1,4 +1,4 @@
-function nifti_voi_path = att_nifti_extract_nifti_voi_from_atlas(nii_path,label_value,abbr_name)
+function nifti_voi_path = att_nifti_extract_nifti_voi_from_atlas(nii_path,label_value,abbr_name,include_value_to_name)
 %att_nifti_extract_nifti_voi_from_atlas  - extracts and saves one nifti volume corresponding to a value label in the atlas 
 %
 % USAGE:
@@ -8,6 +8,7 @@ function nifti_voi_path = att_nifti_extract_nifti_voi_from_atlas(nii_path,label_
 %		nii_path	- atlas nifti
 %		label_value	- intensity corresponding to a certain voi
 %		abbr_name	- name for the roi
+%       include_value_to_name - if true, add label_value to the nii name
 % OUTPUTS:
 %		None
 % REQUIRES:	NIfTI toolbox
@@ -32,6 +33,10 @@ if nargin < 3,
 	abbr_name = '';
 end
 
+if nargin < 4,
+	include_value_to_name = 1;
+end
+
 [pathstr, name, ext] = fileparts(nii_path);
 
 nii = load_untouch_nii(nii_path);
@@ -42,7 +47,11 @@ nii.img(idx) = 0;
 % make sure abbr_name does not contain slashes etc.
 abbr_name=regexprep(abbr_name,'[\\|!?@#$&/]','_');
 
-nifti_voi_path = [num2str(label_value) '_' abbr_name '.nii'];
+if include_value_to_name,
+    nifti_voi_path = [num2str(label_value) '_' abbr_name '.nii'];
+else
+    nifti_voi_path = [abbr_name '.nii'];
+end
 
 if ~isempty(pathstr)
 	nifti_voi_path = [pathstr filesep nifti_voi_path];
