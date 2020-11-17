@@ -34,15 +34,15 @@ if 0 % Y:\Atlases\macaque\Calabrese2015\atlas_voi
 end
 
 if 0
-load SARMdsshort.mat;
+load SARMds.mat; % or CHARMds.mat
 
-N = length(SARMkeyallds.Index);
+N = length(ds.Index);
 
 global n
 n = neuroelf;
 
 for k=1:N,
-	d = dir([num2str(SARMkeyallds.Index(k)) '_*.nii']);
+	d = dir([num2str(ds.Index(k)) '_*.nii']);
 	vmr_path = ne_convert_MRIcron_nifti_voi_to_vmr(d.name);
 	ne_convert_vmr_to_voi(vmr_path);
 	
