@@ -1,4 +1,4 @@
-function sdm = ne_pl_create_sdm(prt_fullpath, session_settings_id,vtcs,k)
+function sdm = ne_pl_create_sdm_basco(prt_fullpath, session_settings_id,vtcs,k)
 
 if nargin < 3
     vtcs = [];
@@ -19,11 +19,8 @@ else sdm_add_name = '';
 end
 
 
-sdm = prt.CreateSDM(settings.sdm); 
-sdm.SaveAs([prt_fullpath(1:end-4),'_task' sdm_add_name '.sdm']);
-disp(['created ' [prt_fullpath(1:end-4),'_task' sdm_add_name '.sdm']]);
+sdm = prt.BASCO(settings.sdm); 
+sdm.SaveAs([prt_fullpath(1:end-4),'_task' sdm_add_name '_BASCO.sdm']);
+disp(['created ' [prt_fullpath(1:end-4),'_task' sdm_add_name '_BASCO.sdm']]);
 
-
-
-
-
+    

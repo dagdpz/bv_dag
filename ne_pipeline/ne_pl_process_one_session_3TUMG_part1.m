@@ -21,9 +21,12 @@ function ne_pl_process_one_session_3TUMG_part1(session_path, dicom_folder, serie
 %	'create_prt'
 %	'preprocess_fmr'
 %	'create_sdm'
+%   'create_basco_sdm'
 %	'add_MC_sdm'
+%   'add_MC_basco'
 %	'run_QA'
 %	'add_outliers_sdm'
+%	'add_outliers_basco'
 %	'set_confound_preds'
 
 if strcmp(proc_steps_array,'all'),
@@ -31,9 +34,12 @@ if strcmp(proc_steps_array,'all'),
     proc_steps.create_prt		= 0; %1
     proc_steps.preprocess_fmr	= 0; %1
     proc_steps.create_sdm		= 0; %1
+    proc_steps.create_basco_sdm = 0; %1
     proc_steps.add_MC_sdm		= 0; %1
+    proc_steps.add_MC_basco		= 0; %1
     proc_steps.run_QA           = 0; %1
     proc_steps.add_outliers_sdm	= 0; %1
+    proc_steps.add_outliers_basco	= 0; %1
     proc_steps.set_confound_preds	= 0;
     
 else
@@ -41,18 +47,24 @@ else
     proc_steps.create_prt		= 0;
     proc_steps.preprocess_fmr	= 0;
     proc_steps.create_sdm		= 0;
+    proc_steps.create_basco_sdm = 0;
     proc_steps.add_MC_sdm		= 0;
+    proc_steps.add_MC_basco		= 0;
     proc_steps.run_QA		= 0;
     proc_steps.add_outliers_sdm	= 0;
+    proc_steps.add_outliers_basco	= 0;
     proc_steps.set_confound_preds	= 0;
     
     temp = (strfind(proc_steps_array,'create_fmr')); if ~isempty([temp{:}]),		proc_steps.create_fmr = 1;		end
     temp = (strfind(proc_steps_array,'create_prt')); if ~isempty([temp{:}]),		proc_steps.create_prt = 1;		end
     temp = (strfind(proc_steps_array,'preprocess_fmr')); if ~isempty([temp{:}]),		proc_steps.preprocess_fmr = 1;		end
     temp = (strfind(proc_steps_array,'create_sdm')); if ~isempty([temp{:}]),		proc_steps.create_sdm = 1;		end
+    temp = (strfind(proc_steps_array,'create_basco_sdm')); if ~isempty([temp{:}]),		proc_steps.create_basco_sdm = 1;	end
     temp = (strfind(proc_steps_array,'add_MC_sdm')); if ~isempty([temp{:}]),		proc_steps.add_MC_sdm = 1;		end
+    temp = (strfind(proc_steps_array,'add_MC_basco')); if ~isempty([temp{:}]),		proc_steps.add_MC_basco = 1;		end
     temp = (strfind(proc_steps_array,'run_QA')); if ~isempty([temp{:}]),			proc_steps.run_QA = 1;			end
     temp = (strfind(proc_steps_array,'add_outliers_sdm')); if ~isempty([temp{:}]),		proc_steps.add_outliers_sdm = 1;	end
+    temp = (strfind(proc_steps_array,'add_outliers_basco')); if ~isempty([temp{:}]),		proc_steps.add_outliers_basco = 1;	end
     temp = (strfind(proc_steps_array,'set_confound_preds')); if ~isempty([temp{:}]),	proc_steps.set_confound_preds = 1;	end
 end
 
@@ -242,7 +254,19 @@ if proc_steps.create_sdm
         disp('ERROR: cannot find prt files');
     else
         for k = 1:length(prt_files),
-            ne_pl_create_sdm([model_path filesep prt_files(k).name],session_settings_id);
+            ne_pl_create_sdm([model_path filesep prt_files(k).name],session_settings_id); 
+        end
+    end
+end
+
+if proc_steps.create_basco_sdm
+    disp('---- creating BASCO_sdm for each run');
+    prt_files = dir([model_path filesep params.PRTpattern]);
+    if isempty(prt_files),
+        disp('ERROR: cannot find prt files');
+    else
+        for k = 1:length(prt_files),
+            ne_pl_create_sdm_basco([model_path filesep prt_files(k).name],session_settings_id); 
         end
     end
 end
@@ -265,6 +289,24 @@ if proc_steps.add_MC_sdm
     end
 end
 
+if proc_steps.add_MC_basco
+    disp('---- adding motion correction predictors to BASCO sdm');
+    task_basco_files = dir([model_path filesep '*_task_BASCO.sdm']);
+    MC_sdm_files = dir([session_path filesep '*' params.MCparams '.sdm']);
+    if isempty(MC_sdm_files), % for older Caltech processing, try .rtc
+        MC_sdm_files = dir([session_path filesep '*' params.MCparams '.rtc']);
+    end
+    
+    if length(MC_sdm_files) ~= length(task_basco_files),
+        disp(sprintf('ERROR: cannot match task_basco_files (%d) to MC_sdm_files (%d)',length(task_sdm_files),length(MC_sdm_files)));
+    else
+        for k = 1:length(task_basco_files),
+            ne_pl_add_pred_sdm([model_path filesep task_basco_files(k).name],[session_path filesep MC_sdm_files(k).name]);
+            
+        end
+    end
+end
+
 
 if proc_steps.run_QA
     disp('---- running QA');
@@ -279,6 +321,19 @@ end
 if proc_steps.add_outliers_sdm
     disp('---- adding outlier predictors to sdm');
     task_and_MC_sdm_files = dir([model_path filesep '*task*' params.MCparams '.sdm']);
+    outlier_mat_files = dir([session_path filesep '*_outlier_volumes.mat']);
+    if length(task_and_MC_sdm_files) ~= length(outlier_mat_files),
+        disp(sprintf('ERROR: cannot match task and MC sdm files (%d) to outlier mat files (%d)',length(task_and_MC_sdm_files),length(outlier_mat_files)));
+    else
+        for k = 1:length(task_and_MC_sdm_files),
+            ne_pl_add_pred_sdm([model_path filesep task_and_MC_sdm_files(k).name],[session_path filesep outlier_mat_files(k).name],0,'outlier_preds');
+        end
+    end
+end
+
+if proc_steps.add_outliers_basco
+    disp('---- adding outlier predictors to BASCO sdm');
+    task_and_MC_sdm_files = dir([model_path filesep '*task*' params.MCparams '_BASCO.sdm']);
     outlier_mat_files = dir([session_path filesep '*_outlier_volumes.mat']);
     if length(task_and_MC_sdm_files) ~= length(outlier_mat_files),
         disp(sprintf('ERROR: cannot match task and MC sdm files (%d) to outlier mat files (%d)',length(task_and_MC_sdm_files),length(outlier_mat_files)));
