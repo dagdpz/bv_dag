@@ -3,18 +3,18 @@ function att_convert_nifti_atlas_vois_to_BV_vmr_voi
 % can be followed by ne_combine_multiple_vois(findfiles(pwd,'*.voi'),'atlas_combined.voi');
 
 if 1 % Y:\Atlases\human\CerebrA
-d = dir('*_?.nii');
-
-N = length(d);
-
-global n
-n = neuroelf;
-
-for k=1:N,
-	vmr_path = ne_convert_MRIcron_nifti_voi_to_vmr(d(k).name,'','human');
-	ne_convert_vmr_to_voi(vmr_path);
-	
-end
+    d = dir('*_?.nii');
+    
+    N = length(d);
+    
+    global n
+    n = neuroelf;
+    
+    for k=1:N,
+        vmr_path = ne_convert_MRIcron_nifti_voi_to_vmr(d(k).name,'','human');
+        ne_convert_vmr_to_voi(vmr_path);
+        
+    end
 end
 
 if 0 % Y:\Atlases\macaque\Calabrese2015\atlas_voi
@@ -33,18 +33,18 @@ if 0 % Y:\Atlases\macaque\Calabrese2015\atlas_voi
     end
 end
 
-if 0
-load SARMds.mat; % or CHARMds.mat
-
-N = length(ds.Index);
-
-global n
-n = neuroelf;
-
-for k=1:N,
-	d = dir([num2str(ds.Index(k)) '_*.nii']);
-	vmr_path = ne_convert_MRIcron_nifti_voi_to_vmr(d.name);
-	ne_convert_vmr_to_voi(vmr_path);
-	
-end
+if 0 % Y:\Atlases\macaque\CHARM, Y:\Atlases\macaque\SARM
+    load SARMds.mat; % or CHARMds.mat
+    
+    N = length(ds.Index);
+    
+    global n
+    n = neuroelf;
+    
+    for k=1:N,
+        d = dir([num2str(ds.Index(k)) '_*.nii']);
+        vmr_path = ne_convert_MRIcron_nifti_voi_to_vmr(d.name);
+        ne_convert_vmr_to_voi(vmr_path);
+        
+    end
 end
