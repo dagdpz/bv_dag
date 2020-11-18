@@ -30,7 +30,7 @@ if isempty(strfind(d(3).name,'-')), % numeric file names without series number
 else % subj-series-volume/slice format
 
     % if number of characters in DICOM file names is equal across files
-	names = cell2mat({d(3:end).name}'); % IK
+	names = cell2mat({d(3:end).name}'); % IK 
     
     % if number of characters in DICOM file names differs between files
 %     tempnames = {d(3:end).name}'; % LG
