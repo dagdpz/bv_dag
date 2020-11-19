@@ -1,8 +1,8 @@
 function nifti_voi_path = att_extract_nifti_voi_from_hierarchical_atlas(nii_path,label_value,abbr_name,level, atlas)
-%ig_nifti_extract_nifti_voi_from_atlas  - extracts and saves one nifti volume corresponding to a value label in the atlas 
+%att_extract_nifti_voi_from_hierarchical_atlas  - extracts and saves one nifti volume corresponding to a value label in the atlas 
 %
 % USAGE:
-% ig_nifti_extract_nifti_voi_from_atlas('Z:\Atlases\macaque\Calabrese2015\test\civm_rhesus_v1_labels_downsample2.nii',202,'test');
+% att_extract_nifti_voi_from_hierarchical_atlas('Z:\Atlases\macaque\Calabrese2015\test\civm_rhesus_v1_labels_downsample2.nii',202,'test'); Alex, add correct example here
 %
 % INPUTS:
 %		nii_path	- atlas nifti
