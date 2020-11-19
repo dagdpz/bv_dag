@@ -333,7 +333,7 @@ end
 
 if proc_steps.add_outliers_basco
     disp('---- adding outlier predictors to BASCO sdm');
-    task_and_MC_sdm_files = dir([model_path filesep '*task*' params.MCparams '_BASCO.sdm']);
+    task_and_MC_sdm_files = dir([model_path filesep '*task_BASCO*' params.MCparams '.sdm']);
     outlier_mat_files = dir([session_path filesep '*_outlier_volumes.mat']);
     if length(task_and_MC_sdm_files) ~= length(outlier_mat_files),
         disp(sprintf('ERROR: cannot match task and MC sdm files (%d) to outlier mat files (%d)',length(task_and_MC_sdm_files),length(outlier_mat_files)));
