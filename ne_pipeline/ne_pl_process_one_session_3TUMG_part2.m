@@ -25,9 +25,9 @@ if strcmp(proc_steps_array,'all'),
 	proc_steps.create_vtc		= 0;
 	proc_steps.filter_vtc		= 0;
 	proc_steps.create_ppi_sdms	= 0; % special case for PPI
-	proc_steps.create_avg		= 0;
+	proc_steps.create_avg		= 1;
     proc_steps.create_mdm		= 1;
-	proc_steps.exclude_outliers_avg	= 0; % changed to 0 temporarily
+	proc_steps.exclude_outliers_avg	= 1; % changed to 0 temporarily
 	proc_steps.create_glm		= 1;
 	
 	

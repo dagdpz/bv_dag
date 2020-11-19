@@ -39,11 +39,14 @@ load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.m
 %              strcmp('OLPE',{prot.name})  | ...
 %              strcmp('PASC',{prot.name}) ;
 
-%throwaway =  strcmp('JAKU',{prot.name});
-%prot(~throwaway) = [];
+throwaway =  strcmp('ANRE',{prot.name});
+prot(~throwaway) = [];
+prot.session(1) = [];
+prot.session(1) = [];
+
 
 %runpath = 'D:\MRI\Human\fMRI-reach-decision\test_subject';
-runpath = 'D:\MRI\Human\fMRI-reach-decision\mni_Experiment';
+runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
 %%
 
 tic; 
@@ -84,13 +87,13 @@ for u = 1:length(prot)
         toc;
         disp(['finished running '  prot(u).name '_' prot(u).session(e).date])
         
-        save('D:\MRI\Human\fMRI-reach-decision\mni_Experiment\buffer_for_pipeline.mat','prot', 'runpath','u','e')
+        save('Y:\MRI\Human\fMRI-reach-decision\Experiment\buffer_for_pipeline.mat','prot', 'runpath','u','e')
         %memory
         %inmem
         
         clear all
         %memory
         %inmem
-        load('D:\MRI\Human\fMRI-reach-decision\mni_Experiment\buffer_for_pipeline.mat')
+        load('Y:\MRI\Human\fMRI-reach-decision\Experiment\buffer_for_pipeline.mat')
     end
 end

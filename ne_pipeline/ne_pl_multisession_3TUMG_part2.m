@@ -23,7 +23,7 @@ function ne_pl_multisession_3TUMG_part2(basedir,session_list,dataset_path,datase
 
 if strcmp(proc_steps_array,'all'),
 	proc_steps.create_mdm		= 1;
-	proc_steps.create_avg		= 0;
+	proc_steps.create_avg		= 1;
     proc_steps.create_glm       = 1;
 
 else
