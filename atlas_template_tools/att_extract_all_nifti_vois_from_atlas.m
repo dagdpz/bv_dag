@@ -1,8 +1,8 @@
-function att_nifti_extract_all_nifti_vois_from_atlas(nii_path,label_value_name,include_value_to_name)
-%att_nifti_extract_all_nifti_vois_from_atlas  - extracts all vois
+function att_extract_all_nifti_vois_from_atlas(nii_path,label_value_name,include_value_to_name)
+%att_extract_all_nifti_vois_from_atlas  - extracts all vois
 %
 % USAGE:
-% ig_nifti_extract_all_nifti_vois_from_atlas
+% att_extract_all_nifti_vois_from_atlas
 
 % INPUTS:
 %		nii_path                - atlas label nifti
@@ -15,9 +15,9 @@ function att_nifti_extract_all_nifti_vois_from_atlas(nii_path,label_value_name,i
 %       Y:\Atlases\human\CerebrA\process_atlas.m
 % OUTPUTS:
 %		None
-% REQUIRES:	NIfTI toolbox, att_nifti_extract_all_nifti_vois_from_atlas
+% REQUIRES:	NIfTI toolbox, att_extract_nifti_vois_from_atlas
 %
-% See also IG_NIFTI_EXTRACT_NIFTI_VOI_FROM_ATLAS
+% See also IG_EXTRACT_NIFTI_VOI_FROM_ATLAS
 %
 %
 % Author(s):	I.Kagan, DAG, DPZ
@@ -37,5 +37,5 @@ if nargin < 3,
 end
 
 for k = 1:length(label_value_name{1}),
-	att_nifti_extract_nifti_voi_from_atlas(nii_path,label_value_name{1}(k),label_value_name{2}{k},include_value_to_name);
+	att_extract_nifti_voi_from_atlas(nii_path,label_value_name{1}(k),label_value_name{2}{k},include_value_to_name);
 end

@@ -1,8 +1,9 @@
 function nifti_voi_path = att_extract_nifti_voi_from_hierarchical_atlas(nii_path,label_value,abbr_name,level, atlas)
-%ig_nifti_extract_nifti_voi_from_atlas  - extracts and saves one nifti volume corresponding to a value label in the atlas 
+%att_extract_nifti_voi_from_hierarchical_atlas  - extracts and saves one nifti volume corresponding to a value label in the atlas 
 %
 % USAGE:
 % att_extract_nifti_voi_from_hierarchical_atlas('Y:\Atlases\macaque\CHARM\CHARM_in_curius_anat.nii.gz',202,'test', 6); 
+
 %
 % INPUTS:
 %		nii_path	- atlas nifti

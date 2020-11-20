@@ -18,8 +18,8 @@ if isfield(settings.sdm, 'ppicond') && ~isempty(settings.sdm.ppicond)
 else sdm_add_name = '';
 end
 
+sdm = prt.CreateSDM(settings.sdm);
 
-sdm = prt.CreateSDM(settings.sdm); 
 sdm.SaveAs([prt_fullpath(1:end-4),'_task' sdm_add_name '.sdm']);
 disp(['created ' [prt_fullpath(1:end-4),'_task' sdm_add_name '.sdm']]);
 

@@ -1,5 +1,5 @@
-function nifti_voi_path = att_nifti_extract_nifti_voi_from_atlas(nii_path,label_value,abbr_name,include_value_to_name)
-%att_nifti_extract_nifti_voi_from_atlas  - extracts and saves one nifti volume corresponding to a value label in the atlas 
+function nifti_voi_path = att_extract_nifti_voi_from_atlas(nii_path,label_value,abbr_name,include_value_to_name)
+%att_extract_nifti_voi_from_atlas  - extracts and saves one nifti volume corresponding to a value label in the atlas 
 %
 % USAGE:
 % att_nifti_extract_nifti_voi_from_atlas('Z:\Atlases\macaque\Calabrese2015\test\civm_rhesus_v1_labels_downsample2.nii',202,'test');
