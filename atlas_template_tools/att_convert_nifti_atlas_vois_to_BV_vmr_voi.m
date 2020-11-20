@@ -4,7 +4,7 @@ function att_convert_nifti_atlas_vois_to_BV_vmr_voi
 
 
 if 1 % Y:\Atlases\human\HCP-MMP1.0 projected on MNI2009a GM (volumetric) in NIfTI format
-    d = dir('*_?.nii');
+    d = dir('*.nii');
     
     N = length(d);
     
