@@ -2,8 +2,25 @@ function att_convert_nifti_atlas_vois_to_BV_vmr_voi
 %att_convert_nifti_atlas_vois_to_BV_vmr_voi - convert NIfTI vois exported by att_nifti_extract_all_nifti_vois_from_atlas to VMR and then to BV VOI
 % can be followed by ne_combine_multiple_vois(findfiles(pwd,'*.voi'),'atlas_combined.voi');
 
+if 1 % Y:\Atlases\human\MNI_Glasser_HCP_2019_v1.0
+    
+    d = dir('*.nii');
+    
+    N = length(d);
+    
+    global n
+    n = neuroelf;
+    
+    for k=1:N,
+        vmr_path = ne_convert_MRIcron_nifti_voi_to_vmr(d(k).name,'','human');
+        ne_convert_vmr_to_voi(vmr_path);
+        
+    end
+end
 
-if 1 % Y:\Atlases\human\HCP-MMP1.0 projected on MNI2009a GM (volumetric) in NIfTI format
+if 0 % Y:\Atlases\human\HCP-MMP1.0 projected on MNI2009a GM (volumetric) in NIfTI format
+    % not working, since labels in nii should be fixed by ceil(ni.VoxelData/(2*32768)) 
+    
     d = dir('*.nii');
     
     N = length(d);
