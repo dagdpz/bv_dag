@@ -13,6 +13,7 @@ cvoi.NrOfVOIs = length(vois2combine);
 for k = 2:cvoi.NrOfVOIs,
 	voi = xff(vois2combine{k});
 	cvoi.VOI(k) = voi.VOI;
+    % cvoi.VOI(k).Color = fix(cvoi.VOI(k).Color); % fix colormap
 end
 
 cvoi.SaveAs(combined_filepath);
