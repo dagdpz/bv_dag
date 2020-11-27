@@ -44,35 +44,35 @@ N = length(label_value_name{1});
 cmap = jet(ceil(N/2));
 cmap = fix(255*reshape(repmat(cmap(:)',2,1),[],3));
 
-% for k = 1:N, 
-%     
-%     label_value = label_value_name{1}(k);
-%     label_name = label_value_name{2}{k};
-%     
-%     disp(sprintf('Processing voi %d out of %d: %s',k,N,label_name));
-%     
-%     nii = load_untouch_nii(nii_path);
-%     
-%     idx = find(nii.img~=label_value);
-%     nii.img(idx) = 0;
-%     
-%     % make sure abbr_name does not contain slashes etc.
-%     label_name=regexprep(label_name,'[\\|!?@#$&/]','_');
-% 
-%     
-%     if include_value_to_name,
-%         voi_name = [num2str(label_value) '_' label_name];
-%     else
-%         voi_name = [label_name];
-%     end
-%     
-%     nifti_voi_path = [pathstr filesep voi_name '.nii'];
-% 
-%     save_untouch_nii(nii,nifti_voi_path);
-%     
-%     vmr_path = ne_convert_MRIcron_nifti_voi_to_vmr(nifti_voi_path,'',species);
-%     ne_convert_vmr_to_voi(vmr_path,cmap(k,:),voi_name,'',species);
-%     
-% end
+for k = 1:N, 
+    
+    label_value = label_value_name{1}(k);
+    label_name = label_value_name{2}{k};
+    
+    disp(sprintf('Processing voi %d out of %d: %s',k,N,label_name));
+    
+    nii = load_untouch_nii(nii_path);
+    
+    idx = find(nii.img~=label_value);
+    nii.img(idx) = 0;
+    
+    % make sure abbr_name does not contain slashes etc.
+    label_name=regexprep(label_name,'[\\|!?@#$&/]','_');
+
+    
+    if include_value_to_name,
+        voi_name = [num2str(label_value) '_' label_name];
+    else
+        voi_name = [label_name];
+    end
+    
+    nifti_voi_path = [pathstr filesep voi_name '.nii'];
+
+    save_untouch_nii(nii,nifti_voi_path);
+    
+    vmr_path = ne_convert_MRIcron_nifti_voi_to_vmr(nifti_voi_path,'',species);
+    ne_convert_vmr_to_voi(vmr_path,cmap(k,:),voi_name,'',species);
+    
+end
 
 ne_combine_multiple_vois(findfiles(pathstr,'*.voi'),[name '.voi']);
