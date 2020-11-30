@@ -31,7 +31,7 @@ proc_steps.create_PRT_forAVG  = 1;
 proc_steps.create_SDM         = 0;
 proc_steps.add_MC_sdm         = 0;
 proc_steps.create_vtc         = 0;
-proc_steps.run_QA             = 1;
+proc_steps.run_QA             = 0;
 proc_steps.add_outliers_sdm   = 0;
 proc_steps.filter_vtc         = 0;
 
