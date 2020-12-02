@@ -1,9 +1,10 @@
 function ne_combine_vmp_with_voi(vmp_path,voi_path,subj,mapno,varargin)
-%ne_combine_vmp_with_voi  - extract clusters (no subclusters) within each voi, and save clusters to another voi
+%ne_combine_vmp_with_voi  - extract clusters (no subcluster) within each voi, and save clusters to another voi
 %
 % USAGE:	
 %		ne_combine_vmp_with_voi('test.vmp','test_r_tal.voi','',1,'combine_clusters',false);
 %		ne_combine_vmp_with_voi('test.vmp','test_r_tal.voi');
+%       ne_combine_vmp_with_voi('test.vmp','test_r_tal.voi','BA',1,'showneg',true);
 % 
 % INPUTS:
 %		input 1		- explanation
@@ -41,7 +42,6 @@ defpar = { ...
 	'rshape', 'char', 'nonempty', 'sphere'; ...		% 
     
 	'verbose', 'logical', 'nonempty', true; ...		%
-	'include_whole_if_less', 'double', 'nonempty', 16; ...	% if number of found voxels is less than this value, take all voxels (do not restrict to voxels around peak)
 	'clusters_per_voi', 'double', 'nonempty', 5; ...	% max number of clusters per voi
     'combine_clusters', 'logical', 'nonempty', true; ...	% 
 	'resulting_voi_name', 'char','nonempty', '';...
@@ -49,6 +49,12 @@ defpar = { ...
 
 if nargin < 4,
     mapno = 1;
+end
+
+if isempty(subj)
+    subj_str = '';
+else
+    subj_str = [subj '_'];
 end
 
 if nargin > 4, % specified dynamic params
@@ -99,7 +105,7 @@ for v = 1:voi.NrOfVOIs,
         
         if N > 1 && params.combine_clusters,
             voi_ct_sel = voi_ct_sel.Combine(1:N,'union');
-            voi_ct_sel.VOI(end).Name = [voi(v).Name '_combined'];
+            voi_ct_sel.VOI(end).Name = [subj_str voi(v).Name '_combined'];
             voi_ct_sel.VOI = voi_ct_sel.VOI(end);
             voi_ct_sel.NrOfVOIs = 1;
             str = ['[' num2str(N) ' combined]'];          
@@ -107,7 +113,7 @@ for v = 1:voi.NrOfVOIs,
             voi_ct_sel.NrOfVOIs = N;
             
             for c = 1:N,
-                 voi_ct_sel.VOI(c).Name = [voi(v).Name '_' voi_ct_sel.VOI(c).Name];
+                 voi_ct_sel.VOI(c).Name = [subj_str voi(v).Name '_' voi_ct_sel.VOI(c).Name];
             end
             str = ''; 
         end
