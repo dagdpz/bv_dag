@@ -1,4 +1,31 @@
 function ne_combine_vmp_clusters_with_voi(vmp_path,voi_path,subj,mapno,varargin)
+%ne_combine_vmp_clusters_with_voi  - extract (sub)clusters within each voi, modify (sub)clusters, and save (sub)clusters to another voi
+%
+% USAGE:	
+%		ne_combine_vmp_clusters_with_voi('RE_rLIPcan1_cue_l_cue_r_2016_RH_masked.vmp','RE_combined_atlas_vois_RH_ACPC_TAL_ACPC_tal.voi','RE',1);
+%		...
+% 
+% INPUTS:
+%		input 1		- explanation
+%		...
+%
+% OUTPUTS:	
+%		output1		- explanation
+%		...
+%
+% REQUIRES:	...
+%  
+% See also NE_COMBINE_VMP_WITH_VOI
+%
+%
+% Author(s):	Igor Kagan, DAG, DPZ
+% URL:		http://www.dpz.eu/dag
+% 
+% Change log:
+% yyyymmdd:	Created function (author's firstname familyname)
+% ...
+% $Revision: 1.0 $  $Date: 2011/01/31 20:47:25 $
+
 
 defpar = { ...
 	'localmax', 'double', 'nonempty', 25; ...		%

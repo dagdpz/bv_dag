@@ -1,4 +1,5 @@
 function ne_split_voi_LH_RH(voi_path)
+% ne_split_voi_LH_RH - splits vois to left and right hemisphere vois
 
 [path, name] = fileparts(voi_path);
 
