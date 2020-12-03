@@ -431,7 +431,7 @@ switch session_settings_id
 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold = []; % absolute outlier detection threshold for ne_fmriquality_TC_Quality2_method
 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nsd = []; % number of standard deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nMAD = [];%2.5; % number of median absolute deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
-		% see Leys et al. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. Journal of Experimental Social Psychology, 49(4), 764–766.
+		% see Leys et al. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. Journal of Experimental Social Psychology, 49(4), 764ï¿½766.
 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_prct = 1.5; % number of interquartile ranges added/subtracted to/from 75%/25% percentile of target signal to define upper and lower threshold
 		% see http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSLMotionOutliers
 		settings.fmr_quality.ne_fmriquality_TC_Quality2_n_smooth = 5; % n volumes for smoothing quality timecourse
@@ -648,9 +648,84 @@ switch session_settings_id
 		settings.mdm.zTransformation = 1; % apply z-transformation to volume time courses
 		settings.mdm.PSCTransformation = 0; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
 		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
-		settings.mdm.mask = 'D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk'; %'D:\MRI\Bacchus\BA_brain_mask.msk'; % D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk';
+        if isunix
+            settings.mdm.mask = '/mnt/KognitiveNeurowissenschaften/DAG/MRI/Bacchus/BA_20140711_ACPC_BRAIN_BrainMask.msk';
+        elseif ispc
+            settings.mdm.mask = 'D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk'; %'D:\MRI\Bacchus\BA_brain_mask.msk'; % D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk';	
+        end		
+        
+    case 'Bacchus_fixmemory_baseline_BASCO_20161111-now'
 		
-	case 'Bacchus_microstim_20170201-now'
+		settings.Species = 'monkey'; % either 'human' or 'monkey'
+		
+		% settings for create fmr
+		settings.fmr_create.NrOfSkippedVolumes = 4;
+		settings.fmr_create.TR			= 2000;
+		settings.fmr_create.InterSliceTime 	= 61.8; % TR/n_slices, here 32 slices, here taken from SeriesInfo Slice duration
+		settings.fmr_create.ResolutionX	= 80;  % series info Mosaic rows
+		settings.fmr_create.ResolutionY	= 80;
+		settings.fmr_create.InplaneResolutionX	= 1.2;
+		settings.fmr_create.InplaneResolutionY	= 1.2;
+		settings.fmr_create.SliceThickness	= 1.2;
+		settings.fmr_create.SliceGap		= 0;
+		settings.fmr_create.VoxelResolutionVerified = 1;
+		settings.fmr_create.GapThickness	= 0;
+		settings.fmr_create.TimeResolutionVerified = 1;
+		settings.fmr_create.SliceAcquisitionOrder = 5;
+		settings.fmr_create.SliceAcquisitionOrderVerified = 1;
+		
+		% settings for slice-timing correction of fmr
+		settings.fmr_slicetiming.order = 'aint2';
+		
+		% settings for motion correction of fmr
+		settings.fmr_realign.totarget = 1;
+		settings.fmr_realign.rtplot = 1;
+		
+		% settings for spatial and temporal filtering of fmr
+		settings.fmr_filter.spat = false;
+		settings.fmr_filter.temp = true;
+		settings.fmr_filter.tempsc = 3; % cycles; "a cycle means that one sine wave (from 0 to 360 degrees or 0 to 2PI) is spread across the number of time points of the fMRI data,
+		% a cycle of 2 means that two sine waves fall within the extent of the data" (http://www.brainvoyager.com/bvqx/doc/UsersGuide/Preprocessing/TemporalHighPassFiltering.html)
+        
+        % settings for QA
+ 		settings.fmr_quality.outlier_detection_method = 'ne_framewise_disp'; % NeuroElf 'ne_fmriquality_method' | 'ne_fmriquality_TC_Quality2_method' | 'ne_framewise_disp' | 'ne_fmriquality_TC_custom_method'
+
+ 		% specific settings for method 'ne_framewise_disp'
+		settings.fmr_quality.fd_cutoff = 1;
+		settings.fmr_quality.fd_radius = 5;
+
+        % general settings for all methods
+		settings.fmr_quality.reject_volumes_before_after_outlier	= [1	1];	% volumes to exclude before and after outlier volumes (for .sdm)
+		settings.fmr_quality.avg_exclude_before_after_outlier		= [100 100];	% ms, time to exclude from avg before / after outlier
+        settings.fmr_quality.plot_events = 'reward'; % if '', no events would be plotted, or 'reward', or regular expression such as 'reach.+mov'
+        
+		
+		% settings for converting behavioral files to BV *.prt
+		settings.prt.beh2prt_function_handle = @BA_mat2prt_fixmem_BASCO;
+		settings.model = '';
+		
+		% settings for converting prt to sdm
+		settings.sdm.nvol = 450;
+		settings.sdm.prtr = settings.fmr_create.TR;
+		settings.sdm.hpttp = 3;
+		settings.sdm.hnttp = 10;
+		settings.sdm.rcond = []; % exclude "rest"/"baseline" condition (i.e. initial fixation)
+		
+		% VTC settings, VTC creation does not work for monkey data
+		settings.vtc_filter.spkern	= [3 3 3];
+		
+		% settings for multi-study GLM computation
+		settings.mdm.seppred = 0; % predictors of equal name are (0) concatenated across all runs, (1) fully separated across runs and subjects, or (2) concatenated only across runs of the same subject, but separate across subjects
+		settings.mdm.zTransformation = 1; % apply z-transformation to volume time courses
+		settings.mdm.PSCTransformation = 0; % apply percent-signal-change transformation to volume time courses, NOTE: you can only choose ONE type of transformation (z or PSC)!
+		settings.mdm.RFX_GLM = 0; % 0 = fixed-effects model (FFX), 1 = random-effects model (RFX)
+		if isunix
+            settings.mdm.mask = '/mnt/KognitiveNeurowissenschaften/DAG/MRI/Bacchus/BA_20140711_ACPC_BRAIN_BrainMask.msk';
+        elseif ispc
+            settings.mdm.mask = 'D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk'; %'D:\MRI\Bacchus\BA_brain_mask.msk'; % D:\MRI\Bacchus\BA_20140711_ACPC_BRAIN_BrainMask.msk';	
+        end
+        
+    case 'Bacchus_microstim_20170201-now'
 		
 		settings.Species = 'monkey'; % either 'human' or 'monkey'
 		
@@ -702,7 +777,7 @@ switch session_settings_id
 % 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold = []; % absolute outlier detection threshold for ne_fmriquality_TC_Quality2_method
 % 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nsd = []; % number of standard deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
 % 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_nMAD = [];%2.5; % number of median absolute deviations of target signal as outlier detection threshold for ne_fmriquality_TC_Quality2_method
-% 		% see Leys et al. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. Journal of Experimental Social Psychology, 49(4), 764–766.
+% 		% see Leys et al. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. Journal of Experimental Social Psychology, 49(4), 764ï¿½766.
 % 		settings.fmr_quality.ne_fmriquality_TC_Quality2_threshold_prct = 1.5; % number of interquartile ranges added/subtracted to/from 75%/25% percentile of target signal to define upper and lower threshold
 % 		% see http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FSLMotionOutliers
 % 		settings.fmr_quality.ne_fmriquality_TC_Quality2_n_smooth = 5; % n volumes for smoothing quality timecourse
