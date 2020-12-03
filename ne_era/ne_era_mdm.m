@@ -81,7 +81,7 @@ end
 [missing_files(1:avg.NrOfCurves)] = deal(0);
 
 mdm = xff(mdmpath);
-% use desired data transformation
+% use desired data transformation (IK: I am not sure it is doing anything here)
 if strcmp(params.datatrans, 'psc') && mdm.PSCTransformation == 0
 	mdm.PSCTransformation = 1;
 	mdm.zTransformation = 0;
@@ -95,7 +95,7 @@ end
 
 %% extract VOI time courses and single-trial data
 disp('---- extracting VOI time courses')
-[tc, tcf, tcv, tr] = mdm.VOITimeCourses(voi);
+[tc, tcf, tcv, tr] = mdm.VOITimeCourses(voi,struct('trans',params.datatrans));
 
 % get TR
 TR = tr(1);
@@ -109,9 +109,10 @@ switch avg.ResolutionOfDataPoints
         end
         
         ini_interp = TR/1000;
-        interpol.NrOfTimePoints = avg.NrOfTimePoints*(TR/params.tc_interpolate)/ini_interp - 1000/params.tc_interpolate + 1;
+        
         interpol.PreInterval = avg.PreInterval*1000/params.tc_interpolate;
         interpol.PostInterval = avg.PostInterval*1000/params.tc_interpolate;
+        interpol.NrOfTimePoints = interpol.PreInterval + interpol.PostInterval + 1;
         interpol.AverageBaselineFrom = avg.AverageBaselineFrom*1000/params.tc_interpolate;
         interpol.AverageBaselineTo = avg.AverageBaselineTo*1000/params.tc_interpolate;
         
@@ -230,7 +231,11 @@ if isempty(onsets),
 else
 	if tc_interpolate, % e.g. to 5 ms, x200 times = TR/5
         
-        tci = interp(tc,TR/tc_interpolate);
+        % tci = interp(tc,TR/tc_interpolate); % old version
+        
+        n = neuroelf;      
+        tci = n.flexinterpn(tc',[1:(1000/tc_interpolate)/TR:length(tc)]');
+
         onsets_i = round(onsets/tc_interpolate)+1;
         n_vol = length(tc); % in original TR
         
