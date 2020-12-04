@@ -33,7 +33,7 @@ end
 %% default parameters
 defpar = { ...
 	'ra_bins_sec', 'double', [], []; ...  % ra samples in seconds according to time axis, starting from 1st sample
-	'tc_interpolate', 'double', 'nonempty', 0; ... % interpolate timecourse to tc_interpolate ms (0 - no interpolation)
+	'tc_interpolate', 'double', 'nonempty', 1000; ... % interpolate timecourse to tc_interpolate ms (0 - no interpolation)
 	'datatrans', 'char', 'nonempty', 'raw';...  % transformation applied to time course data: 'psc', 'z', or 'raw' (default)
 	%'roisize', 'double', 'nonempty', 0; ...
 	%'xyztype', 'char', 'nonempty', 'tal' ; ...
@@ -230,11 +230,11 @@ if isempty(onsets),
 	
 else
 	if tc_interpolate, % e.g. to 5 ms, x200 times = TR/5
-        
+        % see testsim/testsim_interp.m
         % tci = interp(tc,TR/tc_interpolate); % old version
         
         n = neuroelf;      
-        tci = n.flexinterpn(tc,[1:(1000/tc_interpolate)/TR:length(tc)]');
+        tci = n.flexinterpn(tc,[1:tc_interpolate/TR:length(tc)]'); % tc_interpolate and TR in ms
 
         onsets_i = round(onsets/tc_interpolate)+1;
         n_vol = length(tc); % in original TR
@@ -252,7 +252,6 @@ else
             perievents = perievents(:); % make column
         end
         
-		
 		% NOT TESTED YET!
 	else % no interpolation 
 		% ms -> volumes
