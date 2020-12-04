@@ -234,7 +234,7 @@ else
         % tci = interp(tc,TR/tc_interpolate); % old version
         
         n = neuroelf;      
-        tci = n.flexinterpn(tc',[1:(1000/tc_interpolate)/TR:length(tc)]');
+        tci = n.flexinterpn(tc,[1:(1000/tc_interpolate)/TR:length(tc)]');
 
         onsets_i = round(onsets/tc_interpolate)+1;
         n_vol = length(tc); % in original TR
