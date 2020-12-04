@@ -26,6 +26,8 @@ switch era_settings_id
         
     case 'Human_reach_decision'
         
+        settings.plot_symbols = 0;
+        
         % those settings could come from avg file - in this case they will be overwritten by avg
         settings.ResolutionOfDataPoints	= 'Seconds';
         settings.PreInterval		= 12; % s
@@ -66,7 +68,7 @@ switch era_settings_id
         %             { {4} {3} }; ...
         %             { {6} {5} } ...
         %             };
-        settings.plot_diff = [{3 1};{4 2};{7 5};{8 6}];
+        settings.plot_diff = []; %[{3 1};{4 2};{7 5};{8 6}];
         % settings.plot_diff_color = [0 0 0; 0 0 1; 1 0 0];
         settings.plot_diff_fun = @(x,y) mean(x,y); % function that will be applied to data before calculating the difference according to settings.plot_diff, check line 195 in ne_plot_era_fmri_microstim for correct input!
         
