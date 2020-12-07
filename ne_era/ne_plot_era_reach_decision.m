@@ -1,4 +1,4 @@
-function dt = ne_plot_era_reach_decision(era_files,subject_name,runpath)
+function ne_plot_era_reach_decision(era_files,subject_name,runpath)
 
 % opengl software % http://www.mathworks.com/matlabcentral/answers/101588
 % ini_dir = pwd;
@@ -56,7 +56,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
             temp = table();
             temp.time = tc(d).era.timeaxis';
             temp.mean = squeeze(tc(d).era.mean(v,c,:)); % mean values
-            temp.sd   = squeeze(tc(d).era.se(v,c,:));  % sd values
+            temp.se   = squeeze(tc(d).era.se(v,c,:));  % sd values
             
             name = char({tc(d).era.avg.Curve(c).Name});
             name_parts = strsplit(name,'_');
@@ -81,8 +81,8 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     dt.side = categorical(dt.side); 
     dt.trigger = categorical(dt.trigger); 
     
-    dt.upCI = dt.mean + 2*dt.sd; 
-    dt.loCI = dt.mean - 2*dt.sd;
+    dt.upCI = dt.mean + dt.se; 
+    dt.loCI = dt.mean - dt.se;
     
     %% Plot
     clear Gsu
