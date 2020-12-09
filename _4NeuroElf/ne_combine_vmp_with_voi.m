@@ -38,8 +38,6 @@ defpar = { ...
     'showneg', 'logical', 'nonempty', false; ...	% 
     'sorting', 'char', 'nonempty', 'maxstats'; ...	% 'maxstat', {'maxstats'}, 'size', 'x', 'y', 'z'
     
-	'rsize', 'double', 'nonempty', 4; ...			% 
-	'rshape', 'char', 'nonempty', 'sphere'; ...		% 
     
 	'verbose', 'logical', 'nonempty', true; ...		%
 	'clusters_per_voi', 'double', 'nonempty', 5; ...	% max number of clusters per voi
