@@ -25,11 +25,25 @@ for i = 1:length(lvoi.VOI)
 end
 
 lvoi.VOI(delidxl)=[];
+empties = [];
+for i = 1:length(lvoi.VOI)
+    if lvoi.VOI(i).NrOfVoxels == 0
+        empties = [empties i];
+    end
+end
+lvoi.VOI(empties) = [];
 lvoi.NrOfVOIs = length(lvoi.VOI) ;
 lvoi.SaveAs([path filesep name '_l.voi']);
 disp(['Saved ' name '_l'])
 
 rvoi.VOI(delidxr)=[];
+empties = [];
+for i = 1:length(rvoi.VOI)
+    if rvoi.VOI(i).NrOfVoxels == 0
+        empties = [empties i];
+    end
+end
+rvoi.VOI(empties) = [];
 rvoi.NrOfVOIs = length(rvoi.VOI) ;
 rvoi.SaveAs([path filesep name '_r.voi']);
 disp(['Saved ' name '_r'])
