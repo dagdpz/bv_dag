@@ -1,4 +1,4 @@
-function [era] = ne_era_frd_mdm(voipath,avgpath,mdmpath,era_settings_id,varargin)
+function [era] = ne_era_mdm_frd(voipath,avgpath,mdmpath,era_settings_id,varargin)
 % This function extracts single-trial BOLD responses from VTCs using
 % MDM::VOITimeCourses for each volume of interest (VOI) specified in a
 % given VOI file specified as VOIPATH.
@@ -72,8 +72,13 @@ end
 avg = xff(avgpath);
 %% PN 20201210 ONLY CHANGE FOR FRD
 % quick and dirty solution to extract more data than defined by avg file
-avg.PostInterval = avg.PostInterval + 7;
-avg.NrOfTimePoints = avg.NrOfTimePoints + 7;
+[~,avg_name] =fileparts(avgpath);
+if ~isempty(strfind(avg_name,'mov'))
+   
+    avg.PostInterval = avg.PostInterval + 7;
+    avg.NrOfTimePoints = avg.NrOfTimePoints + 7;
+    
+end
 
 %% PN END
 
