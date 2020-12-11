@@ -2,7 +2,7 @@ function ne_wrapper_creation_and_plot_era_reach_decision
 
 clear all
 load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
-
+prot = prot(strcmp('ANEL',{prot.name}));
 
 %% settings
 runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
@@ -23,7 +23,7 @@ for i = length(prot)
         
         for d = 1:length(delay)
             
-            [era] = ne_era_mdm(...
+            [era] = ne_era_frd_mdm(...
                 voi_name,... %voi location         'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\test\test_r_tal.voi',...
                 [runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_combined_avg_' trigger{t} '_' delay{d} avg_outliers '.avg'],...      'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_combined_avg_cue_3_no_outliers.avg',...
                 [runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_forglm' filesep subject mdm_pattern],...  % which mdm    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_forglm\ANEL_combined_no_outliers_glm_cue.mdm',...
@@ -31,22 +31,22 @@ for i = length(prot)
                 'tc_interpolate',100);
             
             
-            save([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_era_' trigger{t} '_' delay{d} '.mat'],'era');
-            disp(['saved ' runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_era_' trigger{t} '_' delay{d} '.mat'])
+            save([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_era_' trigger{t} '_' delay{d} avg_outliers '.mat'],'era');
+            disp(['saved ' runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_era_' trigger{t} '_' delay{d} avg_outliers '.mat'])
             
             
-            save('Y:\MRI\Human\fMRI-reach-decision\Experiment\buffer_for_pipeline.mat','prot', 'runpath','i','t','d','trigger','delay','avg_outliers','mdm_pattern','voi_name')
-
-            clear all
-    
-            load('Y:\MRI\Human\fMRI-reach-decision\Experiment\buffer_for_pipeline.mat')
+%             save('Y:\MRI\Human\fMRI-reach-decision\Experiment\buffer_for_pipeline.mat','prot', 'runpath','i','t','d','trigger','delay','avg_outliers','mdm_pattern','voi_name')
+% 
+%             clear all
+%     
+%             load('Y:\MRI\Human\fMRI-reach-decision\Experiment\buffer_for_pipeline.mat')
 
             
         end
     end
 end
 
-%% plotting eras per delay
+%% plotting eras per delay TO BE CONTINUED
 
 for i = 1:length(prot)
     
