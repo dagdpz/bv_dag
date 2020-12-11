@@ -3,7 +3,7 @@ function ne_plot_era_reach_decision(era_files,subject_name,runpath)
 % opengl software % http://www.mathworks.com/matlabcentral/answers/101588
 % ini_dir = pwd;
 
-export = 1;
+export = 0;
 
 % %%
 % if nargin > 1
