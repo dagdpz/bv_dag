@@ -250,7 +250,7 @@ else
         % without dublicating the last sample
         % tci = n.flexinterpn(tc,[1:tc_interpolate/TR:length(tc)]'); % tc_interpolate and TR in ms 
         
-        % dublicate the last sample to create interpolated samples after the last sample
+        % duplicate the last sample to create interpolated samples after the last sample
         tci = n.flexinterpn([tc; tc(end)],[1:tc_interpolate/TR:length(tc)+1]');  % tc_interpolate and TR in ms 
         tci = tci(1:end-1); % remove the last interpolated sample corresponding to the dublicated last sample, now the length of tci should be n_vol*TR/tc_interpolate
 
