@@ -138,12 +138,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     %% move x axis for move
     
      dt.time (dt.trigger == 'mov') = dt.time (dt.trigger == 'mov') +15;
-%     dt.time(dt.trigger == 'mov' & dt.delay == '3') = dt.time(dt.trigger == 'mov' & dt.delay == '3') + 3;
-%     dt.time(dt.trigger == 'mov' & dt.delay == '6') = dt.time(dt.trigger == 'mov' & dt.delay == '6') + 6;
-%     dt.time(dt.trigger == 'mov' & dt.delay == '9') = dt.time(dt.trigger == 'mov' & dt.delay == '9') + 9;
-%     dt.time(dt.trigger == 'mov' & dt.delay == '12') = dt.time(dt.trigger == 'mov' & dt.delay == '12') + 12;
-%     dt.time(dt.trigger == 'mov' & dt.delay == '15') = dt.time(dt.trigger == 'mov' & dt.delay == '15') + 15;
-%     
+  
    
     %% real plot
     clear Gsu2

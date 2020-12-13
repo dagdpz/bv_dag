@@ -166,7 +166,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     %% export
     if export
         %orient('tall');
-        saveas(gcf, [runpath filesep subject_name '_' voi_name '_per_delay.pdf'], 'pdf');
+        saveas(gcf, [runpath filesep subject_name '_' voi_name '_averaged.pdf'], 'pdf');
         close(gcf);  
     end
     
