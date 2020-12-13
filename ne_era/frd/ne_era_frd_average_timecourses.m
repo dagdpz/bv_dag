@@ -68,7 +68,7 @@ new_tc.era.mean     = squeeze(mean_);
 new_tc.era.se		= squeeze(se_);
 new_tc.era.n_trials	= squeeze(n_);
 
-era = new_tc;
+era = new_tc.era;
 
 
 

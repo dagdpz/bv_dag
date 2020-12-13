@@ -1,4 +1,4 @@
-function ne_plot_era_reach_decision(era_files,subject_name,runpath)
+function ne_era_frd_plot_type1(era_files,subject_name,runpath)
 
 % opengl software % http://www.mathworks.com/matlabcentral/answers/101588
 % ini_dir = pwd;
@@ -31,7 +31,7 @@ for i = 1:length(tc.era.avg.Curve);
     
     colors = [colors; te];
 end
-
+clear te;
 colors = sortrows(colors,1);
 colors.color = colors.color/255;
 
@@ -39,6 +39,16 @@ colors.color = colors.color/255;
 for e = 2:length(era_files)
    ttt = load(era_files{e}); 
    tc(e) = ttt;
+end
+
+
+%% create names
+for e = 1:length(era_files)
+   [~, fname, ~ ] = fileparts(era_files{e});
+   name_parts = strsplit(fname,'_');
+   tc(e).del = name_parts{4};
+   tc(e).trigger = name_parts{3};
+   tc(e).raw_le = size(tc(e).era.raw(1,1).perievents,1);
 end
 
 
@@ -79,6 +89,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     dt.eff  = categorical(dt.eff);
     dt.choi = categorical(dt.choi);
     dt.side = categorical(dt.side); 
+    dt.side = renamecats(dt.side,{'l','r'},{'left','right'});
     dt.trigger = categorical(dt.trigger); 
     
     dt.upCI = dt.mean + dt.se; 
@@ -90,7 +101,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     figure;
     Gsu = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.eff,'row',dt.delay,'subset',dt.trigger == 'cue');
     Gsu.geom_interval('geom','area');
-    Gsu.axe_property('Xlim',[-3 18],'Ylim',[-1.5 1.5]);
+    Gsu.axe_property('Xlim',[-3 18],'Ylim',[min(dt.mean)-0.2 max(dt.mean)+0.2]);
     Gsu.set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
     Gsu.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
     Gsu.set_names('color','','row','','column','','x','time in seconds','y','PSC');
@@ -124,6 +135,75 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
         close(gcf);  
     end
     
+    %% move x axis for move
+    
+     dt.time (dt.trigger == 'mov') = dt.time (dt.trigger == 'mov') +15;
+%     dt.time(dt.trigger == 'mov' & dt.delay == '3') = dt.time(dt.trigger == 'mov' & dt.delay == '3') + 3;
+%     dt.time(dt.trigger == 'mov' & dt.delay == '6') = dt.time(dt.trigger == 'mov' & dt.delay == '6') + 6;
+%     dt.time(dt.trigger == 'mov' & dt.delay == '9') = dt.time(dt.trigger == 'mov' & dt.delay == '9') + 9;
+%     dt.time(dt.trigger == 'mov' & dt.delay == '12') = dt.time(dt.trigger == 'mov' & dt.delay == '12') + 12;
+%     dt.time(dt.trigger == 'mov' & dt.delay == '15') = dt.time(dt.trigger == 'mov' & dt.delay == '15') + 15;
+%     
+   
+    %% real plot
+    clear Gsu2
+    %figure ('Position', [100 100 1600 1000]);
+    figure;
+    Gsu2 = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.side,'row',dt.eff,'group',dt.delay,'subset',dt.time >= -2 & dt.trigger == 'cue' & dt.delay ~= '3' & dt.delay ~= '6');
+    %Gsu2.geom_interval('geom','area');
+    Gsu2.geom_line();
+    Gsu2.axe_property('Xlim',[-3 23],'Ylim',[min(dt.mean)-0.2 max(dt.mean)+0.2]);
+    %Gsu2.set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
+    Gsu2.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
+    Gsu2.set_names('color','','column','','row','','x','time in seconds','y','PSC');
+    Gsu2.geom_vline('xintercept',[0 15],'style','k-');
+    Gsu2.geom_hline('yintercept',0,'style','k--');
+    Gsu2.geom_hline('yintercept',0,'style','k--');
+    Gsu2.set_title([subject_name '_' voi_name]);    
+    
+    Gsu2.update('x',dt.time,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.eff,'subset',dt.time >= 13 & dt.trigger == 'mov' & dt.delay ~= '3' & dt.delay ~= '6');
+    %Gsu2.geom_interval('geom','area');
+
+    Gsu2.geom_line();
+    Gsu2.set_layout_options('legend',false);
+    
+    Gsu2.draw;
+    
+
+%% CONTROL PLOT
+%     clear Gsu2
+%     %figure ('Position', [100 100 1600 1000]);
+%     figure;
+%     Gsu2(1,1) = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.side,'row',dt.eff,'group',dt.delay,'subset', dt.trigger == 'cue' & dt.delay ~= '3' & dt.delay ~= '6'& dt.delay ~= '9' & dt.delay ~= '12');
+%     %Gsu2(1,1).geom_interval('geom','area');
+%     Gsu2(1,1).geom_line();
+%     %Gsu2(1,1).axe_property('Xlim',[-3 18],'Ylim',[-1.5 1.5]);
+%     %Gsu2(1,1).set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
+%     Gsu2(1,1).set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
+%     Gsu2(1,1).set_names('color','','row','','column','','x','time in seconds','y','PSC');
+%     Gsu2(1,1).geom_vline('xintercept',0,'style','k-');
+%     Gsu2(1,1).geom_hline('yintercept',0,'style','k--');
+%     Gsu2.draw;
+%     
+%     
+%     Gsu2(1,1).update('x',dt.time,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.eff,'subset', dt.trigger == 'mov' & dt.delay ~= '3' & dt.delay ~= '6'& dt.delay ~= '9' & dt.delay ~= '12');
+%     Gsu2(1,1).geom_line();
+%     %Gsu2(1,2).geom_interval('geom','area');
+%     %Gsu2(1,2).axe_property('Xlim',[-3 18],'Ylim',[-1.5 1.5]);
+%     %Gsu2(1,2).set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
+%     %Gsu2(1,2).set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
+%     %Gsu2(1,2).set_names('color','','row','','column','','x','time in seconds','y','PSC');
+%     %Gsu2(1,2).geom_vline('xintercept',0,'style','k-');
+%     %Gsu2(1,2).geom_hline('yintercept',0,'style','k--');
+%     
+%     Gsu2.set_title([subject_name '_' voi_name]);
+%     Gsu2.draw;
+%     %dt.time >= 13 &
+
+%% 
+    
+    
+    %%
     dt = table();
 
 
