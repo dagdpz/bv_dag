@@ -6,8 +6,8 @@ prot = prot(strcmp('ANEL',{prot.name}));
 
 %% settings
 runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
-avg_outliers = '_no_outliers'; % ''
-mdm_pattern = '_combined_no_outliers_glm_cue.mdm'; % '_combined_glm_cue.mdm'
+avg_outliers = '_no_outliers'; % ''                                            %% CHANGE HER FOR OUTLIER CONSIDERATION
+mdm_pattern = '_combined_no_outliers_glm_cue.mdm'; % '_combined_glm_cue.mdm'   %% CHANGE HER FOR OUTLIER CONSIDERATION
 voi_name = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\test\test_r_tal.voi';
 
 %% creation of era files per separate delay
@@ -48,20 +48,23 @@ end
 
 %% plotting eras per delay TO BE CONTINUED
 
+trigger = {'cue', 'mov'};
+delay = {'3','6','9','12','15'};
+
 for i = 1:length(prot)
     
-     subject = prot(i).name;
+     subject = prot(i).name;    
      
-era_files = findfiles([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg'],'*test*');
+     era_files = findfiles([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg'],'*era*');
 
 
 
 era_files = {...
-    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_test_delay3.mat';...
-    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_test_delay6.mat';...
-    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_test_delay9.mat';...
-    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_test_delay12.mat';...
-    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_test_delay15.mat'};
+    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_3_no_outliers.mat';...
+    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_6_no_outliers.mat';...
+    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_9_no_outliers.mat';...
+    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_12_no_outliers.mat';...
+    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_15_no_outliers.mat'};
 
 
 ne_plot_era_reach_decision(era_files,subject_name,runpath)
@@ -71,6 +74,6 @@ ne_plot_era_reach_decision(era_files,subject_name,runpath)
 
 
 
-
+     
 end
 
