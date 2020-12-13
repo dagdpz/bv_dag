@@ -245,8 +245,14 @@ else
         % see testsim/testsim_interp.m
         % tci = interp(tc,TR/tc_interpolate); % old version
         
-        n = neuroelf;      
-        tci = n.flexinterpn(tc,[1:tc_interpolate/TR:length(tc)]'); % tc_interpolate and TR in ms
+        n = neuroelf;
+        
+        % without dublicating the last sample
+        % tci = n.flexinterpn(tc,[1:tc_interpolate/TR:length(tc)]'); % tc_interpolate and TR in ms 
+        
+        % duplicate the last sample to create interpolated samples after the last sample
+        tci = n.flexinterpn([tc; tc(end)],[1:tc_interpolate/TR:length(tc)+1]');  % tc_interpolate and TR in ms 
+        tci = tci(1:end-1); % remove the last interpolated sample corresponding to the dublicated last sample, now the length of tci should be n_vol*TR/tc_interpolate
 
         onsets_i = round(onsets/tc_interpolate)+1;
         n_vol = length(tc); % in original TR
