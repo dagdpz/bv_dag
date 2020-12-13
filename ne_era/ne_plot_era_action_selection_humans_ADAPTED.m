@@ -160,6 +160,11 @@ for v = 1:size(data1,1)
         settings.TimeCourseThick = [temp.TimeCourseThick];
         settings.StdDevErrThick = [temp.StdErrThick]; % note: field name might change if you use standard deviation instead of standard error
         
+        %%
+        g = gramm('x',era.
+        
+        
+        
         
         
         
