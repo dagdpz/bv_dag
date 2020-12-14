@@ -1,9 +1,9 @@
-function ne_era_frd_plot_type2(era_files,subject_name,runpath)
+function ne_era_frd_plot_average(era_files,subject_name,savepath)
 
 % opengl software % http://www.mathworks.com/matlabcentral/answers/101588
 % ini_dir = pwd;
 
-export = 0;
+export = 1;
 
 % %%
 % if nargin > 1
@@ -20,7 +20,7 @@ tc = load(era_files{1});
 
 %% get colors
 colors = table();
-for i = 1:length(tc.era.avg.Curve);
+for i = 1:length(tc.era.avg.Curve)
     te = table();
     
     name = char({tc.era.avg.Curve(i).Name});
@@ -106,12 +106,12 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     %Gsu2(1,1).geom_line();
     Gsu2(1,1).axe_property('Xlim',[-2.5 7],'Ylim',[min(dt.mean)-0.2 max(dt.mean)+0.2]);
 
+    Gsu2(1,1).axe_property('Ygrid','on','YTick',[floor(min(dt.mean)-0.2):0.1:ceil(max(dt.mean)+0.2)],'XTick',[-2:1:7]);
     Gsu2(1,1).set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
     Gsu2(1,1).set_names('color','','column','','row','','x','time in seconds','y','PSC');
     Gsu2(1,1).geom_vline('xintercept',0,'style','k-');
     Gsu2(1,1).geom_hline('yintercept',0,'style','k--');
     Gsu2(1,1).set_layout_options('legend',false);
-    Gsu2(1,1).axe_property('Ygrid','on');
     
     Gsu2(1,2) = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'subset',dt.time >= -2 & dt.trigger == 'mov');
     Gsu2(1,2).geom_interval('geom','area');
@@ -122,7 +122,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     Gsu2(1,2).set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
     Gsu2(1,2).geom_vline('xintercept',0,'style','k-');
     Gsu2(1,2).geom_hline('yintercept',0,'style','k--');
-    Gsu2(1,2).axe_property('YTickLabel','','Ygrid','on');
+    Gsu2(1,2).axe_property('YTickLabel','','Ygrid','on','YTick',[floor(min(dt.mean)-0.2):0.1:ceil(max(dt.mean)+0.2)],'XTick',[-2:1:7]);
     
     Gsu2(1,2).set_layout_options('legend_position',[0.3 0.7 0.2 0.2]);
 
@@ -139,10 +139,12 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     clear GSu3
     %figure ('Position', [100 100 1600 1000]);
     figure;
-    GSu3 = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.side,'row',dt.choi,'subset',dt.trigger == 'cue');
+    GSu3 = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.side,'row',dt.eff,'subset',dt.time >= -2 & dt.trigger == 'cue');
     GSu3.geom_interval('geom','area');
     %GSu3.geom_line();
-    GSu3.axe_property('Xlim',[-3 17],'Ylim',[min(dt.mean)-0.2 max(dt.mean)+0.2]);
+    GSu3.axe_property('Xlim',[-3 17],'Ylim',[min(dt.loCI) max(dt.upCI)]);
+    GSu3.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:16],'YTick',[floor(min(dt.loCI))-0.1:0.2:ceil(max(dt.upCI))+0.1]);
+
     %GSu3.set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
     GSu3.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
     GSu3.set_names('color','','column','','row','','x','time in seconds','y','PSC');
@@ -151,7 +153,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     GSu3.geom_hline('yintercept',0,'style','k--');
     GSu3.set_title([subject_name '_' voi_name]);    
     
-    GSu3.update('x',dt.time,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.choi,'subset',dt.time > 7 & dt.trigger == 'mov');
+    GSu3.update('x',dt.time,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.eff,'subset',dt.time > 7 & dt.trigger == 'mov');
     GSu3.geom_interval('geom','area');
     %GSu3.geom_line();
     GSu3.set_layout_options('legend',false);
@@ -166,7 +168,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     %% export
     if export
         %orient('tall');
-        saveas(gcf, [runpath filesep subject_name '_' voi_name '_averaged.pdf'], 'pdf');
+        saveas(gcf, [savepath filesep subject_name '_' voi_name '_averaged.pdf'], 'pdf');
         close(gcf);  
     end
     
