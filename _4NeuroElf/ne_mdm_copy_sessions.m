@@ -1,6 +1,15 @@
 function ne_mdm_copy_sessions(mdmpath,source, target, dir_patterns2exclude, file_patterns2exclude, patterns2include, verbose)
 % ne_mdm_copy_sessions('combined_spkern_3-3-3.mdm','Y:\MRI\Bacchus', 'F:\MRI\Bacchus', 'dicom', '.dcm');
 
+if nargin < 6,
+    patterns2include = '*';
+end
+
+if nargin < 7,
+    verbose = true;
+end
+
+
 mdm = xff(mdmpath);
 
 sessions_runs = cellfun(@(x) x(strfind(x, '\2')+1:strfind(x, '\2')+8), mdm.XTC_RTC(:,1), 'UniformOutput',0);
