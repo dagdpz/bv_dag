@@ -3,7 +3,7 @@ function ne_era_frd_plot_average(era_files,subject_name,savepath)
 % opengl software % http://www.mathworks.com/matlabcentral/answers/101588
 % ini_dir = pwd;
 
-export = 1;
+export = 0;
 
 % %%
 % if nargin > 1

@@ -1,4 +1,4 @@
-function ne_wrapper_creation_and_plot_era_reach_decision
+function ne_era_frd_wrapper_subject_level_creation_and_plot
 
 %% what to do
 
@@ -15,6 +15,7 @@ prot = prot(strcmp('ANEL',{prot.name}));
 
 %% settings
 runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
+tc_interpolate = 100;
 avg_outliers = '_no_outliers'; % ''                                            %% CHANGE HER FOR OUTLIER CONSIDERATION
 mdm_pattern = '_combined_no_outliers_glm_cue.mdm'; % '_combined_glm_cue.mdm'   %% CHANGE HER FOR OUTLIER CONSIDERATION
 voi_name = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\test\test_r_tal.voi';
@@ -36,12 +37,19 @@ if create_era_per_delay
             
             for d = 1:length(delay)
                 
+                %[era] = ne_era_mdm_frd(voipath,avgpath,mdmpath,era_settings_id,varargin)
+                %[era] = ne_era_mdm_frd(
+                    % 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\test\test_r_tal.voi';
+                    % 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_combined_avg_cue_3_no_outliers.avg',...
+                    % 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_forglm\ANEL_combined_no_outliers_glm_cue.mdm',...
+                    % 'tc_interpolate',100);
+                    
                 [era] = ne_era_mdm_frd(...
-                    voi_name,... %voi location         'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\test\test_r_tal.voi',...
-                    [runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_combined_avg_' trigger{t} '_' delay{d} avg_outliers '.avg'],...      'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_combined_avg_cue_3_no_outliers.avg',...
-                    [runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_forglm' filesep subject mdm_pattern],...  % which mdm    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_forglm\ANEL_combined_no_outliers_glm_cue.mdm',...
+                    voi_name,... %voi location         
+                    [runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_combined_avg_' trigger{t} '_' delay{d} avg_outliers '.avg'],...      
+                    [runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_forglm' filesep subject mdm_pattern],...  % which mdm    
                     'Human_reach_decision',...
-                    'tc_interpolate',100);
+                    'tc_interpolate',tc_interpolate);
                 
                 
                 save([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_era_' trigger{t} '_' delay{d} avg_outliers '.mat'],'era');
@@ -81,11 +89,11 @@ if create_era_average
                 %   'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_15_no_outliers.mat'};
             end
             
-            era = ne_era_frd_average_timecourses(era_files,trigger{t});
+            era = ne_era_frd_average_timecourses(era_files,trigger{t},tc_interpolate);
             
 
             
-            save([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_era_' trigger{t} era_outliers '.mat' ,'era')
+            save([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_era_' trigger{t} era_outliers '.mat'] ,'era')
             % 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_average_no_outliers.mat'
         end
     end

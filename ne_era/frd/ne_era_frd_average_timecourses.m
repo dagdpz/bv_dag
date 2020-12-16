@@ -1,11 +1,11 @@
-function era = ne_era_frd_average_timecourses(era_files,trigger)
+function era = ne_era_frd_average_timecourses(era_files,trigger,tc_interpolate)
 
-params.tc_interpolate = 100;
+params.tc_interpolate = tc_interpolate;
 
 
 tc = load(era_files{1}); 
 
-for e = 2:length(era_files)
+for e = 2:length(era_files) % load and concetanate other files
    ttt = load(era_files{e}); 
    tc(e) = ttt;
 end

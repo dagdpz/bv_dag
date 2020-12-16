@@ -137,7 +137,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
         close(gcf);  
     end
     
-    %% real plot
+    %% CUE aligned plots, SEPERATE DELAYS (9, 12, 15)
     clear Gsu2
     %figure ('Position', [100 100 1600 1000]);
     figure;
@@ -167,7 +167,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     
     %% move x axis for move
     
-     dt.time (dt.trigger == 'mov') = dt.time (dt.trigger == 'mov') +15;
+     dt.time (dt.trigger == 'mov') = dt.time (dt.trigger == 'mov') +15.2;
      dt(dt.time < 0 & dt.delay == '15' & dt.trigger == 'mov',:) = [];
      dt(dt.time < 3 & dt.delay == '12' & dt.trigger == 'mov',:) = [];
      dt(dt.time < 6 & dt.delay == '9'  & dt.trigger == 'mov',:) = [];
@@ -203,33 +203,33 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
 
 
 %% PLOT COMPARING DELAY PERIOD DERIVED BY CUE AND MOV TIRGGERED CURVES
-%     clear Gsu2
-%     %figure ('Position', [100 100 1600 1000]);
-%     figure;
-%     Gsu2(1,1) = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.side,'row',dt.eff,'group',dt.delay,'subset', dt.trigger == 'cue' & dt.delay ~= '3' & dt.delay ~= '6'& dt.delay ~= '9' & dt.delay ~= '12');
-%     %Gsu2(1,1).geom_interval('geom','area');
-%     Gsu2(1,1).geom_line();
-%     %Gsu2(1,1).axe_property('Xlim',[-3 18],'Ylim',[-1.5 1.5]);
-%     %Gsu2(1,1).set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
-%     Gsu2(1,1).set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
-%     Gsu2(1,1).set_names('color','','row','','column','','x','time in seconds','y','PSC');
-%     Gsu2(1,1).geom_vline('xintercept',[0 15],'style','k-');
-%     Gsu2(1,1).geom_hline('yintercept',0,'style','k--');
-%     Gsu2.set_title([subject_name '_' voi_name ' cue and mov triggered curve']);
-% 
-%     
-%     
-%     Gsu2(1,1).update('x',dt.time,'y',dt.mean,'color',dt.name,'group',dt.delay,'column',dt.side,'row',dt.eff,'subset', dt.trigger == 'mov' & dt.delay ~= '3' & dt.delay ~= '6'& dt.delay ~= '9' & dt.delay ~= '12');
-%     Gsu2(1,1).geom_line();
-%     %Gsu2(1,2).geom_interval('geom','area');
-%     %Gsu2(1,2).axe_property('Xlim',[-3 18],'Ylim',[-1.5 1.5]);
-%     %Gsu2(1,2).set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
-%     %Gsu2(1,2).set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
-%     %Gsu2(1,2).set_names('color','','row','','column','','x','time in seconds','y','PSC');
-%     %Gsu2(1,2).geom_vline('xintercept',0,'style','k-');
-%     %Gsu2(1,2).geom_hline('yintercept',0,'style','k--');
-%     Gsu2(1,1).set_line_options('styles',{'-.'});
-%     Gsu2.draw;
+    clear Gsu2
+    %figure ('Position', [100 100 1600 1000]);
+    figure;
+    Gsu2(1,1) = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.side,'row',dt.eff,'group',dt.delay,'subset', dt.trigger == 'cue' & dt.delay ~= '3' & dt.delay ~= '6'& dt.delay ~= '9' & dt.delay ~= '12');
+    %Gsu2(1,1).geom_interval('geom','area');
+    Gsu2(1,1).geom_line();
+    %Gsu2(1,1).axe_property('Xlim',[-3 18],'Ylim',[-1.5 1.5]);
+    %Gsu2(1,1).set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
+    Gsu2(1,1).set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
+    Gsu2(1,1).set_names('color','','row','','column','','x','time in seconds','y','PSC');
+    Gsu2(1,1).geom_vline('xintercept',[0 15],'style','k-');
+    Gsu2(1,1).geom_hline('yintercept',0,'style','k--');
+    Gsu2.set_title([subject_name '_' voi_name ' cue and mov triggered curve']);
+
+    
+    
+    Gsu2(1,1).update('x',dt.time,'y',dt.mean,'color',dt.name,'group',dt.delay,'column',dt.side,'row',dt.eff,'subset', dt.trigger == 'mov' & dt.delay ~= '3' & dt.delay ~= '6'& dt.delay ~= '9' & dt.delay ~= '12');
+    Gsu2(1,1).geom_line();
+    %Gsu2(1,2).geom_interval('geom','area');
+    %Gsu2(1,2).axe_property('Xlim',[-3 18],'Ylim',[-1.5 1.5]);
+    %Gsu2(1,2).set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
+    %Gsu2(1,2).set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
+    %Gsu2(1,2).set_names('color','','row','','column','','x','time in seconds','y','PSC');
+    %Gsu2(1,2).geom_vline('xintercept',0,'style','k-');
+    %Gsu2(1,2).geom_hline('yintercept',0,'style','k--');
+    Gsu2(1,1).set_line_options('styles',{'-.'});
+    Gsu2.draw;
 
 
 %% 
