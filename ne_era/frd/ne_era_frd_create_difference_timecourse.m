@@ -6,6 +6,7 @@ function era = ne_era_frd_create_difference_timecourse(era_file,cond_diff)
 %  'reach' 'sac'}
 % left minus right cell, for each row
 % cond_diff = {'choi', 'instr'; 'left', 'right';'reach' 'sac'};
+equal_variance = 1;
 
 %%
 load(era_file);
@@ -15,7 +16,7 @@ cond_cell ={};
 id = [];
 for i = 1:size(era.avg.Curve,2)
     name = strsplit(era.avg.Curve(i).Name,'_'); 
-    cond_cell(i,:) = name(1:3)'
+    cond_cell(i,:) = name(1:3)';
     id = [id; i];
     
 end
@@ -62,14 +63,38 @@ for p = 1:size(cond_diff,1)
         
         for v = 1:size(era.mean,1) % loop vois
             diff_mean(v,jc,:) = era.mean(v,diff_table.id_minu_table(jc),:) - era.mean(v,diff_table.id_subtra_table(jc),:);
-            %diff_se(v,jc,:) = 
             
-
+            
+            % before creating pooled variance, check if assumption of equal
+            % variances
+            if equal_variance == 1
+                % see Fields, p. 374 -->  SE_diff = sqrt((SE_1)^2 + (SE_2)^2);
+                diff_se(v,jc,:) = sqrt(era.se(v,diff_table.id_minu_table(jc),:).^2 + era.se(v,diff_table.id_subtra_table(jc),:).^2);
+                
+            elseif equal_variance == 0
+                % Levene Test (= BrownForsythe) for testing equal variance
+                % for i = 1:length(era.mean(1,1,:)), 
+                %       p(i) = vartestn([era.psc(1,2).perievents(i,:)',[era.psc(1,4).perievents(i,:)'; NaN(10,1)]],'TestType','BrownForsythe','Display','off');, 
+                % end
+                % sd_pooled = ((n_minu -1)*s_minu^2 + (n_subtra)*s_subtra^2) / (n_minu + n_subtra -2);
+                
+                for t = 1:size(era.mean,3)
+                    n_minu = size(era.psc(v,diff_table.id_minu_table(jc)).perievents,2);
+                    n_subtra = size(era.psc(v,diff_table.id_subtra_table(jc)).perievents,2);
+                    
+                    sd_pooled = ((n_minu  -1)*  std(era.psc(v,diff_table.id_minu_table(jc)).perievents(t,:)).^2 ...
+                              + (n_subtra -1)*std(era.psc(v,diff_table.id_subtra_table(jc)).perievents(t,:)).^2) / ...
+                              (n_minu + n_subtra - 2);
+                          
+                    diff_se(v,jc,t) = sqrt(sd_pooled/n_minu + sd_pooled/n_subtra);
+                
+                end
+            end
             
         end
         
-        cond{jc} = [char(diff_table{1,strcmp(var_names{1},diff_table.Properties.VariableNames)}) '_'...
-            char(diff_table{1,strcmp(var_names{2},diff_table.Properties.VariableNames)})];
+        cond{jc} = [char(diff_table{jc,strcmp(var_names{1},diff_table.Properties.VariableNames)}) '_'...
+            char(diff_table{jc,strcmp(var_names{2},diff_table.Properties.VariableNames)})];
         
     end
     
@@ -77,7 +102,7 @@ for p = 1:size(cond_diff,1)
     
     
     era.diff.(diff_conds).diff_mean = diff_mean;
-    % era.diff.(diff_conds).diff_se = diff_se;
+    era.diff.(diff_conds).diff_se = diff_se;
     era.diff.(diff_conds).cond = cond;
 end
 
