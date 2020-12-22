@@ -2,8 +2,10 @@ function ne_era_frd_wrapper_subject_level_creation_and_plot
 
 %% what to do
 
-create_era_per_delay = 0;
-create_era_average = 0; 
+create_era_per_delay = 1;
+create_era_average = 1; 
+create_era_binned = 1;
+create_era_diff_timecourses = 1;
 
 plot_era_per_delay = 0;
 plot_era_average = 0;
@@ -11,7 +13,7 @@ plot_era_average = 0;
 %%
 
 load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
-prot = prot(strcmp('ANEL',{prot.name}));
+prot = prot(strcmp('ANRE',{prot.name}));
 
 %% settings
 runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
@@ -22,10 +24,13 @@ voi_name = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decisi
 
 era_outliers = '_no_outliers'; % ''                                            %% CHANGE HER FOR OUTLIER CONSIDERATION
 plot_outliers = '_no_outliers'; % ''                                            %% CHANGE HER FOR OUTLIER CONSIDERATION
+
+bin_size = 5;
+cond_diff = {'choi', 'instr'; 'left', 'right';'reach' 'sac'}; % mind the format: left minus right, per row: cond_diff = {'choi', 'instr'; 'left', 'right';'reach' 'sac'};
 %% creation of era files per separate delay
 
 if create_era_per_delay
-    
+    disp('+++++ processing create_era_per_delay');
     trigger = {'cue', 'mov'};
     delay = {'3','6','9','12','15'};
     
@@ -72,6 +77,8 @@ end
 
 if create_era_average
     
+    disp('+++++ processing create_era_average');
+    
     trigger = {'cue', 'mov'};
     delay = {'9','12','15'};
     
@@ -82,7 +89,7 @@ if create_era_average
         for t = 1:length(trigger)
             
             for d = 1:length(delay)
-                era_files{d} = [runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' subject '_era_' trigger{t} '_' delay{d} avg_outliers '.mat'];
+                era_files{d} = [runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_era_' trigger{t} '_' delay{d} avg_outliers '.mat'];
                 % era_files = {...
                 %   'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_9_no_outliers.mat';...
                 %   'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_12_no_outliers.mat';...
@@ -91,21 +98,66 @@ if create_era_average
             
             era = ne_era_frd_average_timecourses(era_files,trigger{t},tc_interpolate);
             
-
             
             save([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_era_' trigger{t} era_outliers '.mat'] ,'era')
             % 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_average_no_outliers.mat'
+            disp(['saved ' runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_era_' trigger{t} era_outliers '.mat']);
+            
+            
         end
     end
 end
 
+%% binning data
+
+if create_era_binned
+    
+    disp('+++++ processing create_era_binned');
+    
+    for i = 1:length(prot)
+        
+        era_files = findfiles([runpath filesep  prot(i).name filesep 'mat2prt_reach_decision_vardelay_foravg'],'*_era_*.mat');
+        
+        for e = 1:length(era_files)
+            
+            era = ne_era_frd_downsample(era_files{e},bin_size);
+            
+            save(era_files{e},'era');
+            %disp('saved ' era_files{e});
+            
+        end
+    end
+end
+
+%% creating difference values. 
+
+if create_era_diff_timecourses
+    
+    disp('+++++ processing create_era_diff_timecourses');
+    
+    for i = 1:length(prot)
+        
+        era_files = findfiles([runpath filesep  prot(i).name filesep 'mat2prt_reach_decision_vardelay_foravg'],'*_era_*.mat');
+        
+        for e = 1:length(era_files)
+            
+            era = ne_era_frd_create_difference_timecourse(era_files{e},cond_diff,1);
+            
+            save(era_files{e},'era');
+            %disp('saved ' era_files{e});
+            
+        end
+    end
+    
+end
 
 
 
 %% plotting eras per delay
 if plot_era_per_delay
     
-    
+     disp('+++++ processing plot_era_per_delay');
+     
     for i = 1:length(prot)
         
         subject = prot(i).name;
@@ -128,6 +180,9 @@ end
 %% plotting eras averages
 
 if plot_era_average
+    
+    disp('+++++ processing plot_era_average');
+    
     for i = 1:length(prot)
         
         subject = prot(i).name;
