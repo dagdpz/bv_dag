@@ -3,7 +3,7 @@ function ne_era_frd_plot_per_delay(era_files,subject_name,savepath)
 % opengl software % http://www.mathworks.com/matlabcentral/answers/101588
 % ini_dir = pwd;
 
-export = 0;
+export = 1;
 
 % %%
 % if nargin > 1
@@ -97,50 +97,45 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     
     %% Plot
     clear Gsu
-    %figure ('Position', [100 100 1600 1000]);
-    figure;
+    figure ('Position', [0 0 1100 1000]);
+    %figure;
     Gsu = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.eff,'row',dt.delay,'subset',dt.time >= -2 & dt.trigger == 'cue');
     Gsu.geom_interval('geom','area');
-    Gsu.axe_property('Xlim',[-2.5 15],'Ylim',[min(dt.loCI(dt.delay~='3')) max(dt.upCI(dt.delay~='3'))]);
+    Gsu.axe_property('Xlim',[-2.5 15.2],'Ylim',[min(dt.loCI(dt.delay~='3')) max(dt.upCI(dt.delay~='3'))]);
     Gsu.set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
     Gsu.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
     Gsu.set_names('color','','row','','column','','x','time in seconds','y','PSC');
     Gsu.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:16],'YTick',[floor(min(dt.loCI)):0.2:ceil(max(dt.upCI))]);
+    Gsu.geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);
 
     Gsu.geom_vline('xintercept',0,'style','k-');
     Gsu.geom_hline('yintercept',0,'style','k--');
-    Gsu.set_title([subject_name '_' voi_name]);
+    Gsu.set_title([subject_name '_' voi_name 'per_delay']);
     
     
     Gsu.draw;
     
     height_hline = [-1.5 1.5];
-    line([3 3],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(1));
-    line([3 3],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(6));
+    line([3.2 3.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(1));
+    line([3.2 3.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(6));
     
-    line([6 6],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(2));
-    line([6 6],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(7));
+    line([6.2 6.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(2));
+    line([6.2 6.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(7));
 
-    line([9 9],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(3));
-    line([9 9],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(8));
+    line([9.2 9.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(3));
+    line([9.2 9.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(8));
     
-    line([12 12],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(4));
-    line([12 12],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(9));
+    line([12.2 12.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(4));
+    line([12.2 12.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(9));
     
-    line([15 15],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(5));
-    line([15 15],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(10));
+    line([15.2 15.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(5));
+    line([15.2 15.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(10));
     
-    %% export
-    if export
-        %orient('tall');
-        saveas(gcf, [savepath filesep subject_name '_' voi_name '_per_delay.pdf'], 'pdf');
-        close(gcf);  
-    end
     
     %% CUE aligned plots, SEPERATE DELAYS (9, 12, 15)
     clear Gsu2
-    %figure ('Position', [100 100 1600 1000]);
-    figure;
+    figure ('Position', [100 100 1600 1000]);
+    %figure;
     Gsu2 = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.side,'row',dt.eff,'linestyle',dt.delay,'subset',dt.time >= -2 & dt.trigger == 'cue' & dt.delay ~= '3' & dt.delay ~= '6');
     %Gsu2.geom_interval('geom','area');
     Gsu2.geom_line();
@@ -148,10 +143,10 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     Gsu2.set_order_options('linestyle',{'15','12','9','6','3'});
     Gsu2.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
     Gsu2.set_names('color','','column','','row','','x','time in seconds','y','PSC','linestyle','');
-    Gsu2.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:23],'YTick',[floor(min(dt.mean)-0.2):0.2:ceil(max(dt.mean)+0.2)]);
-    %Gsu2.geom_polygon('x',{[0 9]},'color',[0.5 0.5 0.5]);
+    Gsu2.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:23],'YTick',[floor(min(dt.mean)-0.1):0.2:ceil(max(dt.mean)+0.1)]);
+    Gsu2.geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);   
     
-    Gsu2.geom_vline('xintercept',[9 12 15],'style','k:');
+    Gsu2.geom_vline('xintercept',[9.2 12.2 15.2],'style','k:');
     Gsu2.geom_vline('xintercept',[0],'style','k-');
     %Gsu2.geom_vline('xintercept',3,'style','k--');
     Gsu2.geom_hline('yintercept',0,'style','k-');
@@ -165,6 +160,28 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     
     Gsu2.draw;
     
+    %% export
+    if export
+%         orient('tall');
+%         saveas(gcf, [savepath filesep subject_name '_' voi_name 'per_delay.pdf'], 'pdf');
+%         close(gcf);  
+        Gsu.export('file_name',[subject_name '_' voi_name 'per_delay'],...
+                 'export_path', savepath,...
+                 'file_type','pdf');
+             
+        Gsu2.export('file_name',[subject_name '_' voi_name 'per_delay_subplots'],...
+                 'export_path', savepath,...
+                 'file_type','pdf');             
+             
+             
+        close all;           
+    end
+
+    
+    
+    
+    
+    if 0
     %% move x axis for move
     
      dt.time (dt.trigger == 'mov') = dt.time (dt.trigger == 'mov') +15.2;
@@ -187,7 +204,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     Gsu2.geom_polygon('x',{[13 15]},'color',[0.5 0.5 0.5]);
     
     Gsu2.geom_vline('xintercept',[15],'style','k-');
-    Gsu2.geom_vline('xintercept',[0 3 6],'style','k:');
+    Gsu2.geom_vline('xintercept',[-0.2 2.8 5.8],'style','k:');
     %Gsu2.geom_vline('xintercept',3,'style','k--');
     Gsu2.geom_hline('yintercept',0,'style','k-');
     Gsu2.set_title([subject_name '_' voi_name ' mov triggered']);    
@@ -231,7 +248,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     Gsu2(1,1).set_line_options('styles',{'-.'});
     Gsu2.draw;
 
-
+    end
 %% 
     
     
