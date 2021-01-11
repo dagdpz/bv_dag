@@ -45,6 +45,10 @@ defpar = { ...
 	'resulting_voi_name', 'char','nonempty', '';...
 	};
 
+if nargin < 3,
+    subj = '';
+end
+
 if nargin < 4,
     mapno = 1;
 end
