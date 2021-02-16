@@ -32,9 +32,13 @@ for i = 1:length(lvoi.VOI)
     end
 end
 lvoi.VOI(empties) = [];
-lvoi.NrOfVOIs = length(lvoi.VOI) ;
-lvoi.SaveAs([path filesep name '_l.voi']);
-disp(['Saved ' name '_l'])
+lvoi.NrOfVOIs = length(lvoi.VOI);
+if lvoi.NrOfVOIs ~=0
+    lvoi.SaveAs([path filesep name '_l.voi']);
+    disp(['Saved ' name '_l'])
+else
+    warning('left %s not saved; empty',voi_path) 
+end
 
 rvoi.VOI(delidxr)=[];
 empties = [];
@@ -44,6 +48,10 @@ for i = 1:length(rvoi.VOI)
     end
 end
 rvoi.VOI(empties) = [];
-rvoi.NrOfVOIs = length(rvoi.VOI) ;
-rvoi.SaveAs([path filesep name '_r.voi']);
-disp(['Saved ' name '_r'])
+rvoi.NrOfVOIs = length(rvoi.VOI);
+if rvoi.NrOfVOIs ~= 0
+    rvoi.SaveAs([path filesep name '_r.voi']);
+    disp(['Saved ' name '_r'])
+else
+    warning('right %s not saved; empty',voi_path) 
+end
