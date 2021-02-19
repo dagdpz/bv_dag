@@ -1,4 +1,4 @@
-function test_voi_brightness(main_path,sessions,voipath,threshold)
+function bsc_test_voi_brightness(main_path,sessions,voipath,threshold)
 cutoff = {};
 [path,name] = fileparts(voipath);
 voi = xff(voipath);

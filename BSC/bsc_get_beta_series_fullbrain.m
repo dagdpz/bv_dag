@@ -1,5 +1,5 @@
-function betaseries=get_beta_series_fullbrain(glm, voi, conditions)
-%computes beta series per condition
+function betaseries=bsc_get_beta_series_fullbrain(glm, voi, conditions)
+%computes beta series per condition and saves condition plots
 %expects predictor names in rXX_condition_XX format
 %example usage 
 if ~isxff(glm)

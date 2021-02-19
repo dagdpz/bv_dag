@@ -49,7 +49,7 @@ voinames(rm) = [];
 %% 
 for i = 1:length(conditions)
     [corr,P] = corrcoef(betaseries{i}, 'rows', 'pairwise');
-    corr(P>0.05) = 0; %removes non-significant correlations
+    corr(~fdr_bh(P)) = 0; %removes non-significant correlations
     imagesc(corr)
     line(length(left)+0.5+zeros(1,size(betaseries{i},2)+1),0:size(betaseries{i},2),'Color','black')
     line(0:size(betaseries{i},2),length(left)+0.5+zeros(1,size(betaseries{i},2)+1),'Color','black')
@@ -83,7 +83,7 @@ end
 
 for i = 1:length(conditions)
     [corr,P] = corrcoef(betaseries{i}, 'rows', 'pairwise');
-    corr(P>0.05) = 0; %removes non-significant correlations
+    corr(~fdr_bh(P)) = 0; %removes non-significant correlations
     imagesc(corr)
     line(length(left)+zeros(1,size(betaseries{i},2)+1),0:size(betaseries{i},2),'Color','black')
     line(0:size(betaseries{i},2),length(left)+zeros(1,size(betaseries{i},2)+1),'Color','black')
@@ -217,7 +217,7 @@ voinames(rm) = [];
 
 for i = 1:length(conditions)
     [corr,P] = corrcoef(betaseries{i}, 'rows', 'pairwise');
-    corr(P>0.05) = 0; %removes non-significant correlations
+    corr(~fdr_bh(P)) = 0; %removes non-significant correlations
     imagesc(corr)
     set(gca, 'XTick', 1:length(betaseries{i}));
     set(gca, 'YTick', 1:length(betaseries{i}));
@@ -250,7 +250,7 @@ end
 
 for i = 1:length(conditions)
     [corr,P] = corrcoef(betaseries{i}, 'rows', 'pairwise');
-    corr(P>0.05) = 0; %removes non-significant correlations
+    corr(~fdr_bh(P)) = 0; %removes non-significant correlations
     imagesc(corr)
     set(gca, 'XTick', 1:length(betaseries{i}));
     set(gca, 'YTick', 1:length(betaseries{i}));
@@ -381,7 +381,7 @@ voinames(rm) = [];
 
 for i = 1:length(conditions)
     [corr,P] = corrcoef(betaseries{i}, 'rows', 'pairwise');
-    corr(P>0.05) = 0; %removes non-significant correlations
+    corr(~fdr_bh(P)) = 0; %removes non-significant correlations
     imagesc(corr)
     set(gca, 'XTick', 1:length(voinames));
     set(gca, 'YTick', 1:length(voinames));
@@ -414,7 +414,7 @@ end
 
 for i = 1:length(conditions)
     [corr,P] = corrcoef(betaseries{i}, 'rows', 'pairwise');
-    corr(P>0.05) = 0; %removes non-significant correlations
+    corr(~fdr_bh(P)) = 0; %removes non-significant correlations
     imagesc(corr)
     set(gca, 'XTick', 1:length(betaseries{i}));
     set(gca, 'YTick', 1:length(betaseries{i}));
@@ -544,12 +544,12 @@ voinames(rm) = [];
 
 for i = 1:length(conditions)
     [corr,P] = corrcoef(betaseries{i}, 'rows', 'pairwise');
-    corr(P>0.05) = 0; %removes non-significant correlations
+    corr(~fdr_bh(P)) = 0; %removes non-significant correlations
     imagesc(corr)
     line(length(left)+0.5+zeros(1,size(betaseries{i},2)+1),0:size(betaseries{i},2),'Color','black')
     line(0:size(betaseries{i},2),length(left)+0.5+zeros(1,size(betaseries{i},2)+1),'Color','black')
-    set(gca, 'XTick', [0.5,29.5,50.5,70.5,77.5,106.5,127.5,147.5]);
-    set(gca, 'YTick', [0.5,29.5,50.5,70.5,77.5,106.5,127.5,147.5]);
+    set(gca, 'XTick', [0.5,29.5,50.5,75.5,82.5,111.5,132.5,157.5]);
+    set(gca, 'YTick', [0.5,29.5,50.5,75.5,82.5,111.5,132.5,157.5]);
     set(gca, 'XTickLabel',{'Frontal left','Parietal left','Temporal left', 'Occipital left', 'Frontal right','Parietal right', 'Temporal right', 'Occipital right'})
     set(gca, 'YTickLabel',{'Frontal left','Parietal left','Temporal left', 'Occipital left', 'Frontal right','Parietal right', 'Temporal right', 'Occipital right'})
     set(gca, 'YDir', 'reverse');
@@ -578,12 +578,12 @@ end
 
 for i = 1:length(conditions)
     [corr,P] = corrcoef(betaseries{i}, 'rows', 'pairwise');
-    corr(P>0.05) = 0; %removes non-significant correlations
+    corr(~fdr_bh(P)) = 0; %removes non-significant correlations
     imagesc(corr)
     line(length(left)+0.5+zeros(1,size(betaseries{i},2)+1),0:size(betaseries{i},2),'Color','black')
     line(0:size(betaseries{i},2),length(left)+0.5+zeros(1,size(betaseries{i},2)+1),'Color','black')
-    set(gca, 'XTick', [0.5,29.5,50.5,70.5,77.5,106.5,127.5,147.5]);
-    set(gca, 'YTick', [0.5,29.5,50.5,70.5,77.5,106.5,127.5,147.5]);
+    set(gca, 'XTick', [0.5,29.5,50.5,75.5,82.5,111.5,132.5,157.5]);
+    set(gca, 'YTick', [0.5,29.5,50.5,75.5,82.5,111.5,132.5,157.5]);
     set(gca, 'XTickLabel',{'Frontal left','Parietal left','Temporal left', 'Occipital left', 'Frontal right','Parietal right', 'Temporal right', 'Occipital right'})
     set(gca, 'YTickLabel',{'Frontal left','Parietal left','Temporal left', 'Occipital left', 'Frontal right','Parietal right', 'Temporal right', 'Occipital right'})
     set(gca, 'YDir', 'reverse');
@@ -619,8 +619,8 @@ for i = 1:length(names)
     imagesc(corr)
     line(length(left)+0.5+zeros(1,length(voinames)+1),0:length(voinames),'Color','black')
     line(0:length(voinames),length(left)+0.5+zeros(1,length(voinames)+1),'Color','black')
-    set(gca, 'XTick', [0.5,29.5,50.5,70.5,77.5,106.5,127.5,147.5]);
-    set(gca, 'YTick', [0.5,29.5,50.5,70.5,77.5,106.5,127.5,147.5]);
+    set(gca, 'XTick', [0.5,29.5,50.5,75.5,82.5,111.5,132.5,157.5]);
+    set(gca, 'YTick', [0.5,29.5,50.5,75.5,82.5,111.5,132.5,157.5]);
     set(gca, 'XTickLabel',{'Frontal left','Parietal left','Temporal left', 'Occipital left', 'Frontal right','Parietal right', 'Temporal right', 'Occipital right'})
     set(gca, 'YTickLabel',{'Frontal left','Parietal left','Temporal left', 'Occipital left', 'Frontal right','Parietal right', 'Temporal right', 'Occipital right'})
     set(gca, 'YDir', 'reverse');
@@ -650,8 +650,8 @@ for i = 1:length(names)
     imagesc(corr)
     line(length(left)+0.5+zeros(1,length(voinames)+1),0:length(voinames),'Color','black')
     line(0:length(voinames),length(left)+0.5+zeros(1,length(voinames)+1),'Color','black')
-    set(gca, 'XTick', [0.5,29.5,50.5,70.5,77.5,106.5,127.5,147.5]);
-    set(gca, 'YTick', [0.5,29.5,50.5,70.5,77.5,106.5,127.5,147.5]);
+    set(gca, 'XTick', [0.5,29.5,50.5,75.5,82.5,111.5,132.5,157.5]);
+    set(gca, 'YTick', [0.5,29.5,50.5,75.5,82.5,111.5,132.5,157.5]);
     set(gca, 'XTickLabel',{'Frontal left','Parietal left','Temporal left', 'Occipital left', 'Frontal right','Parietal right', 'Temporal right', 'Occipital right'})
     set(gca, 'YTickLabel',{'Frontal left','Parietal left','Temporal left', 'Occipital left', 'Frontal right','Parietal right', 'Temporal right', 'Occipital right'})
     set(gca, 'YDir', 'reverse');

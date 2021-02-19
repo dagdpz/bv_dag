@@ -1,4 +1,4 @@
-function get_CHARM_level_6(keyfile)
+function bsc_get_CHARM_level_6(keyfile)
 %currently gets level 5 VOIs because I am lazy
 %for l6 change Last_Level to 6 and remove addendum
 %intended for CHARM/SARMkeyds - dataset with Index, Abbreviation and last

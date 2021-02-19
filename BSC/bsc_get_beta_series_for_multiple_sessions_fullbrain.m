@@ -1,13 +1,12 @@
-function betaseries=get_beta_series_for_multiple_sessions(session_path, model, allglm, voi, conditions)
-%computes beta series per condition and saves them by session name
-%no plots
-%expects predictor names in rXX_condition_XX format
-%conditions = {'fixation' 'fixation microstim' 'memory left' 'memory right' 'memory left microstim' 'memory right microstim'};
+function betaseries=bsc_get_beta_series_for_multiple_sessions_fullbrain(session_path, model, allglm, voi, conditions)
+%computes beta series per condition
+%for now, expects rXX_condition/rXX_post_condition to find the indices
+%properly
 %example usage
-% get_beta_series_for_multiple_sessions('/home/alex/MRI/Curius', 'mat2prt_fixmemstim_BASCO', ... 
-%     {'20131129', '20131204', '20131211', '20131213', '20131218','20140122', '20140124', '20140129', '20140131', '20140204', '20140214', '20140226', ...
-%     '20150303', '20150311', '20150422', '20150423', '20150429', '20150430', '20150506', '20150507'},...
-%     '/mnt/KognitiveNeurowissenschaften/DAG/Personal/AlexandraWitt/CU_bl_rl_k20_05FDR_positiveonly_from_CU_CHARM_tal.voi', {'fixation' 'fixation microstim' 'memory left' 'memory right' 'memory left microstim' 'memory right microstim'});
+% get_beta_series_for_multiple_sessions_fullbrain('/home/alex/MRI/Bacchus', 'BA_mat2prt_fixmemstim_BASCO', ... 
+%     {'20170202', '20170203', '20170208', '20170209', '20170210','20170216', '20170222', '20170223', '20170224'},...
+%     '/mnt/KognitiveNeurowissenschaften/DAG/Personal/AlexandraWitt/bacchus.warped/CHARM/level_5/BA_CHARM_l5_updated200.voi', ...
+%     {'fixation' 'fixation microstim' 'memory left' 'memory right' 'memory left microstim' 'memory right microstim'});
 
 
 if ~isxff(voi)
@@ -24,9 +23,9 @@ elseif ispc
 end
 for i = 1:height(chiffre)
     for j = 1:length({voinames.Name})
-        if regexp(voinames(j).Name, sprintf('%s_%s_%s_%s', '\d*', chiffre.Abbreviation{i}, 'l','\w*'))
+        if regexp(voinames(j).Name, sprintf('%s_%s_%s', '\d*', chiffre.Abbreviation{i}, 'l'))
             voinames(j).Name = sprintf('%s-%s-%s', num2str(chiffre.Index(i)), chiffre.Full_Name{i},'left');
-        elseif regexp(voinames(j).Name, sprintf('%s_%s_%s_%s', '\d*', chiffre.Abbreviation{i}, 'r','\w*'))
+        elseif regexp(voinames(j).Name, sprintf('%s_%s_%s', '\d*', chiffre.Abbreviation{i}, 'r'))
                         voinames(j).Name = sprintf('%s-%s-%s', num2str(chiffre.Index(i)),chiffre.Full_Name{i},'right');
         end
     end
@@ -39,6 +38,7 @@ right = setdiff(1:length(voinames),left);
 neworder = [left, right];
 voinames = voinames( :,neworder);
 voi.VOI = voinames;
+
 
 for j = 1:length(allglm)
     glmdir =  dir([session_path filesep allglm{j} filesep model filesep '*.glm']);    
@@ -59,8 +59,8 @@ for j = 1:length(allglm)
     for i = 1:length(conditions)
         betaseries{i} = betas(idx(i,:),:);
     end
-    varname = sprintf('betaseries_%s',allglm{j});
+    varname = sprintf('fullbrain_betaseries_%s',allglm{j});
     eval([varname '= betaseries']);
-    save(sprintf('betaseries_%s.mat',allglm{j}), sprintf('%s',varname))
+    save(sprintf('fullbrain_betaseries_%s.mat',allglm{j}), sprintf('%s',varname))
 end
 

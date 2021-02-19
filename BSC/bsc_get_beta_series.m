@@ -1,5 +1,5 @@
-function betaseries=get_beta_series(glm, voi, conditions)
-%computes beta series per condition
+function betaseries=bsc_get_beta_series(glm, voi, conditions)
+%computes beta series per condition and saves condition plots
 %for now, expects rXX_condition/rXX_post_condition to find the indices
 %properly
 %conditions = {'memory left' 'memory right' 'memory left microstim' 'memory right microstim'};

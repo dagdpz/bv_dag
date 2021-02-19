@@ -1,4 +1,4 @@
-function Xz = z_score(X)
+function Xz = bsc_z_score(X)
 %does the same thing zscore does, but can be used on cells
 if iscell(X)
     Xz = {};
