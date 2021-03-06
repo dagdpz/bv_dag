@@ -1,4 +1,4 @@
-function nifti_voi_path = att_extract_nifti_voi_from_hierarchical_atlas(nii_path,label_value,abbr_name,level, atlas)
+function nifti_voi_path = att_extract_nifti_voi_from_hierarchical_atlas(nii_path,label_value,abbr_name,level,atlas)
 %att_extract_nifti_voi_from_hierarchical_atlas  - extracts and saves one nifti volume corresponding to a value label in the atlas 
 %
 % USAGE:
@@ -31,9 +31,6 @@ function nifti_voi_path = att_extract_nifti_voi_from_hierarchical_atlas(nii_path
 % see http://de.mathworks.com/matlabcentral/fileexchange/8797-tools-for-nifti-and-analyze-image
 %%%%%%%%%%%%%%%%%%%%%%%%%[DAG mfile header version 1]%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-if nargin < 3,
-	abbr_name = '';
-end
 
 [pathstr, name, ext] = fileparts(nii_path);
 
