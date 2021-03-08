@@ -33,18 +33,23 @@ if ~isempty(source_vmp_path), % copy source vmp data into new vmp
     ZStart  = vmp.ZStart;
     ZEnd    = vmp.ZEnd;
     
-    vmpData = vmp.Map.VMPData;
-    
+    for m = 1:vmp.NrOfMaps,
+        vmpData(m).VMPData = vmp.Map(m).VMPData;
+    end    
+        
     vmp = source_vmp;
     
-    vmp.XStart = XStart;
-    vmp.XEnd = XEnd;
-    vmp.YStart = YStart;
-    vmp.YEnd = YEnd;
-    vmp.ZStart = ZStart;
-    vmp.ZEnd = ZEnd;
+    vmp.XStart  = XStart;
+    vmp.XEnd    = XEnd;
+    vmp.YStart  = YStart;
+    vmp.YEnd    = YEnd;
+    vmp.ZStart  = ZStart;
+    vmp.ZEnd    = ZEnd;
     
-    vmp.Map.VMPData = vmpData;
+    for m = 1:vmp.NrOfMaps,
+        vmp.Map(m).VMPData = vmpData(m).VMPData;
+    end
+    
     
 end
 
