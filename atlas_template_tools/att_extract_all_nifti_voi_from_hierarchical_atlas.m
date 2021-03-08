@@ -1,4 +1,4 @@
-function att_extract_all_nifti_voi_from_hierarchical_atlas(nii_path,label_value_name,atlas)
+function att_extract_all_nifti_voi_from_hierarchical_atlas(nii_path,label_value_name,atlas,subj)
 %att_extract_all_nifti_voi_from_hierarchical_atlas  - extracts all vois
 %
 % USAGE:
@@ -33,5 +33,5 @@ function att_extract_all_nifti_voi_from_hierarchical_atlas(nii_path,label_value_
 %%%%%%%%%%%%%%%%%%%%%%%%%[DAG mfile header version 1]%%%%%%%%%%%%%%%%%%%%%%%%%
 
 for k = 1:length(label_value_name{1}),
-	att_extract_nifti_voi_from_hierarchical_atlas(nii_path,label_value_name{1}(k),label_value_name{2}{k},label_value_name{3}(k),atlas);
+	att_extract_nifti_voi_from_hierarchical_atlas(nii_path,label_value_name{1}(k),label_value_name{2}{k},label_value_name{3}(k),atlas,subj);
 end

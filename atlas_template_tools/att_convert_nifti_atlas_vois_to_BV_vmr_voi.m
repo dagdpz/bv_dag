@@ -67,8 +67,8 @@ if 0 % Y:\Atlases\macaque\Calabrese2015\atlas_voi
 end
 
 if 1 % Y:\Atlases\macaque\CHARM_SARM
-    load('Y:\Atlases\macaque\CHARM_SARM\CHARMds.mat');
-    % load('Y:\Atlases\macaque\CHARM_SARM\SARMds.mat');
+    % load('Y:\Atlases\macaque\CHARM_SARM\CHARMds.mat');
+    load('Y:\Atlases\macaque\CHARM_SARM\SARMds.mat');
     
     N = length(ds.Index);
     
@@ -76,9 +76,11 @@ if 1 % Y:\Atlases\macaque\CHARM_SARM
     n = neuroelf;
     
     for k=1:N,
-        d = dir([num2str(ds.Index(k)) '_*.nii']);
-        vmr_path = ne_convert_MRIcron_nifti_voi_to_vmr(d.name);
-        ne_convert_vmr_to_voi(vmr_path);
+        d = dir(['NMT_' num2str(ds.Index(k)) '-*.nii']);
+        if ~isempty(d), % voi exists
+            vmr_path = ne_convert_MRIcron_nifti_voi_to_vmr(d.name);
+            ne_convert_vmr_to_voi(vmr_path);
+        end
         
     end
 end

@@ -17,7 +17,7 @@ else
 end
 
 if strcmp(species,'monkey'),
-    vmr = n.importvmrfromanalyze(nii_path,'cubic',[0.001 0.999],0.5);
+    vmr = n.importvmrfromanalyze(nii_path,'nearest',[0.001 0.999],0.5);
     vmr.VMRData = vmr.VMRData16/vmr.MaxOriginalValue*225; % make it white in BV (color value 225)
     
     bbb = [128 128 128; 383 383 383]; % corresponds to BV reframing from 512->256

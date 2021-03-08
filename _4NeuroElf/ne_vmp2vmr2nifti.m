@@ -32,6 +32,8 @@ vmr.VMRData = vmr.VMRData*0;
 vmr.VMRData(vmp.XStart:vmp.XEnd-1, ...
             vmp.YStart:vmp.YEnd-1, ...
             vmp.ZStart:vmp.ZEnd-1) = map_data;
+        
+% vmr.SaveAs('temp.vmr');
 
 % Save
-vmr.ExportNifti([vmp_path(1:end-4) suffix '.nii']);
+vmr.ExportNifti([vmp_path(1:end-4) suffix '.nii'],false);

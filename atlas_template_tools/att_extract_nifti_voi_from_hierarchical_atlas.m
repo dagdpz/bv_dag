@@ -1,4 +1,4 @@
-function nifti_voi_path = att_extract_nifti_voi_from_hierarchical_atlas(nii_path,label_value,abbr_name,level,atlas)
+function nifti_voi_path = att_extract_nifti_voi_from_hierarchical_atlas(nii_path,label_value,abbr_name,level,atlas,subj)
 %att_extract_nifti_voi_from_hierarchical_atlas  - extracts and saves one nifti volume corresponding to a value label in the atlas 
 %
 % USAGE:
@@ -31,10 +31,18 @@ function nifti_voi_path = att_extract_nifti_voi_from_hierarchical_atlas(nii_path
 % see http://de.mathworks.com/matlabcentral/fileexchange/8797-tools-for-nifti-and-analyze-image
 %%%%%%%%%%%%%%%%%%%%%%%%%[DAG mfile header version 1]%%%%%%%%%%%%%%%%%%%%%%%%% 
 
+if nargin < 6,
+    subj = atlas;
+end
 
 [pathstr, name, ext] = fileparts(nii_path);
 
 nii = load_untouch_nii(nii_path);
+
+if isempty(find(nii.img==label_value)),
+    disp(sprintf('label %d (%s) not found!',label_value,abbr_name));
+    return;
+end
 
 idx = find(nii.img~=label_value);
 nii.img(idx) = 0;
@@ -46,9 +54,12 @@ elseif strcmp(atlas, 'SARM');
 end
 
 % make sure abbr_name does not contain slashes etc.
-abbr_name=regexprep(abbr_name,'[\\|!?@#$&/]','_');
+abbr_name=regexprep(abbr_name,'[\\|!?@#$&/]','-');
 
-nifti_voi_path = [num2str(label_value) '_' abbr_name '.nii'];
+% remove '_'
+abbr_name=regexprep(abbr_name,'_','-');
+
+nifti_voi_path = [subj num2str(label_value) '-' abbr_name '.nii'];
 
 if ~isempty(pathstr)
 	nifti_voi_path = [pathstr filesep nifti_voi_path];
