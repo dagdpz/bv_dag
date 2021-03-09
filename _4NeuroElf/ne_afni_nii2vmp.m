@@ -37,7 +37,7 @@ if ~isempty(source_vmp_path), % copy source vmp data into new vmp
         vmpData(m).VMPData = vmp.Map(m).VMPData;
     end    
         
-    vmp = source_vmp;
+    vmp.Map(1) = source_vmp.Map(1);
     
     vmp.XStart  = XStart;
     vmp.XEnd    = XEnd;
