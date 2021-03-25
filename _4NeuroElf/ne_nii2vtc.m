@@ -1,8 +1,13 @@
-function vtc = ne_nii2vtc(nii_path,original_vtc_path)
+function vtc = ne_nii2vtc(nii_path,original_vtc_path,toUINT16)
 % ne_nii2vtc - convert nii to vtc
+% ne_nii2vtc('test.nii','CU_20140917_run01_st_mc_tf_spat_1_spkern_3-3-3.vtc',1)
 
 if nargin < 2,
     original_vtc_path = '';
+end
+
+if nargin < 3,
+    toUINT16 = 0;
 end
 
 n = neuroelf;
@@ -23,12 +28,15 @@ nii = xff(nii_path);
 
 if ~isempty(original_vtc_path),
     ori_vtc = xff(original_vtc_path);
-    vtc = n.importvtcfromanalyze({nii_path},ori_vtc.BoundingBox.BBox,ori_vtc.Resolution);
+    vtc = n.importvtcfromanalyze({nii_path},ori_vtc.BoundingBox.BBox,ori_vtc.Resolution,'nearest');
     vtc.ReferenceSpace = ori_vtc.ReferenceSpace;
 else
     vtc = n.importvtcfromanalyze({nii_path},[],2);
 end
-    
+  
+if toUINT16,
+    vtc.VTCData = uint16(vtc.VTCData);
+end
 
 vtc.SaveAs([nii_path(1:end-4) '.vtc']);
 

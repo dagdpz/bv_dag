@@ -15,7 +15,7 @@ if nargin < 4,
 end
 
 if nargin < 5,
-    source_vmp_path = '';
+    source_vmp_path = ''; % original vmp before afni processing
 end
 
 
@@ -37,8 +37,6 @@ if ~isempty(source_vmp_path), % copy source vmp data into new vmp
         vmpData(m).VMPData = vmp.Map(m).VMPData;
     end    
         
-    vmp.Map(1) = source_vmp.Map(1);
-    
     vmp.XStart  = XStart;
     vmp.XEnd    = XEnd;
     vmp.YStart  = YStart;
@@ -47,6 +45,7 @@ if ~isempty(source_vmp_path), % copy source vmp data into new vmp
     vmp.ZEnd    = ZEnd;
     
     for m = 1:vmp.NrOfMaps,
+        vmp.Map(m) = source_vmp.Map(m);
         vmp.Map(m).VMPData = vmpData(m).VMPData;
     end
     
