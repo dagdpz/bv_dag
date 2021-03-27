@@ -1,18 +1,17 @@
-function vtc = ne_average_vtc(vtc_path)
-% ne_average_vtc - average multivolume vtc
+function avtc = ne_average_vtc(vtc_list, avtc_path)
+% ne_average_vtc - average vtc
+% vtc_list - cell array with list of VTC (objects or filenames)
 
-vtc = xff(vtc_path);
-if ~isxff(vtc, 'vtc')
-    clearxffobjects({vtc});
-    error('Not a VTC file!');
+
+N = length(vtc_list);
+
+avtc = xff(vtc_list{1});
+avtc.VTCData = avtc.VTCData/N;
+
+for f = 2:length(vtc_list),
+    vtc = xff(vtc_list{f});
+    avtc.VTCData = avtc.VTCData + vtc.VTCData/N;
 end
 
-% compute the mean over time
-mvtc = mean(vtc.VTCData);
-
-vtc.NrOfVolumes = 1;
-
-vtc.VTCData = mvtc;
-vtc.SaveAs([vtc_path(1:end-4) '_ave.vtc']);
-
-
+avtc.SaveAs(avtc_path);
+disp([avtc_path ' saved']);

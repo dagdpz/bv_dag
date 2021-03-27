@@ -28,7 +28,7 @@ function ne_combine_vmp_with_voi(vmp_path,voi_path,subj,mapno,varargin)
 % $Revision: 1.0 $  $Date: 2011/01/31 20:47:25 $
 %
 % ADDITIONAL INFO:
-% ...
+% ...Y
 
 defpar = { ...
 	'localmax', 'double', 'nonempty', Inf; ...		%
