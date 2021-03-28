@@ -10,7 +10,7 @@ for f = 1:length(filelist);
     obj_path = filelist{f};
     obj = xff(obj_path);
     obj.MaskWithVMR(vmr_mask);
-    obj.SaveAs([obj_path(1:end-4) '_masked' obj_path(end-5:end)]);
+    obj.SaveAs([obj_path(1:end-4) '_masked' obj_path(end-3:end)]);
     obj.ClearObject;
 end
 

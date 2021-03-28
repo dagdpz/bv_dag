@@ -60,3 +60,4 @@ end
 
 vmr.SaveAs(vmr_path);
 disp(['Saved ' vmr_path]);
+vmr.ClearObject;

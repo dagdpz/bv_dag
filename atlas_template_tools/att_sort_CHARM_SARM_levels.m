@@ -1,4 +1,4 @@
-function att_sort_CHARM_SARM_levels(pathname, keyfile, combine_and_split_hemispheres)
+function att_sort_CHARM_SARM_levels(pathname, keyfile, subj, combine_and_split_hemispheres)
 % keyfile: CHARMfull or SARMfull
 
 max_level = max(keyfile.First_Level);
@@ -14,7 +14,7 @@ for lev = 1:max_level
     
     n_files = 0;
     for f = 1:length(lev_idx),
-        d = dir([pathname filesep 'NMT_' num2str(lev_idx(f)) '-*.voi']);
+        d = dir([pathname filesep subj '_' num2str(lev_idx(f)) '-*.voi']);
         if ~isempty(d),
             n_files = n_files + 1;
             copyfile([pathname filesep d.name], lev_dir);
