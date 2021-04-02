@@ -5,7 +5,11 @@ function ne_voi_apply_cmap(voi_path,map_name)
 voi = xff(voi_path);
 N = voi.NrOfVOIs;
 
-eval(sprintf('cmap = %s(N);',map_name));
+if ischar(map_name)
+    eval(sprintf('cmap = %s(N);',map_name));
+else
+    cmap = map_name;
+end
     
 for k = 1:N,
     voi.VOI(k).Color = fix(255*cmap(k,:)); 

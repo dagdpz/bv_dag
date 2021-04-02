@@ -35,3 +35,4 @@ function att_extract_all_nifti_voi_from_hierarchical_atlas(nii_path,label_value_
 for k = 1:length(label_value_name{1}),
 	att_extract_nifti_voi_from_hierarchical_atlas(nii_path,label_value_name{1}(k),label_value_name{2}{k},label_value_name{3}(k),atlas,subj);
 end
+clear all;

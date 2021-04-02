@@ -14,11 +14,13 @@ end
 
 [pathstr, name, ext] = fileparts(nii_path);
 
-if isempty(whos('global','n'))
-    n = neuroelf;
-else
-    global n
-end
+% if isempty(whos('global','n'))
+%     n = neuroelf;
+% else
+%     global n
+% end
+
+n = neuroelf;
 
 if strcmp(species,'monkey'),
     vmr = n.importvmrfromanalyze(nii_path,'nearest',[0.001 0.999],0.5);
@@ -61,3 +63,6 @@ end
 vmr.SaveAs(vmr_path);
 disp(['Saved ' vmr_path]);
 vmr.ClearObject;
+
+root = xff;
+root.ClearObjects('*');

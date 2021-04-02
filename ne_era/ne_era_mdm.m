@@ -235,7 +235,8 @@ else
         
         n = neuroelf;      
         tci = n.flexinterpn(tc,[1:tc_interpolate/TR:length(tc)]'); % tc_interpolate and TR in ms
-
+        tci = [tci; tci(end)]; % dublicate last interpolated sample (so that length(tci) = 2*length(tc)) 
+        
         onsets_i = round(onsets/tc_interpolate)+1;
         n_vol = length(tc); % in original TR
         

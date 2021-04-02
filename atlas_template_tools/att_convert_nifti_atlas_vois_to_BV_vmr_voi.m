@@ -88,8 +88,8 @@ if 1 % Y:\Atlases\macaque\CHARM_SARM
     
     N = length(ds.Index);
     
-    global n
-    n = neuroelf;
+    % global n
+    % n = neuroelf;
     
     for k=1:N,
         d = dir([subj '_' num2str(ds.Index(k)) '-*.nii']);
