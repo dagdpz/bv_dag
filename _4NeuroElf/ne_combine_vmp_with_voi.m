@@ -153,14 +153,15 @@ end
 
 if ~first_voi, % found at least one voi
     if isempty(params.resulting_voi_name),
-        params.resulting_voi_name = [vmp_name '_from_' voi_name];
+        params.resulting_voi_name = [vmp_name '_from_' voi_name '.voi'];
+        if ~isempty(vmp_pathstr),
+            params.resulting_voi_name = [vmp_pathstr filesep params.resulting_voi_name];
+        end
     end
-    if ~isempty(vmp_pathstr),
-        params.resulting_voi_name = [vmp_pathstr filesep params.resulting_voi_name];
-    end
-    cvoi.SaveAs([params.resulting_voi_name '.voi']);
+
+    cvoi.SaveAs(params.resulting_voi_name);
     if params.verbose,
-        disp(sprintf('Saved %d clusters in %d vois to %s',N_total_clusters,N_vois_with_clusters,[params.resulting_voi_name '.voi']));
+        disp(sprintf('Saved %d clusters in %d vois to %s',N_total_clusters,N_vois_with_clusters,params.resulting_voi_name));
     end
 end
 
