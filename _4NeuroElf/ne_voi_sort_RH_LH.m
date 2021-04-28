@@ -1,6 +1,9 @@
-function ne_voi_sort_RH_LH(voi_path)
+function voi = ne_voi_sort_RH_LH(voi_path,dontsave)
 % ne_voi_sort_RH_LH 
 
+if nargin < 2,
+    dontsave = 0;
+end
 [pathstr, name] = fileparts(voi_path);
 
 voi=xff(voi_path);
@@ -18,4 +21,6 @@ VOI = voi.VOI;
 voi.VOI(1:n_r) = VOI(idx_r);
 voi.VOI(n_r+1:n_r+n_l) = VOI(idx_l);
 
-voi.SaveAs(voi_path);
+if ~dontsave
+    voi.SaveAs(voi_path);
+end
