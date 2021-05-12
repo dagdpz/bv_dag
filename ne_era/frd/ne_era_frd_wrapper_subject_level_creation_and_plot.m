@@ -2,10 +2,10 @@ function ne_era_frd_wrapper_subject_level_creation_and_plot
 
 %% what to do
 
-create_era_per_delay = 1;
-create_era_average = 1; 
-create_era_binned = 1;
-create_era_diff_timecourses = 1;
+create_era_per_delay = 0;
+create_era_average = 0; 
+create_era_binned = 0;
+create_era_diff_timecourses = 0;
 
 plot_era_per_delay = 1;
 plot_era_average = 1;
@@ -13,16 +13,23 @@ plot_era_average = 1;
 %%
 
 load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
-%prot = prot(strcmp('ANEL',{prot.name}));
+%prot = prot(strcmp('ANRE',{prot.name}));
 
 %% settings
+%runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\testground\test averaging era subjects';
 runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
 tc_interpolate = 100;
 avg_outliers = '_no_outliers'; % ''                                            %% CHANGE HER FOR OUTLIER CONSIDERATION
 mdm_pattern = '_combined_no_outliers_glm_cue.mdm'; % '_combined_glm_cue.mdm'   %% CHANGE HER FOR OUTLIER CONSIDERATION
+% test
 %voi_name = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\test\test_r_tal.voi';
-voi_name = {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_l_tal.voi';...
-            'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_r_tal.voi'};
+% all vois
+% voi_name = {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_l_tal.voi';...
+%             'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_r_tal.voi'};
+% merged vois 
+voi_name = {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_l_tal_merged.voi';...
+            'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_r_tal_merged.voi'};
+        
 voi_side = {'lh', 'rh'}; % order has to fit with voi_name
 
 era_outliers = '_no_outliers'; % ''                                            %% CHANGE HER FOR OUTLIER CONSIDERATION
@@ -33,7 +40,9 @@ cond_diff = {'choi', 'instr'; 'left', 'right';'reach' 'sac'}; % mind the format:
 %% creation of era files per separate delay
 
 if create_era_per_delay
+    
     disp('+++++ processing create_era_per_delay');
+    
     trigger = {'cue', 'mov'};
     delay = {'3','6','9','12','15'};
     
@@ -92,7 +101,7 @@ if create_era_average
         
         subject = prot(i).name;
         
-        for vs = 1:length(voi_side);
+        for vs = 1:length(voi_side)
             
             for t = 1:length(trigger)
                 
@@ -125,7 +134,7 @@ if create_era_binned
     
     for i = 1:length(prot)
         
-        era_files = findfiles([runpath filesep  prot(i).name filesep 'mat2prt_reach_decision_vardelay_foravg'],'*_era_*.mat');
+        era_files = findfiles([runpath filesep  prot(i).name filesep 'mat2prt_reach_decision_vardelay_foravg'],'*_era_*.mat','depth=1');
         
         for e = 1:length(era_files)
             
@@ -146,7 +155,7 @@ if create_era_diff_timecourses
     
     for i = 1:length(prot)
         
-        era_files = findfiles([runpath filesep  prot(i).name filesep 'mat2prt_reach_decision_vardelay_foravg'],'*_era_*.mat');
+        era_files = findfiles([runpath filesep  prot(i).name filesep 'mat2prt_reach_decision_vardelay_foravg'],'*_era_*.mat','depth=1');
         
         for e = 1:length(era_files)
             
@@ -173,7 +182,7 @@ if plot_era_per_delay
         
         for vs = 1:length(voi_side)
             
-            era_files = findfiles([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg'],['*era*' voi_side{vs} '*' plot_outliers '*.mat']);
+            era_files = findfiles([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg'],['*era*' voi_side{vs} '*' plot_outliers '*.mat'],'depth=1');
             era_files = era_files(find(cellfun(@isempty,strfind(era_files,'average')))); %discard average mats
             
             %era_files contains all cue and movement triggered delays (N=10)
@@ -200,7 +209,7 @@ if plot_era_average
         
         for vs = 1:length(voi_side)
             
-            era_files = findfiles([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg'],['*era*average*' voi_side{vs} '*' plot_outliers '*.mat']);
+            era_files = findfiles([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg'],['*era*average*' voi_side{vs} '*' plot_outliers '*.mat'],'depth=1');
             
             % era_files = {...
             %     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_mov_average_lh_no_outliers.mat',...
@@ -212,7 +221,7 @@ if plot_era_average
                 mkdir([runpath filesep subject filesep 'plots']); %'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\plots'
             end
             
-            ne_era_frd_plot_average(era_files,subject,[runpath filesep subject filesep 'plots'])
+            ne_era_frd_plot_average(era_files,subject,[runpath filesep subject filesep 'plots'],0)
             
         end
     end

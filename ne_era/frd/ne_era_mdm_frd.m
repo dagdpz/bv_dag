@@ -176,7 +176,7 @@ for f = 1:avg.NrOfFiles
 		elseif isempty(find([curve(c).File.EventPointsInFile] == f-1))
 			
 			% update missing files for this curve
-			missing_files(c) = missing_files(c)+1;
+			missing_files(c) = missing_files(c)+1; %is misleading - if last trial of run extended scanner recording time AND was the only trial of that condition in the file, one column of NaNs will be added and it counts as a missing_file but is not counted here
 			
 			% fill with NaNs
             perievents = extract_perievents([],[],TR,interpol);
@@ -224,12 +224,12 @@ end
 era.avg		= avg;
 era.TR		= tr;
 era.RA		= squeeze(RA); % n_vois x n_curves
-era.raw		= squeeze(peri);
+era.raw		= squeeze(peri); % number of columns for each perievent: (number of trials across all files (=NrOfConditionEvents)) + (1 column NaNs per file where there was no trial for that condition in that run) - (the last trial which wasn´t finished when scanner recording stopped (if it was finished successfully))
 era.psc		= squeeze(psc);
 era.peri_run	= squeeze(peri_run);
 era.mean	= squeeze(mean_);
 era.se		= squeeze(se_);
-era.n_trials	= squeeze(n_);
+era.n_trials	= squeeze(n_);% is misleading: calculated as number of columns in peri (see function extract_perievents) -->  meaningful: number of columns in psc --> cleaned from NaNs
 era.params	= params;
 era.timeaxis    = timeaxis;
 

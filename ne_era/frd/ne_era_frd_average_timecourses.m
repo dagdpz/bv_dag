@@ -28,6 +28,14 @@ end
 new_tc = tc(ind);
 tc(ind) = [];
 
+interpol.PreInterval            = new_tc.era.avg.PreInterval*1000/params.tc_interpolate;
+interpol.PostInterval           = new_tc.era.avg.PostInterval*1000/params.tc_interpolate;
+interpol.NrOfTimePoints         = interpol.PreInterval + interpol.PostInterval + 1;
+interpol.AverageBaselineFrom    = new_tc.era.avg.AverageBaselineFrom*1000/params.tc_interpolate;
+interpol.AverageBaselineTo      = new_tc.era.avg.AverageBaselineTo*1000/params.tc_interpolate;
+
+
+
 % concatenate
 for i = 1:length(tc) % loop remaining era files
     for v = 1:size(tc(1).era.raw,1) % loop vois
@@ -36,8 +44,10 @@ for i = 1:length(tc) % loop remaining era files
             if strcmp('cue',trigger)
                 tb_conc = tc(i).era.raw(v,c).perievents(1:new_tc.raw_le,:); % get raw form next era file, but only as long as shortest trial
             elseif strcmp('mov',trigger)
-                star = tc(i).raw_le - new_tc.raw_le + 1;
-                tb_conc = tc(i).era.raw(v,c).perievents(star:end,:);
+                
+                basl_ind = [1:(interpol.PreInterval + interpol.AverageBaselineTo +1)];
+                star = tc(i).raw_le - (new_tc.raw_le - length(basl_ind)) + 1;
+                tb_conc = tc(i).era.raw(v,c).perievents([basl_ind star:end],:);
             else 
                 disp('ERROR: no such trigger, doh.')
             end
@@ -49,12 +59,12 @@ for i = 1:length(tc) % loop remaining era files
     end
 end
 %%
-
-interpol.PreInterval            = new_tc.era.avg.PreInterval*1000/params.tc_interpolate;
-interpol.PostInterval           = new_tc.era.avg.PostInterval*1000/params.tc_interpolate;
-interpol.NrOfTimePoints         = interpol.PreInterval + interpol.PostInterval + 1;
-interpol.AverageBaselineFrom    = new_tc.era.avg.AverageBaselineFrom*1000/params.tc_interpolate;
-interpol.AverageBaselineTo      = new_tc.era.avg.AverageBaselineTo*1000/params.tc_interpolate;
+% 
+% interpol.PreInterval            = new_tc.era.avg.PreInterval*1000/params.tc_interpolate;
+% interpol.PostInterval           = new_tc.era.avg.PostInterval*1000/params.tc_interpolate;
+% interpol.NrOfTimePoints         = interpol.PreInterval + interpol.PostInterval + 1;
+% interpol.AverageBaselineFrom    = new_tc.era.avg.AverageBaselineFrom*1000/params.tc_interpolate;
+% interpol.AverageBaselineTo      = new_tc.era.avg.AverageBaselineTo*1000/params.tc_interpolate;
 
 for r = 1:size(tc(1).era.raw,1) % loop vios
     for c = 1:size(tc(1).era.raw,2) % loop curves

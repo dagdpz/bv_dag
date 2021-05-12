@@ -15,7 +15,7 @@ export = 1;
 
 %% data1 = era.mean; %NrOfVOIs X NrOfCurves X NrOfTimePoints
 
-%% load in data
+%% load in first data file
 tc = load(era_files{1}); 
 
 %% get colors
@@ -42,19 +42,19 @@ for e = 2:length(era_files)
 end
 
 
-%% create names
+%% create which delays and trigger
 for e = 1:length(era_files)
    [~, fname, ~ ] = fileparts(era_files{e});
    name_parts = strsplit(fname,'_');
    tc(e).del = name_parts{4};
    tc(e).trigger = name_parts{3};
-   tc(e).raw_le = size(tc(e).era.raw(1,1).perievents,1);
+   %tc(e).raw_le = size(tc(e).era.raw(1,1).perievents,1);
 end
 
 
 %%
 dt = table();
-for v = 1:size(tc(1).era.mean,1) % loop over VIOs 
+for v = 1:size(tc(1).era.mean,1) % loop over VOIs 
     
     voi_name = tc(1).era.voi(v).Name;
 
@@ -249,7 +249,52 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     Gsu2.draw;
 
     end
-%% 
+%% EXPORT PLOTS
+%         %% Plot
+%     clear Gsu
+%     figure ('Position', [0 0 800 400]);
+%     %figure;
+%     Gsu = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.eff,'subset',dt.time >= -2 & dt.trigger == 'cue' & dt.delay == '12');
+%     Gsu.geom_interval('geom','area');
+%     Gsu.axe_property('Xlim',[-2.5 13],'Ylim',[-0.15 0.4]);
+%     Gsu.set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
+%     Gsu.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
+%     Gsu.set_names('color','','row','','column','','x','time/s','y','% BOLD change');
+%     Gsu.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:16],'YTick',[floor(min(dt.loCI)):0.2:ceil(max(dt.upCI))]);
+%     Gsu.geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);
+% 
+%     Gsu.geom_vline('xintercept',[0 12.2],'style','k-');
+%     Gsu.geom_hline('yintercept',0,'style','k--');
+%     Gsu.set_title([voi_name ' delay 12']);
+%     Gsu.set_line_options('base_size',2);
+%     Gsu.set_text_options('base_size', 12,'facet_scaling',0.9,'title_scaling',0.9,'big_title_scaling',1,'legend_scaling',0.8);
+%     Gsu.set_layout_options('legend',false);
+%     
+%     
+%     Gsu.draw;
+%     
+% %     height_hline = [-1.5 1.5];
+% %     line([3.2 3.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(1));
+% %     line([3.2 3.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(6));
+% %     
+% %     line([6.2 6.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(2));
+% %     line([6.2 6.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(7));
+% % 
+% %     line([9.2 9.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(3));
+% %     line([9.2 9.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(8));
+% %     
+% %     line([12.2 12.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(4));
+% %     line([12.2 12.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(9));
+% %     
+% %     line([15.2 15.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(5));
+% %     line([15.2 15.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu.facet_axes_handles(10));
+% 
+%     if 1
+%         Gsu.export('file_name',['timecourse_delay_12_' voi_name],...
+%             'export_path', 'Y:\Personal\Peter\Talk IMPRS',...
+%             'file_type','png');
+%     end
+    
     
     
     %%

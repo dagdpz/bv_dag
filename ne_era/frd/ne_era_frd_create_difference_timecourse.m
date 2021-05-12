@@ -62,7 +62,7 @@ for p = 1:size(cond_diff,1)
     var_names = var_names(1:end-1);                     % take away id
     ind_var_names = logical(ones(1,length(var_names))); %  create indx with same length
     ind_var_names(sel_col) = 0;                         % take out column with subtraction condition
-    var_names = var_names(ind_var_names);               
+    var_names = var_names(ind_var_names);
     
     % create joined table
     diff_table = join(minu_table,subtra_table,'Keys',var_names);
@@ -70,7 +70,7 @@ for p = 1:size(cond_diff,1)
     for jc = 1:height(diff_table) % loop through joined table
         
         for v = 1:size(era.mean,1) % loop vois
-             
+            
             %% mean difference
             diff_mean(v,jc,:) = era.mean(v,diff_table.id_minu_table(jc),:) - era.mean(v,diff_table.id_subtra_table(jc),:);
             
@@ -78,9 +78,11 @@ for p = 1:size(cond_diff,1)
                 diff_mean_ds(v,jc,:) = era.mean_ds(v,diff_table.id_minu_table(jc),:) - era.mean_ds(v,diff_table.id_subtra_table(jc),:);
             end
             %% SE difference
-            % before creating pooled variance, check if assumption of equal
-            % variances
+            
+            
             if equal_variance == 1
+                % before creating pooled variance, check if assumption of equal
+                % variances
                 % see Fields, p. 374 -->  SE_diff = sqrt((SE_1)^2 + (SE_2)^2);
                 diff_se(v,jc,:) = sqrt(era.se(v,diff_table.id_minu_table(jc),:).^2 + era.se(v,diff_table.id_subtra_table(jc),:).^2);
                 
@@ -91,8 +93,8 @@ for p = 1:size(cond_diff,1)
                 
             elseif equal_variance == 0
                 % Levene Test (= BrownForsythe) for testing equal variance
-                % for i = 1:length(era.mean(1,1,:)), 
-                %       p(i) = vartestn([era.psc(1,2).perievents(i,:)',[era.psc(1,4).perievents(i,:)'; NaN(10,1)]],'TestType','BrownForsythe','Display','off');, 
+                % for i = 1:length(era.mean(1,1,:)),
+                %       p(i) = vartestn([era.psc(1,2).perievents(i,:)',[era.psc(1,4).perievents(i,:)'; NaN(10,1)]],'TestType','BrownForsythe','Display','off');,
                 % end
                 % see Fields, p. 374
                 % sd_pooled = ((n_minu -1)*s_minu^2 + (n_subtra)*s_subtra^2) / (n_minu + n_subtra -2);
@@ -137,7 +139,7 @@ for p = 1:size(cond_diff,1)
                         
                     end
                 end
-            end
+            end % if equal variance or not
             
         end
         %% Condition name
@@ -149,14 +151,15 @@ for p = 1:size(cond_diff,1)
     %% putting it in file
     diff_conds = [tb_diff{1} '_' tb_diff{2}];
     
-    
-    era.diff.(diff_conds).diff_mean = diff_mean;
-    era.diff.(diff_conds).diff_se = diff_se;
-    era.diff.(diff_conds).cond = cond;
+    era.diff(p).name = diff_conds;
+    era.diff(p).dat.diff_mean = diff_mean;
+    era.diff(p).dat.diff_se = diff_se;
+    era.diff(p).dat.cond = cond;
     
     if incl_downsampled
-        era.diff.(diff_conds).diff_mean_ds = diff_mean_ds;
-        era.diff.(diff_conds).diff_mean_ds = diff_se_ds;
+        era.diff(p).dat_ds.diff_mean = diff_mean_ds;
+        era.diff(p).dat_ds.diff_se = diff_se_ds;
+        era.diff(p).dat_ds.cond = cond;
     end
     
 end
