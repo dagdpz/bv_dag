@@ -1,18 +1,17 @@
-function nemni_pl1_extract_files
-
+function nemni_pl1_extract_files (protocol_file, runpath, nifti_path_source_either,nifti_path_source_or)
 
 clear all
 
-load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
+if nargin < 4
+    nifti_path_source_or = '';
+end
+    
+%protocol_file = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat';
+load(protocol_file);
 
-%throwaway =  strcmp('ANEL',{prot.name})| strcmp('ANRE',{prot.name})| strcmp('ANRI',{prot.name})| strcmp('CAST',{prot.name})| strcmp('CLSC',{prot.name})| strcmp('DAGU',{prot.name})| strcmp('ELRH',{prot.name})| strcmp('EVBO',{prot.name})| strcmp('FARA',{prot.name})| strcmp('HEGR',{prot.name})| strcmp('HESE',{prot.name});
-%throwaway =  strcmp('JOOD',{prot.name});
-%prot(~throwaway) = [];
-
-
-runpath = 'D:\MRI\Human\fMRI-reach-decision\mni_Experiment';
-nifti_path_source_either = 'F:\MRT-Daten';
-nifti_path_source_or = 'F:\MRT-Daten-2';
+% runpath = 'D:\MRI\Human\fMRI-reach-decision\mni_Experiment';
+% nifti_path_source_either = 'F:\MRT-Daten';
+% nifti_path_source_or = 'F:\MRT-Daten-2';
 
 for i = 1:length(prot) %loop subjects
     
