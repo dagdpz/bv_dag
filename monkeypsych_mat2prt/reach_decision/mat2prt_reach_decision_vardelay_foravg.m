@@ -18,8 +18,7 @@ load(mat_file, '-mat');
 cue_onset_delay = 0; %cue is roughly 200 ms long (sometimes 214, 213 etc.)
 cue_offset_delay = 300;
 
-% duration of memory period in ms, starting from 7 s after beginning of memory: -> [onset + 7000 onset, lasting 14000]
-mem_onset_delay = 1000; % length: 1s
+mem_onset_delay = 1000; % delay is 3, 6, 9, 12 or 15 s long
 mem_offset_delay = -1000;
 
 % [onset of state 9, onset of state 10 + 200 ms] (you add 200 ms
