@@ -12,7 +12,7 @@ switch nemni_pl_settings_id
         mat2prt_fct_handle_avg = @mat2prt_reach_decision_vardelay_foravg;
 
         % sdm creation
-        sdm_template        = 'Y:\Personal\Peter\Repos\bv_dag\nemni_pipeline\template_sdm_MCparams.sdm'; % easy way of getting the structure of the file to replace with actual respective mcparams
+        sdm_template        = 'Y:\Personal\Peter\Repos\bv_dag\nemni_pipeline\nemni_template_sdm_MCparams.sdm'; % easy way of getting the structure of the file to replace with actual respective mcparams
 
         % vtc creation
         nifti_pattern       = 's6wrhum_*.nii';
