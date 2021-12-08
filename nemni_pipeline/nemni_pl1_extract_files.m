@@ -2,7 +2,7 @@ function nemni_pl1_extract_files (protocol_file, runpath, nifti_path_source_eith
 
 clear all
 
-if nargin < 4
+if nargin > 3
     nifti_path_source_or = '';
 end
     
