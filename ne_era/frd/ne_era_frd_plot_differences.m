@@ -1,16 +1,16 @@
 function ne_era_frd_plot_differences(era_files,subject_name,cond_diff,plot_delaywise,plot_subjectwise,savepath,export)
 % This function plots difference time courses between two conditions. So
-% far only CHOICE - INSTRUCTED works! Subjectwise plots work only for
+% far only CHOICE - INSTRUCTED works! Subjectwise-plots work only for
 % averaged delays (plot_delaywise == 0).
 
 if plot_delaywise == 1
     plot_subjectwise = 0;
 end
 
-%export = 1;
-
-
-% lh
+%%
+% export = 0;
+% 
+% % lh
 % era_files =...
 %     {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_12_lh_no_outliers.mat'     ,...
 %     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_15_lh_no_outliers.mat'     ,...
@@ -44,10 +44,10 @@ end
 %     {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_average_rh_no_outliers.mat',...
 %      'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_average_rh_no_outliers.mat'};
 % %
-% plot_delaywise = 0;
+% plot_delaywise = 1;
 % plot_subjectwise = 0; 
 % 
-% subject_name = 'Exp'
+% subject_name = 'Exp';
 % savepath = '';
 % 
 % cond_diff = {'choi', 'instr'};
@@ -179,7 +179,7 @@ for cnd = 1:size(cond_diff,1)
             dsu.trigger = categorical(dsu.trigger);
             dsu.subj    = categorical(dsu.subj);
         end
-        %% move x axis for move
+        %% move x axis for move for AVERAGED CURVES
         dt.time_shift = dt.time;
         dt.time_shift(dt.trigger == 'mov') = dt.time_shift(dt.trigger == 'mov') +9.2;
         
@@ -355,7 +355,6 @@ for cnd = 1:size(cond_diff,1)
             
         elseif plot_delaywise == 1
             %% per delay plots 
-            
             clear Gsu4
             figure ('Position', [0 0 1100 1000]);
             %figure;
@@ -392,13 +391,14 @@ for cnd = 1:size(cond_diff,1)
             line([15.2 15.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu4.facet_axes_handles(10));
             
             
-            %%
+            %% move x axis for ALL move trials to align INDIVIDUAL DELAYS to movement onset
+            dt_all = dt;
             dt.time_shift_2 = dt.time;
             dt.time_shift_2 (dt.trigger == 'mov') = dt.time_shift_2 (dt.trigger == 'mov') +15.2;
             dt(dt.time_shift_2 < 0 & dt.delay == '15' & dt.trigger == 'mov',:) = [];
             dt(dt.time_shift_2 < 3 & dt.delay == '12' & dt.trigger == 'mov',:) = [];
             dt(dt.time_shift_2 < 6 & dt.delay == '9'  & dt.trigger == 'mov',:) = [];
-            
+
             %%
             clear Gsu2
             figure ('Position', [100 100 1600 1000]);
@@ -448,6 +448,44 @@ for cnd = 1:size(cond_diff,1)
             
             Gsu3.draw;
             
+            %% NEW PART
+            only_long_del = dt.delay == '9' | dt.delay == '12' | dt.delay == '15' ;
+            clear Gsu5
+            figure ('Position', [100 100 1600 1000]);
+            %figure;
+            Gsu5 = gramm('x',dt.time_shift,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.side,'row',dt.eff,'lightness',dt.delay,'subset',dt.time_shift >= -2 & dt.time_shift <= 7.2 & dt.trigger == 'cue' & only_long_del);
+            Gsu5.geom_interval('geom','area');
+            %Gsu5.geom_line();
+            Gsu5.axe_property('Xlim',[-3 10.5],'Ylim',[min(dt.loCI) max(dt.upCI)]);
+            Gsu5.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:16],'YTick',[floor(min(dt.loCI))-0.1:0.2:ceil(max(dt.upCI))+0.1]);
+            Gsu5.set_order_options('lightness',{'9','12','15'});
+
+
+            %Gsu5.set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
+            %Gsu5.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
+            Gsu5.set_names('color','','column','','row','','x','time in seconds','y','PSC');
+            Gsu5.geom_vline('xintercept',[0 9.2],'style','k-');
+            Gsu5.geom_hline('yintercept',0,'style','k--');
+            Gsu5.geom_hline('yintercept',0,'style','k--');
+            %Gsu5.geom_vline('xintercept',[4 7.1 7.3 8.5],'style','k--');
+            Gsu5.set_title([subject_name '_' voi_name 'averaged']);
+            
+            Gsu5.update('x',dt.time_shift,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.eff,'lightness',dt.delay,'subset',dt.time_shift > 7.2  & dt.trigger == 'mov' & only_long_del);
+            Gsu5.geom_interval('geom','area');
+            %Gsu5.geom_line();
+            Gsu5.set_layout_options('legend',false);
+            Gsu5.geom_vline('xintercept',[0 9.2],'style','k-');
+            Gsu5.geom_hline('yintercept',0,'style','k--');
+            Gsu5.geom_hline('yintercept',0,'style','k--');
+            Gsu5.geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);
+            Gsu5.geom_polygon('x',{[4 7.1]},'alpha',0.15,'color',[0.5 0.5 0.5]);
+            Gsu5.geom_polygon('x',{[7.3 8.5]},'alpha',0.15,'color',[0.5 0.5 0.5]);
+
+            Gsu5.draw;       
+            
+
+%%            
+            
             if export == 1
                 
                 Gsu4.export('file_name',[subject_name '_' voi_name 'CHOI-INSTR_per_delay_area'],...
@@ -462,6 +500,9 @@ for cnd = 1:size(cond_diff,1)
                     'export_path', savepath,...
                     'file_type','pdf');
                 
+                Gsu5.export('file_name',[subject_name '_' voi_name 'CHOI-INSTR_per_delay_area_longDel'],...
+                    'export_path', savepath,...
+                    'file_type','pdf');
             end
             
             
