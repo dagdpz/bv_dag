@@ -106,7 +106,7 @@ tt = table();
 end % loop era files
 
 %% create average for each delay
-tt_ges_no_del = rowfun(@mean,tt_ges,'InputVariables',{'diff'},'GroupingVariable', {'subj','voi','cond','period'},'OutputVariableNames','diff');
+tt_ges_no_del = rowfun(@nanmean,tt_ges,'InputVariables',{'diff'},'GroupingVariable', {'subj','voi','cond','period'},'OutputVariableNames','diff');
 
 
 %% create shorter voi names

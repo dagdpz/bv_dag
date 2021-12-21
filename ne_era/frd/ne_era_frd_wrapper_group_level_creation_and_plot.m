@@ -6,10 +6,10 @@ function ne_era_frd_wrapper_group_level_creation_and_plot
 
 create_era_exp_level_average =0;
 plot_era_per_delay = 0;
-plot_era_average = 1;
+plot_era_average = 0;
 
 plot_era_DIFF_average = 0;
-plot_era_DIFF_per_delay = 0;
+plot_era_DIFF_per_delay = 1;
 
 create_stats_average = 0;
 create_stats_DIFF = 0;
@@ -65,7 +65,7 @@ if create_era_exp_level_average
                     
                 end
                 
-                era = ne_era_frd_create_exp_level_average(era_files);
+                era = ne_era_frd_create_grp_level_files(era_files);
 
                 save([runpath filesep 'mat2prt_reach_decision_vardelay_foravg' filesep 'Exp_era_' trigger{t} '_' delay{d} '_'  voi_side{vs} era_outliers '.mat'] ,'era')
                 disp(['saved ' runpath filesep 'mat2prt_reach_decision_vardelay_foravg' filesep 'Exp_era_' trigger{t} '_' delay{d} '_'  voi_side{vs} era_outliers '.mat']);
@@ -91,7 +91,7 @@ if plot_era_average
                 mkdir([runpath filesep 'plots']); %'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\plots'
             end
             
-            ne_era_frd_plot_average(era_files,subject,[runpath filesep 'plots'],1)
+            ne_era_frd_plot_average(era_files,subject,1,1,[runpath filesep 'plots'])
             
         end
    
@@ -117,7 +117,7 @@ if plot_era_per_delay
             mkdir([runpath filesep 'plots']);  
         end
         
-        ne_era_frd_plot_per_delay(era_files,subject,[runpath filesep 'plots'])
+        ne_era_frd_plot_per_delay(era_files,subject,1,[runpath filesep 'plots'])
         
     end
 end

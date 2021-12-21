@@ -1,4 +1,4 @@
-function era = ne_era_frd_create_exp_level_average(era_files)
+function era = ne_era_frd_create_grp_level_files(era_files)
 % takes a bunch of era files and creates the mean and the se (dependent sample) from all
 % individual means (mean of means and SE of that)
 % prerequisite: equal trial length

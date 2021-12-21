@@ -2,13 +2,13 @@ function ne_era_frd_wrapper_subject_level_creation_and_plot
 
 %% what to do
 
-create_era_per_delay = 0;
-create_era_average = 0; 
-create_era_binned = 0;
+create_era_per_delay    = 0;
+create_delay_average    = 0; 
+create_era_binned       = 0;
 create_era_diff_timecourses = 0;
 
-plot_era_per_delay = 1;
-plot_era_average = 1;
+plot_era_per_delay      = 1;
+plot_era_average        = 0;
 
 %%
 
@@ -17,26 +17,31 @@ load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.m
 
 %% settings
 %runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\testground\test averaging era subjects';
-runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
-tc_interpolate = 100;
-avg_outliers = '_no_outliers'; % ''                                            %% CHANGE HER FOR OUTLIER CONSIDERATION
-mdm_pattern = '_combined_no_outliers_glm_cue.mdm'; % '_combined_glm_cue.mdm'   %% CHANGE HER FOR OUTLIER CONSIDERATION
+runpath         = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
+tc_interpolate  = 100;
+avg_outliers    = '_no_outliers'; % '' '_no_outliers'  %% CHANGE HER FOR OUTLIER CONSIDERATION
+mdm_pattern     = '_combined_no_outliers_glm_cue.mdm'; % '_combined_glm_cue.mdm' '_combined_no_outliers_glm_cue.mdm'   %% CHANGE HER FOR OUTLIER CONSIDERATION
+
 % test
 %voi_name = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\test\test_r_tal.voi';
+
 % all vois
 % voi_name = {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_l_tal.voi';...
 %             'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_r_tal.voi'};
+
 % merged vois 
-voi_name = {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_l_tal_merged.voi';...
-            'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_r_tal_merged.voi'};
+voi_name        = {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_l_tal_merged.voi';...
+                   'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\conjval choice more instr cue sac reach\conjval choice more instr cue sac reach_from_combined_atlas_r_tal_merged.voi'};
         
-voi_side = {'lh', 'rh'}; % order has to fit with voi_name
+voi_side        = {'lh', 'rh'}; % order has to fit with voi_name
 
-era_outliers = '_no_outliers'; % ''                                            %% CHANGE HER FOR OUTLIER CONSIDERATION
-plot_outliers = '_no_outliers'; % ''                                            %% CHANGE HER FOR OUTLIER CONSIDERATION
+era_outliers    = '_no_outliers'; % '' '_no_outliers'  %% CHANGE HER FOR OUTLIER CONSIDERATION
+plot_outliers   = '_no_outliers'; % '' '_no_outliers'  %% CHANGE HER FOR OUTLIER CONSIDERATION
 
-bin_size = 5;
-cond_diff = {'choi', 'instr'; 'left', 'right';'reach' 'sac'}; % mind the format: left minus right, per row: cond_diff = {'choi', 'instr'; 'left', 'right';'reach' 'sac'};
+bin_size        = 5;
+cond_diff       = {'choi', 'instr'};%{'choi', 'instr'; 'left', 'right';'reach' 'sac'}; % mind the format: left minus right, per row: cond_diff = {'choi', 'instr'; 'left', 'right';'reach' 'sac'};
+
+
 %% creation of era files per separate delay
 
 if create_era_per_delay
@@ -57,6 +62,7 @@ if create_era_per_delay
                 for d = 1:length(delay)
                     
                     %[era] = ne_era_mdm_frd(voipath,avgpath,mdmpath,era_settings_id,varargin)
+                    
                     %[era] = ne_era_mdm_frd(
                     % 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\test\test_r_tal.voi';
                     % 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_combined_avg_cue_3_no_outliers.avg',...
@@ -90,7 +96,7 @@ end
 
 %% create era average
 
-if create_era_average
+if create_delay_average
     
     disp('+++++ processing create_era_average');
     
@@ -113,7 +119,7 @@ if create_era_average
                     %   'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_15_no_outliers.mat'};
                 end
                 
-                era = ne_era_frd_average_timecourses(era_files,trigger{t},tc_interpolate);
+                era = ne_era_frd_create_averaged_delays(era_files,trigger{t},tc_interpolate);
                 
                 
                 save([runpath filesep subject filesep 'mat2prt_reach_decision_vardelay_foravg' filesep subject '_era_' trigger{t} '_average_' voi_side{vs} era_outliers '.mat'] ,'era')
@@ -161,7 +167,7 @@ if create_era_diff_timecourses
             
             era = ne_era_frd_create_difference_timecourse(era_files{e},cond_diff,1);
             
-            save(era_files{e},'era');
+            %save(era_files{e},'era');
             %disp('saved ' era_files{e});
             
         end
@@ -191,7 +197,7 @@ if plot_era_per_delay
                 mkdir([runpath filesep subject filesep 'plots']);  %'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\plots'
             end
             
-            ne_era_frd_plot_per_delay(era_files,subject,[runpath filesep subject filesep 'plots'])
+            ne_era_frd_plot_per_delay(era_files,subject,1,[runpath filesep subject filesep 'plots'])
             
         end
     end
@@ -221,7 +227,7 @@ if plot_era_average
                 mkdir([runpath filesep subject filesep 'plots']); %'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\plots'
             end
             
-            ne_era_frd_plot_average(era_files,subject,[runpath filesep subject filesep 'plots'],0)
+            ne_era_frd_plot_average(era_files,subject,0,1,[runpath filesep subject filesep 'plots'])
             
         end
     end

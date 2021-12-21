@@ -1,16 +1,16 @@
-function ne_era_frd_plot_average(era_files,subject_name,savepath,plot_subjectwise)
-
+function ne_era_frd_plot_average(era_files,subject_name,plot_subjectwise,export,savepath)
+% plots subject level AND experiment level time course averages (averaged
+% 9, 12, 15 s delay)
 % opengl software % http://www.mathworks.com/matlabcentral/answers/101588
-% ini_dir = pwd;
 
-export = 0;
-%plot_subjectwise = 0;
-% %%
-% if nargin > 1
-%     era_settings_id = 'Human_reach_decision';
-% end
-%
-% run('ne_era_settings');
+if nargin < 5
+    if export == 1
+        disp('No saving location has been specified. ne_era_frd_plot_average stops here.');
+        return;
+    elseif export == 0
+        savepath = '';
+    end
+end
 
 
 %% data1 = era.mean; %NrOfVOIs X NrOfCurves X NrOfTimePoints
@@ -141,7 +141,6 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     dt.time_shift = dt.time;
     dt.time_shift(dt.trigger == 'mov') = dt.time_shift(dt.trigger == 'mov') +9.2;
     
- if 0   
     %% real plot
     clear Gsu2
     figure ('Position', [100 100 1200 800]);
@@ -181,29 +180,32 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     clear GSu3
     figure ('Position', [100 100 1600 1000]);
     %figure;
-    GSu3 = gramm('x',dt.time_shift,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.side,'row',dt.eff,'subset',dt.time_shift >= -2 & dt.time_shift <= 7.2 & dt.trigger == 'cue');
+    GSu3 = gramm('x',dt.time_shift,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'column',dt.side,'row',dt.eff,'subset',dt.time_shift >= -2 & dt.time_shift <= 7 & dt.trigger == 'cue');
     GSu3.geom_interval('geom','area');
     %GSu3.geom_line();
     GSu3.axe_property('Xlim',[-3 17],'Ylim',[min(dt.loCI) max(dt.upCI)]);
     GSu3.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:16],'YTick',[floor(min(dt.loCI))-0.1:0.2:ceil(max(dt.upCI))+0.1]);
-    GSu3.geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);
     
     %GSu3.set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
     GSu3.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
     GSu3.set_names('color','','column','','row','','x','time in seconds','y','PSC');
-    GSu3.geom_vline('xintercept',[0 9.2],'style','k-');
-    GSu3.geom_hline('yintercept',0,'style','k--');
-    GSu3.geom_hline('yintercept',0,'style','k--');
+
+    GSu3.geom_hline('yintercept',0,'style','k-');
     GSu3.set_title([subject_name '_' voi_name 'averaged']);
     
-    GSu3.update('x',dt.time_shift,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.eff,'subset',dt.time_shift > 7.2 & dt.trigger == 'mov');
+    GSu3.update('x',dt.time_shift,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.eff,'subset',dt.time_shift > 7 & dt.trigger == 'mov');
     GSu3.geom_interval('geom','area');
     %GSu3.geom_line();
     GSu3.set_layout_options('legend',false);
-    
+    GSu3.geom_hline('yintercept',0,'style','k-');
+    GSu3.geom_vline('xintercept',[0 9.2],'style','k-');
+    GSu3.geom_polygon('x',{[4 7]},'color',[0.5 0.5 0.5]);
+    GSu3.geom_polygon('x',{[7.1 8.5]},'color',[0.5 0.5 0.5]);
     GSu3.draw;
     
-    
+     text(5.1,0.65,{'cue'},'Parent',GSu3.facet_axes_handles(1),'Color','k','FontSize',12.5);
+     text(7.25,0.65,{'mov'},'Parent',GSu3.facet_axes_handles(1),'Color','k','FontSize',12.5);
+
     %% export
     if export
         %         %orient('tall');
@@ -296,192 +298,10 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
             
         end %loop reach saccade
     end %if subjectwise
+      
     
- end  
-    
-    %% other plots
-    %          if plot_subjectwise
-    %
-    %         uni_eff = unique(colors.eff);
-    %
-    %         for i = 1:length(uni_eff)
-    %
-    %             colors_sub = colors(strcmp(uni_eff(i),colors.eff),:);
-    %
-    %
-    %         clear Gsu4
-    %         figure ('Position', [100 100 1800 1000]);
-    %
-    %         %% subplot 1 choice left
-    %         curve_to_plot = colors_sub.name{1};
-    %
-    %         Gsu4(1,1)= gramm('x',dsu.time,'y',dsu.mean,'group',dsu.subj,'subset',dsu.time >= -2 & dsu.trigger == 'cue' & dsu.name == curve_to_plot);
-    %         Gsu4(1,1).facet_wrap(dsu.name,'ncols',1);
-    %         Gsu4(1,1).geom_line();
-    %         %Gsu4(1,1).geom_point();
-    %         Gsu4(1,1).set_title(curve_to_plot);
-    %         Gsu4(1,1).set_color_options('lightness',80,'chroma',0);
-    %         Gsu4(1,1).geom_vline('xintercept',0,'style','k-');
-    %         Gsu4(1,1).geom_hline('yintercept',0,'style','k--');
-    %         Gsu4(1,1).geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);
-    %
-    %         Gsu4(1,1).update('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'subset',dt.time >= -2 & dt.trigger == 'cue' & dt.name == curve_to_plot);
-    %         Gsu4(1,1).geom_interval('geom','area');
-    %         Gsu4(1,1).geom_line();
-    %         Gsu4(1,1).axe_property('Xlim',[-2.5 7.2],'Ylim',[min(dsu.mean(dsu.eff ==uni_eff{i}))-0.1 max(dsu.mean(dsu.eff ==uni_eff{i}))+0.1]);
-    %         Gsu4(1,1).axe_property('Ygrid','on','YTick',[floor(min(dsu.mean)-0.2):0.1:ceil(max(dsu.mean)+0.2)],'XTick',[-2:1:7]);
-    %         Gsu4(1,1).set_color_options('map',colors.color(strcmp(colors.name,curve_to_plot),:),'n_color',8,'n_lightness',1);
-    %         Gsu4(1,1).set_names('x','time in seconds','y','PSC');
-    %         Gsu4(1,1).set_layout_options('legend',false);
-    %
-    %
-    %         Gsu4(1,2)= gramm('x',dsu.time,'y',dsu.mean,'group',dsu.subj,'subset',dsu.time >= -2 & dsu.trigger == 'mov' & dsu.name == curve_to_plot);
-    %         Gsu4(1,2).facet_wrap(dsu.name,'ncols',1);
-    %         Gsu4(1,2).geom_line();
-    %         %Gsu4(1,2).geom_point();
-    %         Gsu4(1,2).set_title(' ');
-    %         Gsu4(1,2).set_color_options('lightness',80,'chroma',0);
-    %         Gsu4(1,2).geom_vline('xintercept',0,'style','k-');
-    %         Gsu4(1,2).geom_hline('yintercept',0,'style','k--');
-    %
-    %         Gsu4(1,2).update('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'subset',dt.time >= -2 & dt.trigger == 'mov' & dt.name == curve_to_plot);
-    %         Gsu4(1,2).geom_interval('geom','area');
-    %         %Gsu4(1,2).geom_line();
-    %         Gsu4(1,2).axe_property('Xlim',[-2.5 7.2],'Ylim',[min(dsu.mean(dsu.eff ==uni_eff{i}))-0.1 max(dsu.mean(dsu.eff ==uni_eff{i}))+0.1]);
-    %         Gsu4(1,2).set_names('x','time in seconds','y','');
-    %         Gsu4(1,2).set_color_options('map',colors.color(strcmp(colors.name,curve_to_plot),:),'n_color',8,'n_lightness',1);
-    %         Gsu4(1,2).axe_property('YTickLabel','','Ygrid','on','YTick',[floor(min(dsu.mean)-0.2):0.1:ceil(max(dsu.mean)+0.2)],'XTick',[-2:1:7]);
-    %         Gsu4(1,2).set_layout_options('legend_position',[0.18 0.61 0.2 0.3]);
-    %
-    %         %% subplot 2 instr left
-    %         curve_to_plot = colors_sub.name{3};
-    %
-    %         Gsu4(1,3)= gramm('x',dsu.time,'y',dsu.mean,'group',dsu.subj,'subset',dsu.time >= -2 & dsu.trigger == 'cue' & dsu.name == curve_to_plot);
-    %         Gsu4(1,3).facet_wrap(dsu.name,'ncols',1);
-    %         Gsu4(1,3).geom_line();
-    %         %Gsu4(1,3).geom_point();
-    %         Gsu4(1,3).set_title(curve_to_plot);
-    %         Gsu4(1,3).set_color_options('lightness',80,'chroma',0);
-    %         Gsu4(1,3).geom_vline('xintercept',0,'style','k-');
-    %         Gsu4(1,3).geom_hline('yintercept',0,'style','k--');
-    %         Gsu4(1,3).geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);
-    %
-    %         Gsu4(1,3).update('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'subset',dt.time >= -2 & dt.trigger == 'cue' & dt.name == curve_to_plot);
-    %         Gsu4(1,3).geom_interval('geom','area');
-    %         Gsu4(1,3).geom_line();
-    %         Gsu4(1,3).axe_property('Xlim',[-2.5 7.2],'Ylim',[min(dsu.mean(dsu.eff ==uni_eff{i}))-0.1 max(dsu.mean(dsu.eff ==uni_eff{i}))+0.1]);
-    %         Gsu4(1,3).axe_property('Ygrid','on','YTick',[floor(min(dsu.mean)-0.2):0.1:ceil(max(dsu.mean)+0.2)],'XTick',[-2:1:7]);
-    %         Gsu4(1,3).set_color_options('map',colors.color(strcmp(colors.name,curve_to_plot),:),'n_color',8,'n_lightness',1);
-    %         Gsu4(1,3).set_names('color','','column','','row','','x','time in seconds','y','PSC');
-    %         Gsu4(1,3).set_layout_options('legend',false);
-    %
-    %         Gsu4(1,4)= gramm('x',dsu.time,'y',dsu.mean,'group',dsu.subj,'subset',dsu.time >= -2 & dsu.trigger == 'mov' & dsu.name == curve_to_plot);
-    %         Gsu4(1,4).facet_wrap(dsu.name,'ncols',1);
-    %         Gsu4(1,4).geom_line();
-    %         %Gsu4(1,4).geom_point();
-    %         Gsu4(1,4).set_title(' ');
-    %         Gsu4(1,4).set_color_options('lightness',80,'chroma',0);
-    %         Gsu4(1,4).geom_vline('xintercept',0,'style','k-');
-    %         Gsu4(1,4).geom_hline('yintercept',0,'style','k--');
-    %
-    %         Gsu4(1,4).update('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'subset',dt.time >= -2 & dt.trigger == 'mov' & dt.name == curve_to_plot);
-    %         Gsu4(1,4).geom_interval('geom','area');
-    %         %Gsu4(1,4).geom_line();
-    %         Gsu4(1,4).axe_property('Xlim',[-2.5 7.2],'Ylim',[min(dsu.mean(dsu.eff ==uni_eff{i}))-0.1 max(dsu.mean(dsu.eff ==uni_eff{i}))+0.1]);
-    %         Gsu4(1,4).set_names('color','','column','','row','','x','time in seconds','y','');
-    %         Gsu4(1,4).set_color_options('map',colors.color(strcmp(colors.name,curve_to_plot),:),'n_color',8,'n_lightness',1);
-    %         Gsu4(1,4).axe_property('YTickLabel','','Ygrid','on','YTick',[floor(min(dsu.mean)-0.2):0.1:ceil(max(dsu.mean)+0.2)],'XTick',[-2:1:7]);
-    %         Gsu4(1,4).set_layout_options('legend_position',[0.18 0.61 0.2 0.3]);
-    %
-    %         %% subplot 3 choice right
-    %                 curve_to_plot = colors_sub.name{2};
-    %
-    %         Gsu4(2,1)= gramm('x',dsu.time,'y',dsu.mean,'group',dsu.subj,'subset',dsu.time >= -2 & dsu.trigger == 'cue' & dsu.name == curve_to_plot);
-    %         Gsu4(2,1).facet_wrap(dsu.name,'ncols',1);
-    %         Gsu4(2,1).geom_line();
-    %         %Gsu4(2,1).geom_point();
-    %         Gsu4(2,1).set_title(curve_to_plot);
-    %         Gsu4(2,1).set_color_options('lightness',80,'chroma',0);
-    %         Gsu4(2,1).geom_vline('xintercept',0,'style','k-');
-    %         Gsu4(2,1).geom_hline('yintercept',0,'style','k--');
-    %         Gsu4(2,1).geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);
-    %
-    %         Gsu4(2,1).update('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'subset',dt.time >= -2 & dt.trigger == 'cue' & dt.name == curve_to_plot);
-    %         Gsu4(2,1).geom_interval('geom','area');
-    %         Gsu4(2,1).geom_line();
-    %         Gsu4(2,1).axe_property('Xlim',[-2.5 7.2],'Ylim',[min(dsu.mean(dsu.eff ==uni_eff{i}))-0.1 max(dsu.mean(dsu.eff ==uni_eff{i}))+0.1]);
-    %         Gsu4(2,1).axe_property('Ygrid','on','YTick',[floor(min(dsu.mean)-0.2):0.1:ceil(max(dsu.mean)+0.2)],'XTick',[-2:1:7]);
-    %         Gsu4(2,1).set_color_options('map',colors.color(strcmp(colors.name,curve_to_plot),:),'n_color',8,'n_lightness',1);
-    %         Gsu4(2,1).set_names('color','','column','','row','','x','time in seconds','y','PSC');
-    %         Gsu4(2,1).set_layout_options('legend',false);
-    %
-    %         Gsu4(2,2)= gramm('x',dsu.time,'y',dsu.mean,'group',dsu.subj,'subset',dsu.time >= -2 & dsu.trigger == 'mov' & dsu.name == curve_to_plot);
-    %         Gsu4(2,2).facet_wrap(dsu.name,'ncols',1);
-    %         Gsu4(2,2).geom_line();
-    %         %Gsu4(2,2).geom_point();
-    %         Gsu4(2,2).set_title(' ');
-    %         Gsu4(2,2).set_color_options('lightness',80,'chroma',0);
-    %         Gsu4(2,2).geom_vline('xintercept',0,'style','k-');
-    %         Gsu4(2,2).geom_hline('yintercept',0,'style','k--');
-    %
-    %         Gsu4(2,2).update('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'subset',dt.time >= -2 & dt.trigger == 'mov' & dt.name == curve_to_plot);
-    %         Gsu4(2,2).geom_interval('geom','area');
-    %         %Gsu4(2,2).geom_line();
-    %         Gsu4(2,2).axe_property('Xlim',[-2.5 7.2],'Ylim',[min(dsu.mean(dsu.eff ==uni_eff{i}))-0.1 max(dsu.mean(dsu.eff ==uni_eff{i}))+0.1]);
-    %         Gsu4(2,2).set_names('color','','column','','row','','x','time in seconds','y','');
-    %         Gsu4(2,2).set_color_options('map',colors.color(strcmp(colors.name,curve_to_plot),:),'n_color',8,'n_lightness',1);
-    %         Gsu4(2,2).axe_property('YTickLabel','','Ygrid','on','YTick',[floor(min(dsu.mean)-0.2):0.1:ceil(max(dsu.mean)+0.2)],'XTick',[-2:1:7]);
-    %         Gsu4(2,2).set_layout_options('legend_position',[0.18 0.61 0.2 0.3]);
-    %
-    %         %% subplot 4 instr right
-    %
-    %         curve_to_plot = colors_sub.name{4};
-    %
-    %         Gsu4(2,3)= gramm('x',dsu.time,'y',dsu.mean,'group',dsu.subj,'subset',dsu.time >= -2 & dsu.trigger == 'cue' & dsu.name == curve_to_plot);
-    %         Gsu4(2,3).facet_wrap(dsu.name,'ncols',1);
-    %         Gsu4(2,3).geom_line();
-    %         %Gsu4(2,3).geom_point();
-    %         Gsu4(2,3).set_title(curve_to_plot);
-    %         Gsu4(2,3).set_color_options('lightness',80,'chroma',0);
-    %
-    %         Gsu4(2,3).update('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'subset',dt.time >= -2 & dt.trigger == 'cue' & dt.name == curve_to_plot);
-    %         Gsu4(2,3).geom_interval('geom','area');
-    %         Gsu4(2,3).geom_line();
-    %         Gsu4(2,3).axe_property('Xlim',[-2.5 7.2],'Ylim',[min(dsu.mean(dsu.eff ==uni_eff{i}))-0.1 max(dsu.mean(dsu.eff ==uni_eff{i}))+0.1]);
-    %         Gsu4(2,3).axe_property('Ygrid','on','YTick',[floor(min(dsu.mean)-0.2):0.1:ceil(max(dsu.mean)+0.2)],'XTick',[-2:1:7]);
-    %         Gsu4(2,3).set_color_options('map',colors.color(strcmp(colors.name,curve_to_plot),:),'n_color',8,'n_lightness',1);
-    %         Gsu4(2,3).set_names('color','','column','','row','','x','time in seconds','y','PSC');
-    %         Gsu4(2,3).set_layout_options('legend',false);
-    %
-    %         Gsu4(2,3).geom_vline('xintercept',0,'style','k-');
-    %         Gsu4(2,3).geom_hline('yintercept',0,'style','k--');
-    %         Gsu4(2,3).geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);
-    %
-    %         Gsu4(2,4)= gramm('x',dsu.time,'y',dsu.mean,'group',dsu.subj,'subset',dsu.time >= -2 & dsu.trigger == 'mov' & dsu.name == curve_to_plot);
-    %         Gsu4(2,4).facet_wrap(dsu.name,'ncols',1);
-    %         Gsu4(2,4).geom_line();
-    %         %Gsu4(2,4).geom_point();
-    %         Gsu4(2,4).set_title(' ');
-    %         Gsu4(2,4).set_color_options('lightness',80,'chroma',0);
-    %
-    %         Gsu4(2,4).update('x',dt.time,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'subset',dt.time >= -2 & dt.trigger == 'mov' & dt.name == curve_to_plot);
-    %         Gsu4(2,4).geom_interval('geom','area');
-    %         %Gsu4(2,4).geom_line();
-    %         Gsu4(2,4).axe_property('Xlim',[-2.5 7.2],'Ylim',[min(dsu.mean(dsu.eff ==uni_eff{i}))-0.1 max(dsu.mean(dsu.eff ==uni_eff{i}))+0.1]);
-    %         Gsu4(2,4).set_names('color','','column','','row','','x','time in seconds','y','');
-    %         Gsu4(2,4).set_color_options('map',colors.color(strcmp(colors.name,curve_to_plot),:),'n_color',8,'n_lightness',1);
-    %         Gsu4(2,4).axe_property('YTickLabel','','Ygrid','on','YTick',[floor(min(dsu.mean)-0.2):0.1:ceil(max(dsu.mean)+0.2)],'XTick',[-2:1:7]);
-    %         Gsu4(2,4).set_layout_options('legend_position',[0.18 0.61 0.2 0.3]);
-    %
-    %         Gsu4(2,4).geom_vline('xintercept',0,'style','k-');
-    %         Gsu4(2,4).geom_hline('yintercept',0,'style','k--');
-    %
-    %         Gsu4.set_title([subject_name '_' voi_name 'averaged_' curve_to_plot]);
-    %         Gsu4.draw;
-    %
-    %          end
     %% EXPORT PLOT FOR IMPRS PRESENTATION
-    
+ if 0   
         %% real plot separated by side + effector
     clear GSu3
     figure ('Position', [100 100 800 500]);
@@ -523,7 +343,7 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     line([-3 17],[0 0] ,'Color','k','LineStyle','--','Parent',GSu3.facet_axes_handles(4));
     
     
-    if 1
+    if export
         GSu3.export('file_name',['timecourse_' voi_name],...
             'export_path', 'Y:\Personal\Peter\writing up',...
             'file_type','jpg');
@@ -531,8 +351,9 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     end
     
     %% Example plot with periods as polygons
-if 0    
-        clear GSu3
+    
+%%
+    clear GSu3
     figure ('Position', [100 100 1200 720]);
     %figure;
     GSu3 = gramm('x',dt.time_shift,'y',dt.mean,'ymin',dt.loCI,'ymax',dt.upCI','color',dt.name,'subset',dt.time_shift >= -2 & dt.time_shift <= 6.9 & dt.trigger == 'cue');  
@@ -572,13 +393,13 @@ if 0
     %line([-3 17],[0 0] ,'Color','k','LineStyle','--','Parent',GSu3.facet_axes_handles(4));
     
     
-    if 1
+    if export
         GSu3.export('file_name',['timecourse_exampleplot' voi_name],...
             'export_path', 'Y:\Personal\Peter\writing up',...
             'file_type','jpg');
     end
     
-end   
+end  % if 0 
     %%
     dt = table();
     

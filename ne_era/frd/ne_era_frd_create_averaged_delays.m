@@ -1,4 +1,4 @@
-function era = ne_era_frd_average_timecourses(era_files,trigger,tc_interpolate)
+function era = ne_era_frd_create_averaged_delays(era_files,trigger,tc_interpolate)
 
 params.tc_interpolate = tc_interpolate;
 
