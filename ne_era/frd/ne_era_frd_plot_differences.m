@@ -7,52 +7,7 @@ if plot_delaywise == 1
     plot_subjectwise = 0;
 end
 
-%%
-% export = 0;
-% 
-% % lh
-% era_files =...
-%     {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_12_lh_no_outliers.mat'     ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_15_lh_no_outliers.mat'     ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_3_lh_no_outliers.mat'      ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_6_lh_no_outliers.mat'      ...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_9_lh_no_outliers.mat'      ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_12_lh_no_outliers.mat'     ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_15_lh_no_outliers.mat'     ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_3_lh_no_outliers.mat'      ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_6_lh_no_outliers.mat'      ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_9_lh_no_outliers.mat'      };
 
-% % rh
-% era_files =...
-%     {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_12_rh_no_outliers.mat'     ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_15_rh_no_outliers.mat'     ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_3_rh_no_outliers.mat'      ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_6_rh_no_outliers.mat'      ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_9_rh_no_outliers.mat'      ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_12_rh_no_outliers.mat'     ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_15_rh_no_outliers.mat'     ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_3_rh_no_outliers.mat'      ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_6_rh_no_outliers.mat'      ,...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_9_rh_no_outliers.mat'     }';
-
-% era_files =...
-%    {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_average_lh_no_outliers.mat',...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_average_lh_no_outliers.mat'};
-
-% era_files =...
-%     {'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_cue_average_rh_no_outliers.mat',...
-%      'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_foravg\Exp_era_mov_average_rh_no_outliers.mat'};
-% %
-% plot_delaywise = 1;
-% plot_subjectwise = 0; 
-% 
-% subject_name = 'Exp';
-% savepath = '';
-% 
-% cond_diff = {'choi', 'instr'};
-%cond_diff = {'choi', 'instr'; 'left', 'right';'reach' 'sac'};
-%%
 %% load in data
 tc = load(era_files{1});
 
@@ -361,11 +316,11 @@ for cnd = 1:size(cond_diff,1)
             %figure;
             Gsu4 = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loErr,'ymax',dt.upErr','color',dt.name,'column',dt.eff,'row',dt.delay,'subset',dt.time >= -2 & dt.trigger == 'cue');
             Gsu4.geom_interval('geom','area');
-            Gsu4.axe_property('Xlim',[-2.5 15.2],'Ylim',[min(dt.loErr(dt.delay~='3')) max(dt.upErr(dt.delay~='3'))]);
-            Gsu4.set_order_options('row',{'3','6','9','12','15'},'color',colors.name,'column',{'sac' 'reach'});
+            Gsu4.axe_property('Xlim',[-2.5 15.2],'Ylim',[min(dt.loErr(dt.delay~='3' & dt.trigger=='cue')) max(dt.upErr(dt.delay~='3'& dt.trigger=='cue'))]);
+            Gsu4.set_order_options('row',{'3','6','9','12','15'},'color',colors.name','column',{'sac' 'reach'});
             Gsu4.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
             Gsu4.set_names('color','','row','','column','','x','time in seconds','y','PSC');
-            Gsu4.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:16],'YTick',[floor(min(dt.loErr)):0.2:ceil(max(dt.upErr))]);
+            Gsu4.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:16],'YTick',[floor(min(dt.loErr)):0.1:ceil(max(dt.upErr))]);
             Gsu4.geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);
             
             Gsu4.geom_vline('xintercept',0,'style','k-');
@@ -375,7 +330,25 @@ for cnd = 1:size(cond_diff,1)
             
             Gsu4.draw;
             
+            y1 = min(dt.loErr(dt.delay~='3'));
+            y2 = max(dt.upErr(dt.delay~='3')) - y1;
+            
+            % late periods
+            rectangle('Position',[7, y1 1.5 y2],'FaceColor',[0.5,0.5,0.5,0.2],'EdgeColor',[1 1 1 0],'Parent',Gsu4.facet_axes_handles(3));
+            rectangle('Position',[7, y1 1.5 y2],'FaceColor',[0.5,0.5,0.5,0.2],'EdgeColor',[1 1 1 0],'Parent',Gsu4.facet_axes_handles(8));
+
+            rectangle('Position',[10, y1 1.5 y2],'FaceColor',[0.5,0.5,0.5,0.2],'EdgeColor',[1 1 1 0],'Parent',Gsu4.facet_axes_handles(4));
+            rectangle('Position',[10, y1 1.5 y2],'FaceColor',[0.5,0.5,0.5,0.2],'EdgeColor',[1 1 1 0],'Parent',Gsu4.facet_axes_handles(9));
+
+            rectangle('Position',[13, y1 1.5 y2],'FaceColor',[0.5,0.5,0.5,0.2],'EdgeColor',[1 1 1 0],'Parent',Gsu4.facet_axes_handles(5));
+            rectangle('Position',[13, y1 1.5 y2],'FaceColor',[0.5,0.5,0.5,0.2],'EdgeColor',[1 1 1 0],'Parent',Gsu4.facet_axes_handles(10));
+
+            for i = [3 8 4 9 5 10] % early periods           
+                rectangle('Position',[4, y1 2.9 y2],'FaceColor',[0.5,0.5,0.5,0.2],'EdgeColor',[1 1 1 0],'Parent',Gsu4.facet_axes_handles(i));
+            end
+            
             height_hline = [-1.5 1.5];
+           
             % move onsets
             line([3.2 3.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu4.facet_axes_handles(1));
             line([3.2 3.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu4.facet_axes_handles(6));
@@ -392,29 +365,7 @@ for cnd = 1:size(cond_diff,1)
             line([15.2 15.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu4.facet_axes_handles(5));
             line([15.2 15.2],[height_hline(1) height_hline(2)] ,'Color','k','Parent',Gsu4.facet_axes_handles(10));
             
-            % late periods
-            line([7.2 7.2],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(3));
-            line([8.7 8.7],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(3));
  
-            line([7.2 7.2],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(8));
-            line([8.7 8.7],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(8));
-            
-            line([10.2 10.2],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(4));
-            line([11.7 11.72],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(4));
-            
-            line([10.2 10.2],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(9));
-            line([11.7 11.72],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(9));
-            
-            line([13.2 13.2],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(5));
-            line([14.7 14.7],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(5));
-            
-            line([13.2 13.2],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(10));
-            line([14.7 14.7],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(10));
-            
-            for i = [3 8 4 9 5 10] % early periods           
-                line([4.2 4.2],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(i));
-                line([7.2 7.2],[height_hline(1) height_hline(2)] ,'Color','k','LineStyle',':','Parent',Gsu4.facet_axes_handles(i));                
-            end
             %% move x axis for ALL move trials to align INDIVIDUAL DELAYS to movement onset
             dt_all = dt;
             dt.time_shift_2 = dt.time;
@@ -423,54 +374,71 @@ for cnd = 1:size(cond_diff,1)
             dt(dt.time_shift_2 < 3 & dt.delay == '12' & dt.trigger == 'mov',:) = [];
             dt(dt.time_shift_2 < 6 & dt.delay == '9'  & dt.trigger == 'mov',:) = [];
 
-            %% cue aligned per delay
-%             clear Gsu2
-%             figure ('Position', [100 100 1600 1000]);
-%             %figure;
-%             Gsu2 = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loErr,'ymax',dt.upErr','color',dt.name,'column',dt.side,'row',dt.eff,'linestyle',dt.delay,'subset',dt.time >= -2 & dt.trigger == 'cue' & dt.delay ~= '3' & dt.delay ~= '6');
-%             %Gsu2.geom_interval('geom','area');
-%             Gsu2.geom_line();
-%             Gsu2.axe_property('Xlim',[-3 16],'Ylim',[min(dt.mean(dt.delay ~= '3' & dt.delay ~= '6'))-0.1 max(dt.mean(dt.delay ~= '3' & dt.delay ~= '6'))+0.1]);
-%             Gsu2.set_order_options('linestyle',{'15','12','9','6','3'});
-%             Gsu2.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
-%             Gsu2.set_names('color','','column','','row','','x','time in seconds','y','PSC','linestyle','');
-%             Gsu2.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:23],'YTick',[floor(min(dt.mean)):0.05:ceil(max(dt.mean))]);
-%             Gsu2.geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);
-%             
-%             Gsu2.geom_vline('xintercept',[9.2 12.2 15.2],'style','k:');
-%             Gsu2.geom_vline('xintercept',[0],'style','k-');
-%             %Gsu2.geom_vline('xintercept',3,'style','k--');
-%             Gsu2.geom_hline('yintercept',0,'style','k-');
-%             Gsu2.set_title([subject_name '_' voi_name 'CHOI-INSTR_per_delay_cue']);
-%             Gsu2.draw;
+            %% NEW
+    clear Gsu2
+    figure ('Position', [100 100 1100 700]);
+    Gsu2 = gramm('x',dt.time,'y',dt.mean,'ymin',dt.loErr,'ymax',dt.upErr','color',dt.name,'linestyle',dt.delay,'subset',dt.time >= -2 & dt.trigger == 'cue' & dt.delay ~= '3' & dt.delay ~= '6');
+    Gsu2.geom_interval('geom','area');
+    Gsu2.facet_wrap(dt.name,'ncols',2);
+
+    %Gsu2.geom_line();
+    Gsu2.axe_property('Xlim',[-3 16],'Ylim',[min(dt.loErr(dt.delay~='3' & dt.trigger=='cue')) max(dt.upErr(dt.delay~='3'& dt.trigger=='cue'))]);
+    Gsu2.set_order_options('linestyle',{'15','12','9','6','3'});
+    Gsu2.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
+    Gsu2.set_names('color','','column','','row','','x','time/s','y','diff PSC','linestyle','');
+    Gsu2.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:23],'YTick',[floor(min(dt.mean)-0.1):0.1:ceil(max(dt.mean)+0.1)]);
+    %Gsu2.geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);   
+    Gsu2.geom_polygon('x',{[4 7]},'color',[0.5 0.5 0.5]);
+
+    
+    Gsu2.geom_vline('xintercept',[9.2 12.2 15.2],'style','k:');
+    Gsu2.geom_vline('xintercept',[0],'style','k-');
+    %Gsu2.geom_vline('xintercept',3,'style','k--');
+    Gsu2.geom_hline('yintercept',0,'style','k-');
+    Gsu2.set_title([subject_name '_' voi_name ' cue aligned']);    
+
+    %Gsu2.update('x',dt.time,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.eff,'subset',dt.time >= 13 & dt.trigger == 'mov' & dt.delay ~= '3' & dt.delay ~= '6');
+    %Gsu2.geom_interval('geom','area');
+
+    %Gsu2.geom_line();
+    %Gsu2.set_layout_options('legend',false);
+    
+    Gsu2.draw;
+    %text(5.1,0.71,{'cue'},'Parent',Gsu2.facet_axes_handles(1),'Color','k','FontSize',11);
+
+    %%
+    % Movement triggered per delay
+    clear Gsu3
+    figure ('Position', [100 100 1100 700]);
+    Gsu3 = gramm('x',dt.time_shift_2,'y',dt.mean,'ymin',dt.loErr,'ymax',dt.upErr','color',dt.name,'linestyle',dt.delay,'subset',dt.trigger == 'mov' & dt.delay ~= '3' & dt.delay ~= '6');
+    Gsu3.geom_interval('geom','area');
+    Gsu3.facet_wrap(dt.name,'ncols',2);
+    %Gsu3.geom_line();
+    Gsu3.axe_property('Xlim',[-1 16],'Ylim',[min(dt.mean(dt.delay ~= '3' & dt.delay ~= '6'))-0.1 max(dt.mean(dt.delay ~= '3' & dt.delay ~= '6'))+0.1]);
+    Gsu3.set_order_options('linestyle',{'15','12','9','6','3'});
+    Gsu3.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
+    Gsu3.set_names('color','','column','','row','','x','time in seconds','y','PSC','linestyle','');
+    Gsu3.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:23],'YTick',[floor(min(dt.mean)-0.2):0.1:ceil(max(dt.mean)+0.2)]);
+    Gsu3.geom_polygon('x',{[13 14.5]},'color',[0.5 0.5 0.5]);
+
+    Gsu3.geom_vline('xintercept',[15],'style','k-');
+    Gsu3.geom_vline('xintercept',[-0.2 2.8 5.8],'style','k:');
+    %Gsu3.geom_vline('xintercept',3,'style','k--');
+    Gsu3.geom_hline('yintercept',0,'style','k-');
+    Gsu3.set_title([subject_name '_' voi_name ' mov aligned']);    
+    
+    %Gsu3.update('x',dt.time,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.eff,'subset',dt.time >= 13 & dt.trigger == 'mov' & dt.delay ~= '3' & dt.delay ~= '6');
+    %Gsu3.geom_interval('geom','area');
+
+    %Gsu3.geom_line();
+    %Gsu3.set_layout_options('legend',false);
+    
+    Gsu3.draw;
+    %text(12.9,0.71,{'mov'},'Parent',Gsu3.facet_axes_handles(1),'Color','k','FontSize',11);
+         
             
-            %% Movement aligned per delay
-%             clear Gsu3
-%             figure ('Position', [100 100 1600 1000]);
-%             %figure;
-%             Gsu3 = gramm('x',dt.time_shift_2,'y',dt.mean,'ymin',dt.loErr,'ymax',dt.upErr','color',dt.name,'column',dt.side,'row',dt.eff,'linestyle',dt.delay,'subset',dt.trigger == 'mov' & dt.delay ~= '3' & dt.delay ~= '6');
-%             %Gsu3.geom_interval('geom','area');
-%             Gsu3.geom_line();
-%             Gsu3.axe_property('Xlim',[-2 23],'Ylim',[min(dt.mean(dt.delay ~= '3' & dt.delay ~= '6'))-0.1 max(dt.mean(dt.delay ~= '3' & dt.delay ~= '6'))+0.1]);
-%             Gsu3.set_order_options('linestyle',{'15','12','9','6','3'});
-%             Gsu3.set_color_options('map',colors.color,'n_color',8,'n_lightness',1);
-%             Gsu3.set_names('color','','column','','row','','x','time in seconds','y','PSC','linestyle','');
-%             Gsu3.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:23],'YTick',[floor(min(dt.mean)):0.05:ceil(max(dt.mean))]);
-%             Gsu3.geom_polygon('x',{[13 15]},'color',[0.5 0.5 0.5]);
-%             
-%             Gsu3.geom_vline('xintercept',[15],'style','k-');
-%             Gsu3.geom_vline('xintercept',[-0.2 2.8 5.8],'style','k:');
-%             %Gsu3.geom_vline('xintercept',3,'style','k--');
-%             Gsu3.geom_hline('yintercept',0,'style','k-');
-%             Gsu3.set_title([subject_name '_' voi_name 'CHOI-INSTR_per_delay_mov']);
-%             
-%             %Gsu3.update('x',dt.time,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.eff,'subset',dt.time >= 13 & dt.trigger == 'mov' & dt.delay ~= '3' & dt.delay ~= '6');
-%             %Gsu3.geom_interval('geom','area');
-%             
-%             %Gsu3.geom_line();
-%             %Gsu3.set_layout_options('legend',false);
-%             
-%             Gsu3.draw;
+            
+           
             
             %% cue and movement aligned per dela
             only_long_del = dt.delay == '9' | dt.delay == '12' | dt.delay == '15' ;
@@ -480,7 +448,7 @@ for cnd = 1:size(cond_diff,1)
             Gsu5 = gramm('x',dt.time_shift,'y',dt.mean,'ymin',dt.loErr,'ymax',dt.upErr','color',dt.name,'column',dt.side,'row',dt.eff,'lightness',dt.delay,'subset',dt.time_shift >= -2 & dt.time_shift <= 7.2 & dt.trigger == 'cue' & only_long_del);
             Gsu5.geom_interval('geom','area');
             %Gsu5.geom_line();
-            Gsu5.axe_property('Xlim',[-3 10.5],'Ylim',[(-0.1 + min(dt.loErr(only_long_del & dt.time_shift >= -2 & dt.time_shift <= 10.5))), (0.1 + max(dt.upErr(only_long_del & dt.time_shift >= -2 & dt.time_shift <= 10.5)))]);
+            Gsu5.axe_property('Xlim',[-2.5 10.5],'Ylim',[(-0.1 + min(dt.loErr(only_long_del & dt.time_shift >= -2 & dt.time_shift <= 10.5))), (0.1 + max(dt.upErr(only_long_del & dt.time_shift >= -2 & dt.time_shift <= 10.5)))]);
             Gsu5.axe_property('Ygrid','on','GridColor',[0.5 0.5 0.5],'XTick',[-2:2:16],'YTick',[floor(min(dt.loErr))-0.1:0.2:ceil(max(dt.upErr))+0.1]);
             Gsu5.set_order_options('lightness',{'9','12','15'});
 
@@ -493,15 +461,15 @@ for cnd = 1:size(cond_diff,1)
             %Gsu5.geom_vline('xintercept',[4 7.1 7.3 8.5],'style','k--');
             Gsu5.set_title([subject_name '_' voi_name '_long_delays']);
             
-            Gsu5.update('x',dt.time_shift,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.eff,'lightness',dt.delay,'subset',dt.time_shift > 7.2  & dt.trigger == 'mov' & only_long_del);
+            Gsu5.update('x',dt.time_shift,'y',dt.mean,'color',dt.name,'column',dt.side,'row',dt.eff,'lightness',dt.delay,'subset',dt.time_shift > 7.2  & dt.time_shift <= 10  & dt.trigger == 'mov' & only_long_del);
             Gsu5.geom_interval('geom','area');
             %Gsu5.geom_line();
             Gsu5.set_layout_options('legend',false);
             Gsu5.geom_vline('xintercept',[0 9.2],'style','k-');
             Gsu5.geom_hline('yintercept',0,'style','k:');
             %Gsu5.geom_polygon('x',{[0 0.2]},'color',[0.5 0.5 0.5]);
-            Gsu5.geom_polygon('x',{[4.2 7.1]},'alpha',0.15,'color',[0.5 0.5 0.5]);
-            Gsu5.geom_polygon('x',{[7.3 8.7]},'alpha',0.15,'color',[0.5 0.5 0.5]);
+            Gsu5.geom_polygon('x',{[4 6.9]},'alpha',0.15,'color',[0.5 0.5 0.5]);
+            Gsu5.geom_polygon('x',{[7 8.5]},'alpha',0.15,'color',[0.5 0.5 0.5]);
 
             Gsu5.draw;                
   
@@ -509,17 +477,17 @@ for cnd = 1:size(cond_diff,1)
             
             if export == 1
                 
-                Gsu4.export('file_name',[subject_name '_' voi_name 'CHOI-INSTR_per_delay_area'],...
+                Gsu4.export('file_name',[subject_name '_' voi_name 'CHOI-INSTR_per_delay'],...
                     'export_path', savepath,...
                     'file_type','pdf');
                 
-%                 Gsu2.export('file_name',[subject_name '_' voi_name 'CHOI-INSTR_per_delay_lines_cue'],...
-%                     'export_path', savepath,...
-%                     'file_type','pdf');
-%                 
-%                 Gsu3.export('file_name',[subject_name '_' voi_name 'CHOI-INSTR_per_delay_lines_mov'],...
-%                     'export_path', savepath,...
-%                     'file_type','pdf');
+                Gsu2.export('file_name',[subject_name '_' voi_name 'CHOI-INSTR_per_delay_align_cue'],...
+                    'export_path', savepath,...
+                    'file_type','pdf');
+                
+                Gsu3.export('file_name',[subject_name '_' voi_name 'CHOI-INSTR_per_delay_align_mov'],...
+                    'export_path', savepath,...
+                    'file_type','pdf');
                 
                 Gsu5.export('file_name',[subject_name '_' voi_name 'CHOI-INSTR_per_delay_area_longDel'],...
                     'export_path', savepath,...

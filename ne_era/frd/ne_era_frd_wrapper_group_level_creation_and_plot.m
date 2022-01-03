@@ -9,10 +9,10 @@ plot_era_per_delay = 0;
 plot_era_average = 0;
 
 plot_era_DIFF_average = 0;
-plot_era_DIFF_per_delay = 1;
+plot_era_DIFF_per_delay = 0;
 
-create_stats_average = 0;
-create_stats_DIFF = 0;
+create_periods = 0;
+create_periods_DIFF = 1;
 %%
 
 load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
@@ -27,21 +27,22 @@ voi_side = {'lh', 'rh'}; % order has to fit with voi_name
 
 %% stats average curves
 
-windows_average      = [4 7];
-windows_name_average = {'early'};
-end_aligned_average  = [0]; % if 0 it counts backwards from last entry of era.timeaxis
-per_trial_average    = 0 ;
+periods_win     = [4 7];
+periods_name    = {'early'};
+periods_end_aligned  = [0]; % if 1 it counts backwards from last entry of era.timeaxis
+
+periods_per_trial    = 0;
 
 %% stats choice effect (DIFF) 
 
-windows_diff      = [4  7;
-                    -2 -0.5];% delay 9 -->  [7 8.5]
-windows_name_diff = {'early','late'};
-end_aligned_diff  = [0 1]; % if 0 it counts backwards from last entry of era.timeaxis
+periods_diff_win            = [4  7;
+                               -2 -0.5]; % e.g. delay 9 -->  [7 8.5]
+periods_diff_name           = {'early','late'};
+periods_diff_end_aligned    = [0 1]; % if 1 it counts backwards from last entry of era.timeaxis
 
-which_difference_diff         = 'choi_instr'; % put only one combi into function --> has to fit with the name in era.diff.name
-average_which_conditions_diff = {'sac_left','sac_right';'reach_left','reach_right'}; % has to fit with the name in era.diff.dat.cond --> columns are averaged, per row
-new_cond_name_diff            = {'sac';'reach'}; % in rows, according to the rows in average_which_conditions
+diff_which_difference         = 'choi_instr'; % put only one combi into function --> has to fit with the name in era.diff.name
+diff_average_which_conditions = {'sac_left','sac_right';'reach_left','reach_right'}; % has to fit with the name in era.diff.dat.cond --> columns are averaged, per row
+diff_new_cond_name            = {'sac';'reach'}; % in rows, according to the rows in average_which_conditions
 
 
 
@@ -51,7 +52,6 @@ if create_era_exp_level_average
     
     trigger = {'cue', 'mov'};
     delay = {'3','6','9','12','15','average'};
-    voi_side = {'lh', 'rh'};
     
     for d = 1:length(delay)
         
@@ -170,14 +170,14 @@ end
 
 %% create statistics diff choice effect
 
-if create_stats_average
+if create_periods
     
-    disp('+++++ processing create_stats_average');
+    disp('+++++ processing create_periods');
     
     
     era_files = findfiles([runpath],['*era_cue_average*' era_outliers '*.mat'],'depth=3');
 
-    [tt] = ne_era_frd_periods_average_v2(era_files,windows_average,windows_name_average,end_aligned_average,per_trial_average);
+    [tt] = ne_era_frd_periods(era_files,periods_win,periods_name,periods_end_aligned,periods_per_trial);
 
     
     if ~exist([runpath filesep 'stats'])
@@ -191,9 +191,9 @@ end
 
 %% create statistics diff choice effect
 
-if create_stats_DIFF
+if create_periods_DIFF
     
-    disp('+++++ processing create_stats_DIFF');
+    disp('+++++ processing create_periods_DIFF');
     
     
     era_files = findfiles([runpath],['*era_cue*' era_outliers '*.mat'],'depth=3');
@@ -203,7 +203,7 @@ if create_stats_DIFF
     era_files = era_files(find(cellfun(@isempty,strfind(era_files,'cue_6')))); %discard 6 mats
     
     
-    [tt,tt_no_del] = ne_era_frd_stats_choice_signal(era_files,windows_diff,windows_name_diff,end_aligned_diff,which_difference_diff,average_which_conditions_diff,new_cond_name_diff);
+    [tt,tt_no_del] = ne_era_frd_periods_diff(era_files,periods_diff_win,periods_diff_name,periods_diff_end_aligned,diff_which_difference,diff_average_which_conditions,diff_new_cond_name);
 
     
     if ~exist([runpath filesep 'stats'])

@@ -1,14 +1,5 @@
-function tt = ne_era_frd_periods_average
-%function tt = ne_era_frd_periods_average(era_files,windows,windows_name,end_aligned,save_path)
-
-era_files = {...
-    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_9_lh_no_outliers.mat';...
-    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_12_lh_no_outliers.mat';...
-    'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_15_lh_no_outliers.mat'};
-windows = [ 4    7; 
-           -2 -0.5];% delay 9 -->  [7 8.5]
-windows_name = {'early','late'};
-end_aligned= [0 1]; % if 0 it counts backwards from last entry of era.timeaxis
+function tt_ges = ne_era_frd_periods(era_files,windows,windows_name,end_aligned,per_trial)
+% This function takes the average of a defined period window from era curves and puts it in a table.
 
 %%
 tc = load(era_files{1}); 
@@ -24,21 +15,24 @@ for e = 1:length(era_files)
     tc(e).subj = prtz{1};
     tc(e).del = prtz{4};
     tc(e).raw_le = size(tc(e).era.psc(1,1).perievents,1);
+    tc(e).hemi = prtz{5};
 end
 
 %%
 tt = table();
-id_counter = 0;
-for v = 1:size(tc(1).era.mean,1) % loop over VIOs
+tt_ges = table();
 
-    voi_name = tc(1).era.voi(v).Name;
+for d = 1:length(tc) % loop over era files
     
-    for d = 1:length(tc) % loop over era files
-     
+    for v = 1:size(tc(d).era.mean,1) % loop over VIOs
+        
+        voi_name = tc(d).era.voi(v).Name;
+        
         for c = 1:size(tc(d).era.mean,2) % loop over curve
             
             for w = 1:length(windows_name)
                 
+                % get indices for period window
                 if logical(end_aligned(w)) == 0
                     win_start = windows(w,1);
                     win_end   = windows(w,2);
@@ -51,7 +45,21 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
                 
                 temp = table();
                 
-                temp.mean  = mean(tc(d).era.psc(v,c).perievents(idx,:),1)';
+                if isempty(tc(d).era.psc(v,c).perievents) % check if there are values for that subject*condition
+                    continue;  
+                end
+
+                avg_per_trial = mean(tc(d).era.psc(v,c).perievents(idx,:),1)'; % mean for time interval/window
+
+                % either add all trials or the mean of trials per subject
+                % to the table
+                if per_trial 
+                    temp.mean = avg_per_trial;
+                else
+                    temp.mean = mean(avg_per_trial);
+                end
+                
+                % add condition names
                 temp.period = repmat(windows_name(w), length(temp.mean),1); 
   
                 name_parts = strsplit(tc(d).era.avg.Curve(c).Name,'_');
@@ -64,24 +72,17 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
                 temp.delay = repmat({name_parts{4}}, length(temp.mean),1);  
                 
                 temp.subj = repmat({tc(d).subj}, length(temp.mean),1);  
-                temp.voi = repmat(voi_name, length(temp.mean),1);         
-                
-                trial_id =  (1:length(temp.mean)) + id_counter;
-                temp.trial_id = trial_id';
-                
-                if w == 2
-                    if ~isempty(trial_id)
-                        id_counter = trial_id(end);
-                    end
-                end
-                
+                temp.voi = repmat({voi_name}, length(temp.mean),1);         
+                temp.hemi = repmat({tc(d).hemi}, length(temp.mean),1);
+
+                % concatenate
                 tt = [tt; temp];
                 
   
                 
             end
         end
-    end % loop over era files
+    end 
     
     tt.period = categorical(tt.period);
     tt.cond = categorical(tt.cond);
@@ -90,37 +91,41 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     tt.side = categorical(tt.side);
     tt.delay = categorical(tt.delay);
     tt.subj = categorical(tt.subj);
-    tt.trial_id = categorical(tt.trial_id);
+    tt.hemi = categorical(tt.hemi);
+    tt.voi = categorical(tt.voi);
     
+    tt_ges = [tt_ges; tt];    
     
-    
-    
-    
-    %disp('stop here')
-%     save([save_path filesep 'Exp_era_period_average_' voi_name '.mat'] ,'tt')
-%     disp([ 'saved ' save_path filesep 'Exp_era_period_average_' voi_name '.mat']);
-%     
-%     writetable(tt,[save_path filesep 'Exp_era_period_average_' voi_name '.csv'])
-%     disp([ 'saved ' save_path filesep 'Exp_era_period_average_' voi_name '.csv']);
-    
-    %%
-    
-    
-    
-   
+
+%%
     tt = table();
     
     
+end % loop over era files
+
+
+%% create shorter voi names
+tt_ges.voi_short = cell(length(tt_ges.cond),1);
+tt_ges.voi_short_hemi = cell(length(tt_ges.cond),1);
+tt_ges.voi_number = cell(length(tt_ges.cond),1);
+
+for i = 1:length(tt_ges.cond)
+    name_parts = strsplit(char(cellstr(tt_ges.voi(i))),'_');
+   
+    tt_ges.voi_short(i)      = name_parts(2);
+    tt_ges.voi_short_hemi(i) = {[name_parts{2} '_' name_parts{end}]};
+    tt_ges.voi_number(i)     = name_parts(1);
+
 end
 
-%% THE QUESTION IS
-% create one function with two options 1 row A) per trial B1) per comb. of
-% conditions B2) per combination of trials averaging delays for each subject?
-
-% or separate functions
-
-% in one file? ... or in many?
+tt_ges.voi_short      = categorical(tt_ges.voi_short);
+tt_ges.voi_short_hemi = categorical(tt_ges.voi_short_hemi);
+tt_ges.voi_number     = str2double(tt_ges.voi_number);
  
+tt_ges.location = tt_ges.voi_number;
+tt_ges.location(tt_ges.location>99) = tt_ges.location(tt_ges.location>99) - 100;
+
+tt_ges.subj_period = findgroups(tt_ges.period,tt_ges.subj);
 
 
 

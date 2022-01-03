@@ -1,19 +1,7 @@
-function [tt_ges,tt_ges_no_del] = ne_era_frd_stats_choice_signal(era_files,windows,windows_name,end_aligned,which_difference,average_which_conditions,new_cond_name)
+function [tt_ges,tt_ges_no_del] = ne_era_frd_periods_diff(era_files,windows,windows_name,end_aligned,which_difference,average_which_conditions,new_cond_name)
+% This function takes the average of a defined period window from difference era curves (e.g. choi - instr) and puts it
+% in a table. If needed, it averages certain conditions (left/right).
 
-
-% 
-% era_files = {...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_9_lh_no_outliers.mat';...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_12_lh_no_outliers.mat';...
-%     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_15_lh_no_outliers.mat'};
-% windows = [ 4    7;mean(tc(d).era.psc(v,c).perievents(idx,:),1)';
-%     -2 -0.5];% delay 9 -->  [7 8.5] % includes first, but not last timepoints of windows
-% windows_name = {'early','late'};
-% end_aligned= [0 1]; % if 0 it counts backwards from last entry of era.timeaxis
-% 
-% which_difference = 'choi_instr'; % has to fit with the name in era.diff.name
-% average_which_conditions = {'sac_left','sac_right';'reach_left','reach_right'}; % has to fit with the name in era.diff.dat.cond --> columns are averaged, per row
-% new_cond_name = {'sac';'reach'}; % in rows, according to the rows in average_which_conditions
 %%
 tc = load(era_files{1});
 
@@ -36,7 +24,7 @@ tt = table();
 tt_ges = table();
 idiff = strcmp(which_difference,{tc(1).era.diff.name});
 
-if isempty(average_which_conditions)
+if nargin < 6
     new_cond_name = tc(1).era.diff(1).dat.cond(:);
 end
 
@@ -48,7 +36,7 @@ for d = 1:length(tc) % loop over era files (subjects * delay)
         voi_name = tc(d).era.voi(v).Name;
         
         diff_mean = [];
-        if ~isempty(average_which_conditions) % if told to average, average ....
+        if ~isempty(average_which_conditions) % if told to average certain conditions, average ....
             for a = 1:size(average_which_conditions,1) % loop over curve
                 
                 icond = ismember(tc(d).era.diff(idiff).dat.cond,average_which_conditions(a,:));
@@ -61,7 +49,7 @@ for d = 1:length(tc) % loop over era files (subjects * delay)
         
         
         for w = 1:length(windows_name)
-            
+            % find period indicies
             if logical(end_aligned(w)) == 0
                 win_start = windows(w,1);
                 win_end   = windows(w,2);
@@ -72,16 +60,18 @@ for d = 1:length(tc) % loop over era files (subjects * delay)
             
             idx = tc(d).era.timeaxis >= win_start & tc(d).era.timeaxis < win_end;
            
-            
+            % write it in table
             temp = table();
+            % mean
             temp.diff = mean(diff_mean(idx,:),1)';
-            temp.cond = new_cond_name(:);
+            % condition names
+            temp.cond   = new_cond_name(:);
             temp.period = repmat({windows_name{w}}, length(temp.diff),1);
             temp.diff_cond = repmat({which_difference}, length(temp.diff),1);
-            temp.delay = repmat({tc(d).del}, length(temp.diff),1); 
-            temp.subj = repmat({tc(d).subj}, length(temp.diff),1);
-            temp.voi = repmat({voi_name}, length(temp.diff),1);
-            temp.hemi = repmat({tc(d).hemi}, length(temp.diff),1);
+            temp.delay  = repmat({tc(d).del}, length(temp.diff),1); 
+            temp.subj   = repmat({tc(d).subj}, length(temp.diff),1);
+            temp.voi    = repmat({voi_name}, length(temp.diff),1);
+            temp.hemi   = repmat({tc(d).hemi}, length(temp.diff),1);
             
             tt = [tt; temp];
             
