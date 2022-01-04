@@ -10,7 +10,7 @@ runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
 
 trigger = {'cue', 'mov'}; % is different because less extracted data points for cue aligned trials (no move period) (see creation of era files from mdm) 
 delay = {'3','6','9','12','15','average'};
-voi_side = 'lh'; % is the same for left hemisphere as right h
+voi_side = 'lh'; % N trials per condition*subj is the same for left and right hemisphere
 era_outliers = '_no_outliers'; % ''
 
 eff = {'reach' 'sac'};
