@@ -4,7 +4,6 @@ function nemni_sort_nifti_into_folders(nifti_path_source,session_path,hum_nr,ser
 
 % mni_sort_nifti_into_folders('D:\MRI\Human\fMRI-reach-decision\Carsten_folder','D:\MRI\Human\fMRI-reach-decision\mni_Experiment\JOOD\20200207','hum_14835',[6, 9, 12, 17, 20], 15)
 
-% nifti_path_source --> substructure being <nifti_path_source\hum_number\nifti>
 
 if series_order
     for m = 1:length(series_order) % loop through EPI runs
