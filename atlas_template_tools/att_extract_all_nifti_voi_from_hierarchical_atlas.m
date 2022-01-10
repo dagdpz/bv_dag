@@ -1,18 +1,18 @@
-function att_extract_all_nifti_voi_from_hierarchical_atlas(nii_path,label_value_name)
+function att_extract_all_nifti_voi_from_hierarchical_atlas(nii_path,label_value_name,atlas,subj)
 %att_extract_all_nifti_voi_from_hierarchical_atlas  - extracts all vois
 %
 % USAGE:
-% att_extract_all_nifti_voi_from_hierarchical_atlas
-
+% att_extract_all_nifti_voi_from_hierarchical_atlas('CHARM_in_NMT_v2.0_sym_05mm.nii',CHARMkeycell,'CHARM');
+%
 % INPUTS:
-%		nii_path		- atlas label nifti
+%		nii_path            - atlas label nifti
 %		label_value_name	- cell array with values (doubles, 1st column),
-%		names (cells, 2nd column)and the level of the VOI (doubles, 3rd
-%		column)
+%                                               names (cells, 2nd column) 
+%                                               level of the VOI (doubles, 3rd column)
 %		e.g. created as:
-%		load('CHARMkeyds.mat')
-%       load('SARMkeyds.mat')
-%       
+%		load('Y:\Atlases\macaque\CHARM_SARM\CHARMcell.mat')
+%       load('Y:\Atlases\macaque\CHARM_SARM\SARMkeycell.mat')
+%       atlas                - Specify 'CHARM' or 'SARM' 
 % OUTPUTS:
 %		None
 % REQUIRES:	NIfTI toolbox, att_extract_nifti_voi_from_hierarchical_atlas
@@ -33,5 +33,6 @@ function att_extract_all_nifti_voi_from_hierarchical_atlas(nii_path,label_value_
 %%%%%%%%%%%%%%%%%%%%%%%%%[DAG mfile header version 1]%%%%%%%%%%%%%%%%%%%%%%%%%
 
 for k = 1:length(label_value_name{1}),
-	att_extract_nifti_voi_from_hierarchical_atlas(nii_path,label_value_name{1}(k),label_value_name{2}{k},label_value_name{3}(k));
+	att_extract_nifti_voi_from_hierarchical_atlas(nii_path,label_value_name{1}(k),label_value_name{2}{k},label_value_name{3}(k),atlas,subj);
 end
+clear all;

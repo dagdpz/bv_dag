@@ -53,3 +53,5 @@ end
 
 voi.SaveAs(voi_path);
 disp(['Saved ' voi_path]);
+voi.ClearObject;
+vmr.ClearObject;

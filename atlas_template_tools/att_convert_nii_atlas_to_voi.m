@@ -34,7 +34,7 @@ n = neuroelf;
     
 [pathstr, name, ext] = fileparts(nii_path);
 
-if isempty(pathstr), % only nii name was provided, assuming were are in a target folder
+if isempty(pathstr), % only nii name was provided, assuming we are in a target folder
     pathstr = pwd;
 end
 
