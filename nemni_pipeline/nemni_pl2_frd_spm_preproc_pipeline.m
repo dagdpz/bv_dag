@@ -1,5 +1,14 @@
-function nemni_pl2_spm_preproc_pipeline
-% prerequisite: extrated niftis in folder structure
+function nemni_pl2_frd_spm_preproc_pipeline(protocol_file,runpath,jobfile_char)
+% prerequisite: extrated niftis in folder structure. This function
+% currently needs 5 EPI files and 1 Anatomical per session.
+
+% MAKE SURE 
+% to set a path for the buffer for the pipeline at the end of the function. It has to be
+% hardcoded. Looping over many subjects can cause the RAM to fill up and
+% Matlab stopps working, even though variables are overwritten (use memory and
+% imem for diagnostics). Only 'clear all' fully clears the memory.
+% 'clearvars -exept x' does not the job. 
+
 
 % List of open inputs
 % Named File Selector: File Set - cfg_files
@@ -9,44 +18,19 @@ function nemni_pl2_spm_preproc_pipeline
 % Named File Selector: File Set - cfg_files
 % Coregister: Estimate: Source Image - cfg_files
 
+%
+%%
+
 clear all
-%load('D:\MRI\Human\fMRI-reach-decision\test_subject\JOOD_protocol.mat');
-load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
 
-%throwaway =  strcmp('JOOD_corr_estint4',{prot.name});% |  strcmp('JOOD',{prot.name}) ;
-% throwaway =  strcmp('ANEL',{prot.name})  | ...
-%              strcmp('ANRE',{prot.name})  | ...
-%              strcmp('ANRI',{prot.name})  | ...
-%              strcmp('CAST',{prot.name})  | ...
-%              strcmp('CLSC',{prot.name})  | ...
-%              strcmp('DAGU',{prot.name})  | ...
-%              strcmp('ELRH',{prot.name})  | ...
-%              strcmp('EVBO',{prot.name}) ;
-% throwaway =  strcmp('FARA',{prot.name})  | ...
-%              strcmp('HEGR',{prot.name})  | ...
-%              strcmp('HESE',{prot.name})  | ...
-%              strcmp('JAGE',{prot.name})  | ...
-%              strcmp('JOOD',{prot.name})  | ...
-%              strcmp('LAHI',{prot.name}) ;
-% throwaway =  strcmp('LEKU',{prot.name})  | ...
-%              strcmp('LIKU',{prot.name})  | ...
-%              strcmp('LORU',{prot.name})  | ...
-%              strcmp('LUAM',{prot.name})  | ...
-%              strcmp('MABA',{prot.name})  | ...
-%              strcmp('MABL',{prot.name})  | ...
-%              strcmp('MARO',{prot.name})  | ...
-%              strcmp('NORE',{prot.name})  | ...
-%              strcmp('OLPE',{prot.name})  | ...
-%              strcmp('PASC',{prot.name}) ;
-
-throwaway =  strcmp('ANRE',{prot.name});
-prot(~throwaway) = [];
-prot.session(1) = [];
-prot.session(1) = [];
-
+% protocol_file = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat';
+load(protocol_file)
 
 %runpath = 'D:\MRI\Human\fMRI-reach-decision\test_subject';
-runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
+%runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
+
+%jobfile_char = 'Y:\Personal\Peter\Repos\bv_dag\nemni_pipeline\nemni_frd_spm_preproc_pipeline_job.m';
+
 %%
 
 tic; 
@@ -60,7 +44,7 @@ for u = 1:length(prot)
         toc;
         disp(['start running '  prot(u).name '_' prot(u).session(e).date])
         
-        jobfile = {'Y:\Personal\Peter\Repos\bv_dag\nemni_pipeline\nemni_spm_preproc_pipeline_job.m'};
+        jobfile = {jobfile_char};
         
         clear inputs
         inputs = cell(6, 1);
@@ -87,7 +71,8 @@ for u = 1:length(prot)
         toc;
         disp(['finished running '  prot(u).name '_' prot(u).session(e).date])
         
-        save('Y:\MRI\Human\fMRI-reach-decision\Experiment\buffer_for_pipeline.mat','prot', 'runpath','u','e')
+        % pipeline buffer
+        save('Y:\MRI\Human\fMRI-reach-decision\Experiment\buffer_for_pipeline.mat','prot', 'runpath','jobfile_char','u','e')
         %memory
         %inmem
         

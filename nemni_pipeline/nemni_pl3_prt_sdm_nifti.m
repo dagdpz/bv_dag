@@ -1,4 +1,4 @@
-function nemni_pl3_prt_sdm_nifti
+function nemni_pl3_prt_sdm_nifti(protocol_file, runpath,runpath_behavioral,nemni_pl_settings_id,session_settings_id)
 %% AFTER PREPROCESSING, BEFORE MODEL CREATION
 
 % 1. copy behavioral files to mri files
@@ -10,24 +10,29 @@ function nemni_pl3_prt_sdm_nifti
 % 7. add outlier volumes to sdm
 % 8. temporal filtering vtc
 
-load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
-% throwaway = strcmp('ANEL',{prot.name})|...
-%              strcmp('ANRE',{prot.name})|...
-%              strcmp('ANRI',{prot.name})|...
-%              strcmp('CAST',{prot.name});
+% MAKE SURE 
+% to set a path for the buffer for the pipeline at the end of the function. It has to be
+% hardcoded. Looping over many subjects can cause the RAM to fill up and
+% Matlab stopps working, even though variables are overwritten (use memory and
+% imem for diagnostics). Only 'clear all' fully clears the memory.
+% 'clearvars -exept x' does not the job. 
 
+%% example inputs
+% protocol_file         = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat';
+load(protocol_file); 
 
-% throwaway =  strcmp('ANRE',{prot.name});
-% prot(~throwaway) = [];
-% prot.session(1) = [];
-% prot.session(1) = [];
+% runpath               = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI'; %folder containing subjects containing MRI data
+% runpath_behavioral    = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data'; %folder containing subjects containing BEHAVIORAL matfiles
+% nemni_pl_settings_id  = 'fmri_reach_decision';
+% session_settings_id   = 'Human_reach_decision'; % is being passed to respective funtions
 
-
-
+% INFO: session_settings_id and nemni_pl_settings_id are basically redundant
+% concepts, one could think of merging both. However, they apply to
+% different pipelines (ne, nemni), so for now they are separate. 
 %% which steps
 
 proc_steps.create_PRT_forGLM  = 0;
-proc_steps.create_PRT_forAVG  = 1;
+proc_steps.create_PRT_forAVG  = 0;
 proc_steps.create_SDM         = 0;
 proc_steps.add_MC_sdm         = 0;
 proc_steps.create_vtc         = 0;
@@ -35,27 +40,11 @@ proc_steps.run_QA             = 0;
 proc_steps.add_outliers_sdm   = 0;
 proc_steps.filter_vtc         = 0;
 
-%% settings
-% general
-runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI'; %folder containing subjects containing MRI data
-runpath_behavioral = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data'; %folder containing subjects containing BEHAVIORAL matfiles
-session_settings_id = 'Human_reach_decision';
-
-% sdm creation
-sdm_template = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\template_sdm_MCparams.sdm';
-
-% vtc creation
-nifti_pattern = 's6wrhum_*.nii';
-
-% mask source
-msk_source = 'Y:\MRI\Human\mni_icbm152_t1_tal_nlin_sym_09a_mask_vtc.msk'; %low resolution mask
-% vtc temporal filter
-min_wavelength = 128;
-
-%
-old_dir = pwd;
 
 %%
+old_dir = pwd;
+run('nemni_pl_settings.m')
+
 for i = 1:length(prot) %loop subjects
     
     sessions = length(prot(i).session);
@@ -94,7 +83,7 @@ for i = 1:length(prot) %loop subjects
             
             disp('---- creating prt for glm');
             
-            model_path = [session_path filesep 'mat2prt_reach_decision_vardelay_forglm'];
+            model_path = [session_path filesep model_glm_name];
             
             
             beh_files = dir([session_path filesep '*_??.mat']);% PRT files
@@ -106,8 +95,8 @@ for i = 1:length(prot) %loop subjects
             else
                 
                 % create folder if necessary
-                if ~exist([session_path filesep 'mat2prt_reach_decision_vardelay_forglm'])
-                    mkdir([session_path filesep 'mat2prt_reach_decision_vardelay_forglm']);
+                if ~exist([session_path filesep model_glm_name])
+                    mkdir([session_path filesep model_glm_name]);
                 end
                 
                 
@@ -118,7 +107,7 @@ for i = 1:length(prot) %loop subjects
                     run_name = ['run' num2str(m,'%02d')]; % current run
                     
                     % create PRT
-                    prt_fullpath = mat2prt_reach_decision_vardelay_forglm([session_path filesep beh_files(m).name],run_name);
+                    prt_fullpath = mat2prt_fct_handle_glm([session_path filesep beh_files(m).name],run_name);
                     
                     [success, message] = movefile(prt_fullpath,model_path);
                     if ~success,
@@ -137,7 +126,7 @@ for i = 1:length(prot) %loop subjects
             
             disp('---- creating prt for avg');
             
-            model_path = [session_path filesep 'mat2prt_reach_decision_vardelay_foravg'];
+            model_path = [session_path filesep model_avg_name];
             
             
             beh_files = dir([session_path filesep '*_??.mat']);% PRT files
@@ -149,8 +138,8 @@ for i = 1:length(prot) %loop subjects
             else
                 
                 % create folder if necessary
-                if ~exist([session_path filesep 'mat2prt_reach_decision_vardelay_foravg'])
-                    mkdir([session_path filesep 'mat2prt_reach_decision_vardelay_foravg']);
+                if ~exist([session_path filesep model_avg_name])
+                    mkdir([session_path filesep model_avg_name]);
                 end
                 
                 
@@ -161,7 +150,7 @@ for i = 1:length(prot) %loop subjects
                     run_name = ['run' num2str(m,'%02d')]; % current run
                     
                     % create PRT
-                    prt_fullpath = mat2prt_reach_decision_vardelay_foravg([session_path filesep beh_files(m).name],run_name);
+                    prt_fullpath = mat2prt_fct_handle_avg([session_path filesep beh_files(m).name],run_name);
                     
                     [success, message] = movefile(prt_fullpath,model_path);
                     if ~success,
@@ -179,7 +168,7 @@ for i = 1:length(prot) %loop subjects
             
             disp('---- creating sdm for each run');
             
-            model_path = [session_path filesep 'mat2prt_reach_decision_vardelay_forglm'];
+            model_path = [session_path filesep model_glm_name]; %'...\mat2prt_reach_decision_vardelay_forglm'
             prt_files = dir([model_path filesep '*.prt']);
             
             if isempty(prt_files),
@@ -196,6 +185,7 @@ for i = 1:length(prot) %loop subjects
             
             disp('---- creating MCparams SDM');
             
+            %% create MCparams SDM
             for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
                 
                 epi_path = [session_path filesep 'run0' num2str(m)'];
@@ -247,7 +237,7 @@ for i = 1:length(prot) %loop subjects
             
             disp('---- adding motion correction predictors to sdm');
             
-            model_path = [session_path filesep 'mat2prt_reach_decision_vardelay_forglm'];
+            model_path = [session_path filesep model_glm_name]; %'mat2prt_reach_decision_vardelay_forglm'
             task_sdm_files = dir([model_path filesep '*_task.sdm']);
             MC_sdm_files = dir([session_path filesep '*_MCparams.sdm']);
             
@@ -265,6 +255,9 @@ for i = 1:length(prot) %loop subjects
             
             disp('---- creating vtc from nifti');
             
+            model_path = [session_path filesep model_glm_name]; %'...\mat2prt_reach_decision_vardelay_forglm'
+            prt_files = dir([model_path filesep '*.prt']);
+            
             for m = 1:length([prot(i).session(k).epi.nr1]) % loop runs
                 
                 epi_path = [session_path filesep 'run0' num2str(m)'];
@@ -277,7 +270,7 @@ for i = 1:length(prot) %loop subjects
                 % nifti --> vtc
                 clear vtc
                 vtc = netools.importvtcfromanalyze({nifti_file});
-                vtc.TR = 900;
+                vtc.TR = TR; %900
                 
                 % mask vtc
                 msk = xff(msk_source);
@@ -316,7 +309,7 @@ for i = 1:length(prot) %loop subjects
             
             disp('---- adding outlier predictors to sdm');
             
-            model_path = [session_path filesep 'mat2prt_reach_decision_vardelay_forglm'];
+            model_path = [session_path filesep model_glm_name]; %'mat2prt_reach_decision_vardelay_forglm'
             task_and_MC_sdm_files = dir([model_path filesep '*task*' '*MCparams.sdm']);
             outlier_mat_files = dir([session_path filesep '*_outlier_volumes.mat']);
             
@@ -359,11 +352,8 @@ for i = 1:length(prot) %loop subjects
             'proc_steps',...
             'runpath',...
             'runpath_behavioral',...
+            'nemni_pl_settings_id',...
             'session_settings_id',...
-            'sdm_template',...
-            'nifti_pattern',...
-            'msk_source',...
-            'min_wavelength',...
             'old_dir');
         %memory
         %inmem
@@ -371,6 +361,7 @@ for i = 1:length(prot) %loop subjects
         clear all
         
         load('Y:\MRI\Human\fMRI-reach-decision\Experiment\buffer_for_pipeline.mat')
+        run('nemni_pl_settings.m')
         
     end
 end

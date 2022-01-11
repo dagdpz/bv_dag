@@ -9,7 +9,6 @@ if nargin < 7,
     verbose = true;
 end
 
-
 mdm = xff(mdmpath);
 
 sessions_runs = cellfun(@(x) x(strfind(x, '\2')+1:strfind(x, '\2')+8), mdm.XTC_RTC(:,1), 'UniformOutput',0);
