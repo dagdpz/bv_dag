@@ -203,8 +203,8 @@ for v = 1:size(tc(1).era.mean,1) % loop over VIOs
     GSu3.geom_polygon('x',{[7.1 8.5]},'color',[0.5 0.5 0.5]);
     GSu3.draw;
     
-     text(5.1,0.65,{'cue'},'Parent',GSu3.facet_axes_handles(1),'Color','k','FontSize',12.5);
-     text(7.25,0.65,{'mov'},'Parent',GSu3.facet_axes_handles(1),'Color','k','FontSize',12.5);
+     %text(5.1,0.65,{'cue'},'Parent',GSu3.facet_axes_handles(1),'Color','k','FontSize',12.5);
+     %text(7.25,0.65,{'mov'},'Parent',GSu3.facet_axes_handles(1),'Color','k','FontSize',12.5);
 
     %% export
     if export
