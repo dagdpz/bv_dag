@@ -3,9 +3,9 @@ function ne_era_frd_wrapper_subject_level_creation_and_plot
 %% what to do
 
 create_era_per_delay    = 1;
-create_delay_average    = 0; 
-create_era_binned       = 0;
-create_era_diff_timecourses = 0;
+create_delay_average    = 1; 
+create_era_binned       = 1;
+create_era_diff_timecourses = 1;
 
 plot_era_per_delay      = 0;
 plot_era_average        = 0;
@@ -13,20 +13,32 @@ plot_era_average        = 0;
 %%
 
 load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
-%prot = prot(strcmp('ANRE',{prot.name}));
+prot = prot(strcmp('ANEL',{prot.name}));
 
 %% settings
 %runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\testground\test averaging era subjects';
 runpath         = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
 
 % +++++++ ERA CREATION +++++++
-era_model_name = 'mat2prt_reach_decision_vardelay_foravg_MEM';% 'mat2prt_reach_decision_vardelay_foravg' % place where era files are stored (not necessarily the same place where avg files are stored, not to confuse vois from cue and memory period)
+% era_model_name      = 'mat2prt_reach_decision_vardelay_foravg'; % place where era files are stored (not necessarily the same place where avg files are stored, not to confuse vois from cue and memory period)
+% plots_folder_name   = 'plots';
+era_model_name      = 'mat2prt_reach_decision_vardelay_foravg_MEM';%
+plots_folder_name   = 'plots_MEM'; % 'plots' 
+
 
 tc_interpolate  = 100;
 avg_outliers    = '_no_outliers'; % '' '_no_outliers'  %% CHANGE HER FOR OUTLIER CONSIDERATION
 mdm_pattern     = '_combined_no_outliers_glm_cue.mdm'; % '_combined_glm_cue.mdm' '_combined_no_outliers_glm_cue.mdm'   %% CHANGE HER FOR OUTLIER CONSIDERATION
 
+era_outliers    = '_no_outliers'; % '' '_no_outliers'  %% CHANGE HER FOR OUTLIER CONSIDERATION
+plot_outliers   = '_no_outliers'; % '' '_no_outliers'  %% CHANGE HER FOR OUTLIER CONSIDERATION
+
+bin_size        = 5;
+cond_diff       = {'choi', 'instr'};%{'choi', 'instr'; 'left', 'right';'reach' 'sac'}; % mind the format: left minus right, per row: cond_diff = {'choi', 'instr'; 'left', 'right';'reach' 'sac'};
+
+
 %% +++++++ VOIs +++++++
+
 % +++test+++
 %voi_name = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\mat2prt_reach_decision_vardelay_forglm\test\test_r_tal.voi';
 
@@ -49,13 +61,6 @@ voi_name        = {[voi_location filesep 'memory_neg_from_combined_atlas_l_tal.v
                    [voi_location filesep 'memory_pos_from_combined_atlas_l_tal.voi'],...
                    [voi_location filesep 'memory_pos_from_combined_atlas_r_tal.voi']};
 voi_side        = {'negLH', 'negRH','posLH', 'posRH'}; % order has to fit with voi_name
-
-%% +++++++ Rest +++++++
-era_outliers    = '_no_outliers'; % '' '_no_outliers'  %% CHANGE HER FOR OUTLIER CONSIDERATION
-plot_outliers   = '_no_outliers'; % '' '_no_outliers'  %% CHANGE HER FOR OUTLIER CONSIDERATION
-
-bin_size        = 5;
-cond_diff       = {'choi', 'instr'};%{'choi', 'instr'; 'left', 'right';'reach' 'sac'}; % mind the format: left minus right, per row: cond_diff = {'choi', 'instr'; 'left', 'right';'reach' 'sac'};
 
 
 %% creation of era files per separate delay
@@ -168,7 +173,7 @@ if create_era_binned
             era = ne_era_frd_downsample(era_files{e},bin_size);
             
             save(era_files{e},'era');
-            %disp('saved ' era_files{e});
+            disp(['saved ' era_files{e}]);
             
         end
     end
@@ -188,8 +193,8 @@ if create_era_diff_timecourses
             
             era = ne_era_frd_create_difference_timecourse(era_files{e},cond_diff,1);
             
-            %save(era_files{e},'era');
-            %disp('saved ' era_files{e});
+            save(era_files{e},'era');
+            disp(['saved ' era_files{e}]);
             
         end
     end
@@ -214,11 +219,11 @@ if plot_era_per_delay
             
             %era_files contains all cue and movement triggered delays (N=10)
             
-            if ~exist([runpath filesep subject filesep 'plots'])
-                mkdir([runpath filesep subject filesep 'plots']);  %'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\plots'
+            if ~exist([runpath filesep subject filesep plots_folder_name])
+                mkdir([runpath filesep subject filesep plots_folder_name]);  %'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\plots'
             end
             
-            ne_era_frd_plot_per_delay(era_files,subject,1,[runpath filesep subject filesep 'plots'])
+            ne_era_frd_plot_per_delay(era_files,subject,1,[runpath filesep subject filesep plots_folder_name])
             
         end
     end
@@ -244,11 +249,11 @@ if plot_era_average
             %     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_mov_average_rh_no_outliers.mat',...           
             %     'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\mat2prt_reach_decision_vardelay_foravg\ANEL_era_cue_average_rh_no_outliers.mat',};
             
-            if ~exist([runpath filesep subject filesep 'plots'])
-                mkdir([runpath filesep subject filesep 'plots']); %'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\plots'
+            if ~exist([runpath filesep subject filesep plots_folder_name])
+                mkdir([runpath filesep subject filesep plots_folder_name]); %'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\ANEL\plots'
             end
             
-            ne_era_frd_plot_average(era_files,subject,0,1,[runpath filesep subject filesep 'plots'])
+            ne_era_frd_plot_average(era_files,subject,0,1,[runpath filesep subject filesep plots_folder_name])
             
         end
     end
