@@ -4,26 +4,37 @@ function ne_era_frd_wrapper_group_level_creation_and_plot
 
 %% what to do
 
-create_era_exp_level_average =0;
-plot_era_per_delay = 0;
-plot_era_average = 0;
+create_era_exp_level_average =1;
+plot_era_per_delay = 1;
+plot_era_average = 1;
 
-plot_era_DIFF_average = 0;
-plot_era_DIFF_per_delay = 0;
+plot_era_DIFF_average = 1;
+plot_era_DIFF_per_delay = 1;
 
-create_periods = 0;
+create_periods = 1;
 create_periods_DIFF = 1;
 %%
 
 load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
-%prot = prot(strcmp('ANEL',{prot.name}));
+% prot = prot(strcmp('ANEL',{prot.name}));
 
 %% settings
-runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
-%runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\testground\test averaging era subjects';
+runpath             = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI';
+era_outliers        = '_no_outliers'; % ''
 
-era_outliers = '_no_outliers'; % ''
-voi_side = {'lh', 'rh'}; % order has to fit with voi_name
+% VOI CUE
+% era_model_name      = 'mat2prt_reach_decision_vardelay_foravg'; % place where era files are stored (not necessarily the same place where avg files are stored, not to confuse vois from cue and memory period)
+% voi_side            = {'lh', 'rh'}; % % order has to fit with voi_name
+% plots_folder_name   = 'plots';
+% stats_folder_name   = 'stats';
+
+% VOI MEM
+era_model_name      = 'mat2prt_reach_decision_vardelay_foravg_MEM'; % place where era files are stored (not necessarily the same place where avg files are stored, not to confuse vois from cue and memory period)
+voi_side            = {'negLH', 'negRH','posLH', 'posRH'}; %'lh', 'rh' % order has to fit with voi_name
+plots_folder_name   = 'plots_MEM';
+stats_folder_name   = 'stats_MEM';
+
+
 
 %% stats average curves
 
@@ -31,7 +42,7 @@ periods_win     = [4 7];
 periods_name    = {'early'};
 periods_end_aligned  = [0]; % if 1 it counts backwards from last entry of era.timeaxis
 
-periods_per_trial    = 0;
+periods_per_trial    = 0; %if final table has all trials of each subject (1), or the average per subject (0)
 
 %% stats choice effect (DIFF) 
 
@@ -61,14 +72,19 @@ if create_era_exp_level_average
                 
                 for i = 1:length(prot)
                     
-                    era_files{i} = [runpath filesep prot(i).name filesep 'mat2prt_reach_decision_vardelay_foravg' filesep prot(i).name '_era_' trigger{t} '_' delay{d} '_' voi_side{vs} era_outliers '.mat'];
+                    era_files{i} = [runpath filesep prot(i).name filesep era_model_name filesep prot(i).name '_era_' trigger{t} '_' delay{d} '_' voi_side{vs} era_outliers '.mat'];
                     
                 end
                 
                 era = ne_era_frd_create_grp_level_files(era_files);
-
-                save([runpath filesep 'mat2prt_reach_decision_vardelay_foravg' filesep 'Exp_era_' trigger{t} '_' delay{d} '_'  voi_side{vs} era_outliers '.mat'] ,'era')
-                disp(['saved ' runpath filesep 'mat2prt_reach_decision_vardelay_foravg' filesep 'Exp_era_' trigger{t} '_' delay{d} '_'  voi_side{vs} era_outliers '.mat']);
+                
+                save_folder = [runpath filesep era_model_name];
+                if ~exist(save_folder)
+                    mkdir(save_folder);
+                end
+                    
+                save(         [save_folder filesep 'Exp_era_' trigger{t} '_' delay{d} '_'  voi_side{vs} era_outliers '.mat'] ,'era')
+                disp(['saved ' save_folder filesep 'Exp_era_' trigger{t} '_' delay{d} '_'  voi_side{vs} era_outliers '.mat']);
            
             end
         end
@@ -84,14 +100,14 @@ if plot_era_average
      
         for vs = 1:length(voi_side)
 
-            era_files = findfiles([runpath filesep 'mat2prt_reach_decision_vardelay_foravg'],['*era*average*' voi_side{vs} '*' era_outliers '*.mat'],'depth=1');
+            era_files = findfiles([runpath filesep era_model_name],['*era*average*' voi_side{vs} '*' era_outliers '*.mat'],'depth=1');
             
 
-            if ~exist([runpath filesep 'plots'])
-                mkdir([runpath filesep 'plots']); %'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\plots'
+            if ~exist([runpath filesep plots_folder_name])
+                mkdir([runpath filesep plots_folder_name]); %'Y:\MRI\Human\fMRI-reach-decision\Experiment\MNI\plots'
             end
             
-            ne_era_frd_plot_average(era_files,subject,1,1,[runpath filesep 'plots'])
+            ne_era_frd_plot_average(era_files,subject,1,1,[runpath filesep plots_folder_name])
             
         end
    
@@ -108,16 +124,16 @@ if plot_era_per_delay
     
     for vs = 1:length(voi_side)
         
-        era_files = findfiles([runpath filesep 'mat2prt_reach_decision_vardelay_foravg'],['*era*' voi_side{vs} '*' era_outliers '*.mat'],'depth=1');
+        era_files = findfiles([runpath filesep era_model_name],['*era*' voi_side{vs} '*' era_outliers '*.mat'],'depth=1');
         era_files = era_files(find(cellfun(@isempty,strfind(era_files,'average')))); %discard average mats
         
         %era_files contains all cue and movement triggered delays (N=10)
         
-        if ~exist([runpath filesep 'plots'])
-            mkdir([runpath filesep 'plots']);  
+        if ~exist([runpath filesep plots_folder_name])
+            mkdir([runpath filesep plots_folder_name]);  
         end
         
-        ne_era_frd_plot_per_delay(era_files,subject,1,[runpath filesep 'plots'])
+        ne_era_frd_plot_per_delay(era_files,subject,1,[runpath filesep plots_folder_name])
         
     end
 end
@@ -131,14 +147,14 @@ if plot_era_DIFF_average
 
         for vs = 1:length(voi_side)
             
-            era_files = findfiles([runpath filesep 'mat2prt_reach_decision_vardelay_foravg'],['*era*average*' voi_side{vs} '*' era_outliers '*.mat'],'depth=1');
+            era_files = findfiles([runpath filesep era_model_name],['*era*average*' voi_side{vs} '*' era_outliers '*.mat'],'depth=1');
             
 
-            if ~exist([runpath filesep 'plots' filesep 'choice-instr'])
-                mkdir([runpath filesep 'plots' filesep 'choice-instr']); 
+            if ~exist([runpath filesep plots_folder_name filesep 'choice-instr'])
+                mkdir([runpath filesep plots_folder_name filesep 'choice-instr']); 
             end
             
-            ne_era_frd_plot_differences(era_files,subject,cond_diff,0,1,[runpath filesep 'plots' filesep 'choice-instr'],1)
+            ne_era_frd_plot_differences(era_files,subject,cond_diff,0,1,[runpath filesep plots_folder_name filesep 'choice-instr'],1)
             
         end
    
@@ -154,16 +170,16 @@ if plot_era_DIFF_per_delay
 
     for vs = 1:length(voi_side)
         
-        era_files = findfiles([runpath filesep 'mat2prt_reach_decision_vardelay_foravg'],['*era*' voi_side{vs} '*' era_outliers '*.mat'],'depth=1');
+        era_files = findfiles([runpath filesep era_model_name],['*era*' voi_side{vs} '*' era_outliers '*.mat'],'depth=1');
         era_files = era_files(find(cellfun(@isempty,strfind(era_files,'average')))); %discard average mats
         
         %era_files contains all cue and movement triggered delays (N=10)
         
-        if ~exist([runpath filesep 'plots' filesep 'choice-instr'])
-            mkdir([runpath filesep 'plots' filesep 'choice-instr']); 
+        if ~exist([runpath filesep plots_folder_name filesep 'choice-instr'])
+            mkdir([runpath filesep plots_folder_name filesep 'choice-instr']); 
         end
         
-        ne_era_frd_plot_differences(era_files,subject,cond_diff,1,0,[runpath filesep 'plots' filesep 'choice-instr'],1)
+        ne_era_frd_plot_differences(era_files,subject,cond_diff,1,0,[runpath filesep plots_folder_name filesep 'choice-instr'],1)
         
     end
 end
@@ -175,17 +191,29 @@ if create_periods
     disp('+++++ processing create_periods');
     
     
-    era_files = findfiles([runpath],['*era_cue_average*' era_outliers '*.mat'],'depth=3');
-
-    [tt] = ne_era_frd_periods(era_files,periods_win,periods_name,periods_end_aligned,periods_per_trial);
+    % get era files from the correct model folder of each subject
+    era_files = {};
+    for i = 1:length(prot)
+        
+       sub_era_files = findfiles([runpath filesep prot(i).name filesep era_model_name],['*era_cue*' era_outliers '*.mat'],'depth=1');
+       era_files = [era_files; sub_era_files];
+       
+    end
+    
+    [tt] = ne_era_frd_periods(...
+        era_files,...
+        periods_win,...
+        periods_name,...
+        periods_end_aligned,...
+        periods_per_trial);
 
     
-    if ~exist([runpath filesep 'stats'])
-        mkdir([runpath filesep 'stats']);
+    if ~exist([runpath filesep stats_folder_name])
+        mkdir([runpath filesep stats_folder_name]);
     end
 
-    save([runpath filesep 'stats' filesep 'Exp_era_period_average.mat'],'tt')
-    writetable(tt,[runpath filesep 'stats' filesep 'Exp_era_period_average.csv'])    
+    save(         [runpath filesep stats_folder_name filesep 'Exp_era_period_average.mat'],'tt')
+    writetable(tt,[runpath filesep stats_folder_name filesep 'Exp_era_period_average.csv'])    
 
 end
 
@@ -195,23 +223,38 @@ if create_periods_DIFF
     
     disp('+++++ processing create_periods_DIFF');
     
-    
-    era_files = findfiles([runpath],['*era_cue*' era_outliers '*.mat'],'depth=3');
+    % get era files from the correct model folder of each subject
+    era_files = {};
+    for i = 1:length(prot)
+        
+       sub_era_files = findfiles([runpath filesep prot(i).name filesep era_model_name],['*era_cue*' era_outliers '*.mat'],'depth=1');
+       era_files = [era_files; sub_era_files];
+       
+    end
     
     era_files = era_files(find(cellfun(@isempty,strfind(era_files,'average')))); %discard average mats
     era_files = era_files(find(cellfun(@isempty,strfind(era_files,'cue_3')))); %discard 3 mats
     era_files = era_files(find(cellfun(@isempty,strfind(era_files,'cue_6')))); %discard 6 mats
     
     
-    [tt,tt_no_del] = ne_era_frd_periods_diff(era_files,periods_diff_win,periods_diff_name,periods_diff_end_aligned,diff_which_difference,diff_average_which_conditions,diff_new_cond_name);
+    [tt,tt_no_del] = ne_era_frd_periods_diff(...
+        era_files,...
+        periods_diff_win,...
+        periods_diff_name,...
+        periods_diff_end_aligned,...
+        diff_which_difference,...
+        diff_average_which_conditions,...
+        diff_new_cond_name);
 
     
-    if ~exist([runpath filesep 'stats'])
-        mkdir([runpath filesep 'stats']);
+    if ~exist([runpath filesep stats_folder_name])
+        mkdir([runpath filesep stats_folder_name]);
     end
 
-    save([runpath filesep 'stats' filesep 'Exp_era_period_diff_' which_difference '.mat'],'tt','tt_no_del')
-    writetable(tt,[runpath filesep 'stats' filesep 'Exp_era_period_diff_' which_difference '.csv'])    
-    writetable(tt_no_del,[runpath filesep 'stats' filesep 'Exp_era_period_diff_' which_difference '_no_delay.csv']) 
+    save(                [runpath filesep stats_folder_name filesep 'Exp_era_period_diff_' diff_which_difference '.mat'],'tt','tt_no_del')
+    writetable(tt,       [runpath filesep stats_folder_name filesep 'Exp_era_period_diff_' diff_which_difference '.csv'])    
+    writetable(tt_no_del,[runpath filesep stats_folder_name filesep 'Exp_era_period_diff_' diff_which_difference '_no_delay.csv']) 
 end
-end
+
+disp('done');
+
