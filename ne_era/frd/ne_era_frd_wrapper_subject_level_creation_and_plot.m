@@ -13,7 +13,7 @@ plot_era_average        = 0;
 %%
 
 load('Y:\MRI\Human\fMRI-reach-decision\Experiment\behavioral_data\protocols_v2.mat');
-prot = prot(strcmp('ANEL',{prot.name}));
+%prot = prot(strcmp('ANEL',{prot.name}));
 
 %% settings
 %runpath = 'Y:\MRI\Human\fMRI-reach-decision\Experiment\testground\test averaging era subjects';
