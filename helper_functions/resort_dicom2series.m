@@ -29,21 +29,31 @@ if isempty(strfind(d(3).name,'-')), % numeric file names without series number
 	
 else % subj-series-volume/slice format
 
-    % if number of characters in DICOM file names is equal across files
-	names = cell2mat({d(3:end).name}'); % IK 
     
-    % if number of characters in DICOM file names differs between files
-%     tempnames = {d(3:end).name}'; % LG
-%     tempnames = cellfun(@(x) x(1:14), tempnames, 'UniformOutput',0); % LG
-%     names = cell2mat(tempnames); % LG
-    
-	div_idx = strfind(names(1,:),'-');
+%     % old version (up to 2023): names is array
+%     nameLengths = cellfun(@(x) numel(x), {d(3:end).name});
+%     uniqueLengths = unique(nameLengths);
+%     
+%     if numel(uniqueLengths) == 1
+%         % if number of characters in DICOM file names is equal across files
+%         names = cell2mat({d(3:end).name}'); % IK
+%     else
+%         % if number of characters in DICOM file names differs between files
+%         tempnames = {d(3:end).name}'; % LG
+%         tempnames = cellfun(@(x) x(1:14), tempnames, 'UniformOutput',0); % LG
+%         names = cell2mat(tempnames); % LG
+%     end
+
+    names = {d(3:end).name}'; % IK 
+	div_idx = strfind(names{1,:},'-');
     if numel(div_idx) == 2
-        ser = names(:,div_idx(1)+1:div_idx(2)-1); % UMG
+        % ser = names(:,div_idx(1)+1:div_idx(2)-1); % UMG
+        ser = cell2mat(cellfun(@(x) x(div_idx(1)+1:div_idx(2)-1), names, 'UniformOutput', false));
         filepattern = '*-%s-*';
-    elseif numel(div_idx) == 3
-        ser = names(:,div_idx(2)+1:div_idx(3)-1); % DZP
-        filepattern = '*-*-%s-*';
+    elseif numel(div_idx) > 2
+        % ser = names{:,div_idx(2)+1:div_idx(3)-1}; % DPZ
+        ser = cell2mat(cellfun(@(x) x(div_idx(2)+1:div_idx(3)-1), names, 'UniformOutput', false));
+        filepattern = [repmat('?', 1, div_idx(2)-1) '-%s-*']; % '*-*-%s-*'
     else disp('ERROR: unknown dicom naming')
         return
     end
